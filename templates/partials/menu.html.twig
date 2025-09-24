@@ -20,27 +20,11 @@
     <ul class="menu">
         <li><a href="/">Accueil</a></li>
 
-        <li><a href="#">Trottinettes <span><i class="fas fa-chevron-down"></i></span></a>
-            <div class="dropdown-menu-right">
-                <ul class="sous-menu-nom">
-                    {% for model in models %}
-                        <li>
-                            <a href="/nos-trotinettes/model-{{ model.id }}">{{ model.name }}</a>
-                            {% if model.accessories is defined and model.accessories|length > 0 %}
-                                <ul class="sous-menu-accessoires">
-                                    {% for accessory in model.accessories %}
-                                        <li>
-                                            <a href="/nos-accessoires/{{ accessory.id }}">{{ accessory.name }}</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </li>
+        {% for trotinette in trotinettes_menu %}
+            <li><a href="/trotinette/{{ trotinette.slug }}">{{ trotinette.name }}</a></li>
+        {% endfor %}
 
         <li><a href="/#contact">Contact</a></li>
+        <li><a href="/login">Connexion</a></li>
     </ul>
 </nav>

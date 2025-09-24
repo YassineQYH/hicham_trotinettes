@@ -6,21 +6,18 @@ use App\Classe\Mail;
 use App\Entity\Header;
 use App\Entity\Trotinette;
 use App\Entity\Accessory;
-use App\Entity\ModelTrotinette;
 use App\Form\ContactType;
-use App\Repository\ModelTrotinetteRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class HomeController extends AbstractController
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -31,8 +28,7 @@ class HomeController extends AbstractController
     public function index(
         Request $request,
         UserPasswordHasherInterface $encoder,
-        AuthenticationUtils $authenticationUtils,
-        ModelTrotinetteRepository $modelTrotinetteRepository
+        AuthenticationUtils $authenticationUtils
     ): Response
     {
         // Formulaire de contact
@@ -40,7 +36,7 @@ class HomeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('notice', "Merci de m'avoir contacté. Je vous répondrais dans les meilleurs délais.");
+            $this->addFlash('notice', "Merci de m'avoir contacté. Je vous répondrai dans les meilleurs délais.");
 
             $data = $form->getData();
             $content = "Bonjour </br>
@@ -62,18 +58,20 @@ class HomeController extends AbstractController
 
         // Récupération des données
         $headers = $this->entityManager->getRepository(Header::class)->findAll();
-        $models = $modelTrotinetteRepository->findAll(); // ⚡ harmonisé
 
-        // ⚡ tu n’as plus de Product, je suppose que ça doit pointer sur Trotinette
-        $products = $this->entityManager->getRepository(Trotinette::class)->findBy(['isBest' => 1]);
+        // Récupération de toutes les trotinettes pour le menu
+        $trotinettesMenu = $this->entityManager->getRepository(Trotinette::class)->findAll();
+
+        // Récupération des trotinettes et accessoires "best" pour les sliders
+        $trotinettes = $this->entityManager->getRepository(Trotinette::class)->findBy(['isBest' => 1]);
         $accessories = $this->entityManager->getRepository(Accessory::class)->findBy(['isBest' => 1]);
 
         return $this->render('home/index.html.twig', [
             'headers' => $headers,
-            'models' => $models, // ⚡ toujours "models"
-            'products' => $products,
-            'accessories' => $accessories,
-            'form' => $form->createView()
+            'trotinettes' => $trotinettes,       // Slider "best" trotinettes
+            'accessories' => $accessories,       // Slider "best" accessoires
+            'form' => $form->createView(),
+            'trotinettes_menu' => $trotinettesMenu // Menu principal
         ]);
     }
 }

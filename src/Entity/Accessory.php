@@ -6,6 +6,7 @@ use App\Repository\AccessoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Illustrationaccess;
 
 #[ORM\Entity(repositoryClass: AccessoryRepository::class)]
 class Accessory
@@ -21,10 +22,6 @@ class Accessory
 
     #[ORM\Column(type:"text")]
     private ?string $description = null;
-
-    #[ORM\ManyToOne(targetEntity: ModelTrotinette::class)]
-    #[ORM\JoinColumn(nullable:false)]
-    private ?ModelTrotinette $modelTrotinette = null;
 
     #[ORM\OneToMany(mappedBy:"accessory", targetEntity: Illustrationaccess::class)]
     private Collection $illustrationaccess;
@@ -55,9 +52,7 @@ class Accessory
     public function getDescription(): ?string { return $this->description; }
     public function setDescription(string $description): self { $this->description = $description; return $this; }
 
-    public function getModelTrotinette(): ?ModelTrotinette { return $this->modelTrotinette; }
-    public function setModelTrotinette(?ModelTrotinette $modelTrotinette): self { $this->modelTrotinette = $modelTrotinette; return $this; }
-
+    /** @return Collection|Illustrationaccess[] */
     public function getIllustrationaccess(): Collection { return $this->illustrationaccess; }
     public function addIllustrationaccess(Illustrationaccess $illustrationaccess): self
     {

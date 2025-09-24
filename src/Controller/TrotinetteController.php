@@ -4,11 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Trotinette;
 use App\Entity\Illustration;
-use App\Entity\ModelTrotinette;
 use App\Repository\TrotinetteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use App\Repository\ModelTrotinetteRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,48 +24,43 @@ class TrotinetteController extends AbstractController
     }
 
     #[Route('/nos-trotinettes', name: 'app_trotinettes')]
-    public function index(Request $request, ModelTrotinetteRepository $modelTrotinette, PaginatorInterface $paginator): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $articles = $this->entityManager->getRepository(Trotinette::class)->findAll();
+        $articles = $this->repository->findAll();
         $trotinettes = $paginator->paginate($articles, $request->query->getInt('page', 1), 9);
-
-        $models = $modelTrotinette->findAll(); // ⚡ harmonisé
 
         return $this->render('trotinettes/index.html.twig', [
             'trotinettes' => $trotinettes,
-            'models' => $models
         ]);
     }
 
     #[Route('/trotinette/{slug}', name: 'app_trotinette_show')]
-    public function show(string $slug, ModelTrotinetteRepository $modelTrotinette): Response
+    public function show(string $slug): Response
     {
-        $trotinette = $this->entityManager->getRepository(Trotinette::class)->findOneBySlug($slug);
+        $trotinette = $this->repository->findOneBy(['slug' => $slug]);
+
         if (!$trotinette) {
             return $this->redirectToRoute('app_trotinettes');
         }
 
-        $models = $modelTrotinette->findAll(); // ⚡ harmonisé
         $illustrations = $this->entityManager->getRepository(Illustration::class)->findBy(['trotinette' => $trotinette]);
 
         return $this->render('trotinettes/show.html.twig', [
             'trotinette' => $trotinette,
             'illustrations' => $illustrations,
-            'models' => $models
         ]);
     }
 
-    #[Route('/nos-trotinettes/model-{model}', name: 'app_trotinette_by_model')]
-    public function choixModel(ModelTrotinette $model, ModelTrotinetteRepository $modelTrotinette, PaginatorInterface $paginator, Request $request): Response
+    #[Route('/nos-trotinettes/{slug}/accessoires', name: 'app_trotinette_accessories')]
+    public function accessoires(Trotinette $trotinette, PaginatorInterface $paginator, Request $request): Response
     {
-        $articles = $this->repository->findAllOrderByModel($model);
-        $trotinettes = $paginator->paginate($articles, $request->query->getInt('page', 1), 6);
+        $accessories = $trotinette->getAccessories(); // suppose que tu as ajouté la relation dans l'entité Trotinette
 
-        $models = $modelTrotinette->findAll(); // ⚡ harmonisé
+        $paginatedAccessories = $paginator->paginate($accessories, $request->query->getInt('page', 1), 6);
 
-        return $this->render('trotinettes/model.html.twig', [
-            'trotinettes' => $trotinettes,
-            'models' => $models
+        return $this->render('trotinettes/accessories.html.twig', [
+            'trotinette' => $trotinette,
+            'accessories' => $paginatedAccessories,
         ]);
     }
 }

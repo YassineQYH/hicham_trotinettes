@@ -4,11 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Accessory;
 use App\Entity\Illustrationaccess;
-use App\Entity\ModelTrotinette;
 use App\Repository\AccessoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use App\Repository\ModelTrotinetteRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,48 +24,29 @@ class AccessoryController extends AbstractController
     }
 
     #[Route('/nos-accessoires', name: 'app_accessoires')]
-    public function index(Request $request, ModelTrotinetteRepository $modelTrotinette, PaginatorInterface $paginator): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $articles = $this->entityManager->getRepository(Accessory::class)->findAll();
+        $articles = $this->repository->findAll();
         $accessories = $paginator->paginate($articles, $request->query->getInt('page', 1), 9);
 
-        $models = $modelTrotinette->findAll();
-
         return $this->render('accessoires/index.html.twig', [
-            'accessories' => $accessories,
-            'models' => $models
+            'accessories' => $accessories
         ]);
     }
 
     #[Route('/accessoire/{slug}', name: 'app_accessoire_show')]
-    public function show(string $slug, ModelTrotinetteRepository $modelTrotinette): Response
+    public function show(string $slug): Response
     {
-        $accessory = $this->entityManager->getRepository(Accessory::class)->findOneBySlug($slug);
+        $accessory = $this->repository->findOneBySlug($slug);
         if (!$accessory) {
             return $this->redirectToRoute('app_accessoires');
         }
 
-        $models = $modelTrotinette->findAll();
-        $illustrations = $this->entityManager->getRepository(Illustrationaccess::class)->findByAccessory($accessory);
+        $illustrations = $this->entityManager->getRepository(Illustrationaccess::class)->findBy(['accessory' => $accessory]);
 
         return $this->render('accessoires/show.html.twig', [
             'accessory' => $accessory,
-            'illustrations' => $illustrations,
-            'models' => $models
-        ]);
-    }
-
-    #[Route('/nos-accessoires/model-{model}', name: 'app_accessoire_by_model')]
-    public function choixModel(ModelTrotinette $model, ModelTrotinetteRepository $modelTrotinette, PaginatorInterface $paginator, Request $request): Response
-    {
-        $articles = $this->repository->findBy(['modelTrotinette' => $model]);
-        $accessories = $paginator->paginate($articles, $request->query->getInt('page', 1), 6);
-
-        $models = $modelTrotinette->findAll();
-
-        return $this->render('accessoires/model.html.twig', [
-            'accessories' => $accessories,
-            'models' => $models
+            'illustrations' => $illustrations
         ]);
     }
 }
