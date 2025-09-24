@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trott{% endblock %}
+
+{% block carrousel %}
+    {{ include('partials/carrousel.html.twig') }}
+{% endblock %}
+
+{% block content %}
+
+<section class="section" id="about">
+    <div class="container-home about">
+        <div class="left" data-aos="fade-down" data-aos-delay="70" data-aos-duration="2000">
+            <div class="title-home">
+                <h1>Nos garanties !</h1>
+            </div>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eos vero architecto, accusamus ipsum quibusdam ipsa. Odio ad tempore odit quasi eligendi cum optio sint consequuntur commodi atque esse nisi, velit beatae laudantium error repellendus illo officiis laborum natus pariatur quam.</p>
+        </div>
+        <div class="right" data-aos="fade-left" data-aos-duration="2000">
+            <img src="{{ asset('assets/img/logo-pergolazur.png') }}" alt="Logo Pergolazur" />
+        </div>
+    </div>
+</section>
+
+{# Slider pour les meilleurs accessoires #}
+{{ include('partials/slider_isbest.html.twig') }}
+
+{# Formulaire de contact #}
+<article>
+    {{ include('partials/contact-form.html.twig') }}
+</article>
+
+{# AOS animations #}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+</script>
+
+{# Scripts personnalisés #}
+<script src="{{ asset('assets/js/slide-product.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}Hicham Trott!{% endblock %}</title>
+
+        {% block stylesheets %}
+            {# CSS et JS externes via CDN #}
+            <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+            <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/css/glide.core.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/css/glide.theme.css" />
+
+            {# CSS et JS locaux importés via app.js (AssetMapper / Webpack Encore) #}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <header>
+            {% block menu %}
+                {{ include('partials/menu.html.twig') }}
+            {% endblock %}
+
+            {% block carrousel %}{% endblock %}
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer id="footer">
+            {% block footer %}
+                {{ include('partials/footer.html.twig') }}
+            {% endblock %}
+        </footer>
+
+        <div class="copyrightText">
+            <p>Copyright © 2025 Yassine Qayouh. All Rights Reserved.</p>
+        </div>
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {# Scripts externes via CDN #}
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.4.1/glide.min.js"></script>
+            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+            {# Scripts locaux et CSS importés via app.js #}
+            {{ encore_entry_script_tags('app') }}
+
+            {# Script utilitaire pour toggle menu #}
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    $('ul li').click(function(){
+                        $(this).siblings().removeClass('active')
+                        $(this).toggleClass('active')
+                    })
+                });
+            </script>
+        {% endblock %}
+    </body>
+</html>
