@@ -2,16 +2,13 @@
 
 namespace App\Entity;
 
+use App\Repository\TrottinetteCaracteristiqueRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Trottinette;
-use App\Entity\Caracteristique;
 
-#[ORM\Entity(repositoryClass: "App\Repository\TrottinetteCaracteristiqueRepository")]
+#[ORM\Entity(repositoryClass: TrottinetteCaracteristiqueRepository::class)]
 class TrottinetteCaracteristique
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type:"integer")]
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:"integer")]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Trottinette::class, inversedBy: "trottinetteCaracteristiques")]
@@ -24,6 +21,7 @@ class TrottinetteCaracteristique
     private ?string $value = null;
 
     public function getId(): ?int { return $this->id; }
+
     public function getTrottinette(): ?Trottinette { return $this->trottinette; }
     public function setTrottinette(?Trottinette $trottinette): self { $this->trottinette = $trottinette; return $this; }
 
