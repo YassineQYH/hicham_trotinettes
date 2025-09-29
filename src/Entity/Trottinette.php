@@ -47,9 +47,6 @@ class Trottinette
     #[ORM\Column(type:"string", length:255, nullable:true)]
     private ?string $headerBtnTitle = null;
 
-    #[ORM\Column(type:"string", length:255, nullable:true)]
-    private ?string $headerBtnUrl = null;
-
     // Relations
     #[ORM\OneToMany(mappedBy: "trottinette", targetEntity: TrottinetteCaracteristique::class, cascade: ["persist", "remove"])]
     private Collection $trottinetteCaracteristiques;
@@ -106,9 +103,6 @@ class Trottinette
     public function getHeaderBtnTitle(): ?string { return $this->headerBtnTitle; }
     public function setHeaderBtnTitle(?string $headerBtnTitle): self { $this->headerBtnTitle = $headerBtnTitle; return $this; }
 
-    public function getHeaderBtnUrl(): ?string { return $this->headerBtnUrl; }
-    public function setHeaderBtnUrl(?string $headerBtnUrl): self { $this->headerBtnUrl = $headerBtnUrl; return $this; }
-
     // ------------------- TrottinetteCaracteristiques -------------------
     /** @return Collection<int, TrottinetteCaracteristique> */
     public function getTrottinetteCaracteristiques(): Collection { return $this->trottinetteCaracteristiques; }
@@ -141,6 +135,15 @@ class Trottinette
             if ($ta->getTrottinette() === $this) $ta->setTrottinette(null);
         }
         return $this;
+    }
+
+    /**
+     * Alias pour Twig : permet d'accéder aux accessoires via "trottinette.accessories"
+     * @return Collection<int, TrottinetteAccessory>
+     */
+    public function getAccessories(): Collection
+    {
+        return $this->getTrottinetteAccessories();
     }
 
     // ------------------- DescriptionSections -------------------

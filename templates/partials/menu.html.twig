@@ -20,28 +20,17 @@
     <ul class="menu">
         <li><a href="{{ path('app_home') }}">Accueil</a></li>
 
-        <li>
+        <li style="position: relative;">
             <a href="#">Nos trottinettes <span><i class="fas fa-chevron-down"></i></span></a>
-            <div class="dropdown-menu-right">
-
-            {# Debug des trottinettes et accessoires #}
-            {# <pre>
-            {% for trottinette in trottinettes_menu %}
-            {{ trottinette.name }}
-            {% if trottinette.accessories|length > 0 %}
-            └─ Accessoires
-            {% endif %}
-            {% endfor %}
-            </pre> #}
-
+            <div class="dropdown-menu-right" style="position: absolute; background: #fff; z-index: 1000;">
                 <ul class="sous-menu-nom">
                     {% for trottinette in trottinettes_menu %}
                         <li>
                             <a href="{{ path('app_trottinette_show', {'slug': trottinette.slug}) }}">
                                 {{ trottinette.name }}
                             </a>
-                            {# Vérifie si au moins 1 accessoire existe #}
-                            {% if trottinette.accessories|length > 0 %}
+
+                            {% if trottinette.trottinetteAccessories|length > 0 %}
                                 <ul class="sous-menu-accessoires">
                                     <li>
                                         <a href="{{ path('app_trottinette_accessoires', {'slug': trottinette.slug}) }}">
