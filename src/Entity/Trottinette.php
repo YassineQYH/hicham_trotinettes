@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Accessory;
+use App\Entity\TrottinetteDescriptionSection;
 
 #[ORM\Entity(repositoryClass: TrottinetteRepository::class)]
 class Trottinette
@@ -57,10 +58,15 @@ class Trottinette
     #[ORM\JoinTable(name: "trottinette_accessory")]
     private Collection $accessories;
 
+    // ✅ Relation OneToMany avec TrottinetteDescriptionSection
+    #[ORM\OneToMany(mappedBy: "trottinette", targetEntity: TrottinetteDescriptionSection::class, cascade: ["persist", "remove"])]
+    private Collection $descriptionSections;
+
     public function __construct()
     {
         $this->trottinetteCaracteristiques = new ArrayCollection();
         $this->accessories = new ArrayCollection();
+        $this->descriptionSections = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -130,14 +136,34 @@ class Trottinette
     {
         if (!$this->accessories->contains($accessory)) {
             $this->accessories->add($accessory);
-            $accessory->addTrottinette($this); // ⚡ cohérence inverse
+            $accessory->addTrottinette($this);
         }
         return $this;
     }
     public function removeAccessory(Accessory $accessory): self
     {
         if ($this->accessories->removeElement($accessory)) {
-            $accessory->removeTrottinette($this); // ⚡ cohérence inverse
+            $accessory->removeTrottinette($this);
+        }
+        return $this;
+    }
+
+    /** @return Collection<int, TrottinetteDescriptionSection> */
+    public function getDescriptionSections(): Collection { return $this->descriptionSections; }
+    public function addDescriptionSection(TrottinetteDescriptionSection $section): self
+    {
+        if (!$this->descriptionSections->contains($section)) {
+            $this->descriptionSections->add($section);
+            $section->setTrottinette($this);
+        }
+        return $this;
+    }
+    public function removeDescriptionSection(TrottinetteDescriptionSection $section): self
+    {
+        if ($this->descriptionSections->removeElement($section)) {
+            if ($section->getTrottinette() === $this) {
+                $section->setTrottinette(null);
+            }
         }
         return $this;
     }

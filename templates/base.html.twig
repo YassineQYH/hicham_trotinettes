@@ -8,6 +8,7 @@
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
             {# Icone réseaux Sociaux #}
             <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
             {# fas fa-xxx #}
@@ -59,6 +60,8 @@
         </div>
 
         {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
             {# SCRIPT MENU DEROULANT #}
             <script type="text/javascript" src="{{ asset('assets/js/Jquery.js') }}"></script>
             <script type="text/javascript">
