@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 29 sep. 2025 à 10:27
+-- Généré le : lun. 29 sep. 2025 à 12:48
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -44,7 +44,8 @@ INSERT INTO `accessory` (`id`, `name`, `slug`, `description`, `image`, `is_best`
 (1, 'Volant', 'volant', 'Volant', 'test.png', 1),
 (2, 'Roue', 'roue', 'Roue', 'test.png', 1),
 (3, 'Guidon', 'guidon', 'Guidon', 'guidon.png', 0),
-(4, 'Frein', 'frein', 'Frein', 'frein.png', 0);
+(4, 'Frein', 'frein', 'Frein', 'frein.png', 0),
+(5, 'Accessoire de test', 'Accessoire-de-test', '<div>Accessoire de test</div>', 'controls.png', 0);
 
 -- --------------------------------------------------------
 
@@ -67,7 +68,8 @@ INSERT INTO `caracteristique` (`id`, `name`) VALUES
 (3, 'Batterie'),
 (4, 'Vitesse maximale'),
 (5, 'Autonomie'),
-(6, 'Charge maximale');
+(6, 'Charge maximale'),
+(7, 'sécurité enfant');
 
 -- --------------------------------------------------------
 
@@ -92,7 +94,9 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20250925084521', '2025-09-25 10:45:32', 43),
 ('DoctrineMigrations\\Version20250926132657', '2025-09-26 15:27:14', 254),
 ('DoctrineMigrations\\Version20250929072839', '2025-09-29 09:29:00', 543),
-('DoctrineMigrations\\Version20250929075713', '2025-09-29 09:57:34', 270);
+('DoctrineMigrations\\Version20250929075713', '2025-09-29 09:57:34', 270),
+('DoctrineMigrations\\Version20250929084045', '2025-09-29 10:40:57', 135),
+('DoctrineMigrations\\Version20250929095851', '2025-09-29 11:59:01', 271);
 
 -- --------------------------------------------------------
 
@@ -105,6 +109,24 @@ CREATE TABLE `illustration` (
   `trottinette_id` int(11) NOT NULL,
   `image` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `illustration`
+--
+
+INSERT INTO `illustration` (`id`, `trottinette_id`, `image`) VALUES
+(1, 1, 'trottbleue-02.png'),
+(2, 1, 'trottbleue-03.png'),
+(3, 1, 'trottbleue-04.png'),
+(4, 1, 'trottbleue-05.png'),
+(5, 2, 'trottjaune-02.jpg'),
+(6, 2, 'trottjaune-03.jpg'),
+(7, 2, 'trottjaune-04.jpg'),
+(8, 2, 'trottjaune-05.jpg'),
+(9, 3, 'trottvert-02.jpg'),
+(10, 3, 'trottvert-03.jpg'),
+(11, 3, 'trottvert-04.jpg'),
+(12, 3, 'trottvert-05.jpg');
 
 -- --------------------------------------------------------
 
@@ -160,9 +182,9 @@ CREATE TABLE `trottinette` (
 --
 
 INSERT INTO `trottinette` (`id`, `name`, `name_short`, `slug`, `description`, `description_short`, `image`, `is_best`, `is_header`, `header_image`, `header_btn_title`, `header_btn_url`) VALUES
-(1, 'Trottinette électrique honey whale m5 max avec siège', 'Honey Whale M5 Max', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km', 'trottbleue-01.png', 1, 1, 'trottbleue-01.png', 'test', 'test'),
-(2, 'KUGOO Kukirin C1 Pro', 'KUGOO C1 Pro', 'KUGOO-Kukirin-C1-Pro', 'Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège', 'Vitesse 45 km/h, autonomie 100 km, charge max 120 kg', 'trottjaune-01.jpg', 1, 0, 'trottvert-01.jpg', 'test', 'test'),
-(3, 'Bogist M5 Pro', 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km', 'trottvert-01.jpg', 1, 1, 'trottvert-01.jpg', 'test', 'test');
+(1, 'Trottinette électrique honey whale m5 max avec siège', 'Honey Whale M5 Max', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '<div>【Performance puissante】...</div>', '<div>Moteur 1000 W, pneus 14 pouces, autonomie 40 km</div>', 'trottbleue-01.png', 1, 1, NULL, 'test', 'test'),
+(2, 'KUGOO Kukirin C1 Pro', 'KUGOO C1 Pro', 'KUGOO-Kukirin-C1-Pro', '<div>Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège</div>', '<div>Vitesse 45 km/h, autonomie 100 km, charge max 120 kg</div>', 'trottjaune-01.jpg', 1, 0, NULL, 'test', 'test'),
+(3, 'Bogist M5 Pro', 'Bogist M5 Pro', 'Bogist-M5-Pro', '<div>Moteur puissant de 500 W pour des vitesses élevées...</div>', '<div>Moteur 500 W, pneus 12 pouces, autonomie 35 km</div>', 'trottvert-01.jpg', 1, 1, NULL, 'test', 'test');
 
 -- --------------------------------------------------------
 
@@ -172,22 +194,24 @@ INSERT INTO `trottinette` (`id`, `name`, `name_short`, `slug`, `description`, `d
 
 CREATE TABLE `trottinette_accessory` (
   `trottinette_id` int(11) NOT NULL,
-  `accessory_id` int(11) NOT NULL
+  `accessory_id` int(11) NOT NULL,
+  `id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `trottinette_accessory`
 --
 
-INSERT INTO `trottinette_accessory` (`trottinette_id`, `accessory_id`) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(2, 1),
-(2, 3),
-(3, 2),
-(3, 4);
+INSERT INTO `trottinette_accessory` (`trottinette_id`, `accessory_id`, `id`) VALUES
+(1, 1, 1),
+(1, 2, 2),
+(1, 3, 3),
+(1, 4, 4),
+(2, 1, 5),
+(2, 3, 6),
+(3, 2, 7),
+(3, 4, 8),
+(1, 5, 9);
 
 -- --------------------------------------------------------
 
@@ -224,7 +248,22 @@ INSERT INTO `trottinette_caracteristique` (`id`, `trottinette_id`, `caracteristi
 (15, 3, 3, '48 V 15 Ah'),
 (16, 3, 4, '40 km/h'),
 (17, 3, 5, '35 km'),
-(18, 3, 6, '120 kg');
+(18, 3, 6, '120 kg'),
+(19, 1, 7, 'oui');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `trottinette_description_section`
+--
+
+CREATE TABLE `trottinette_description_section` (
+  `id` int(11) NOT NULL,
+  `trottinette_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` longtext NOT NULL,
+  `section_order` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -244,6 +283,14 @@ CREATE TABLE `user` (
   `postal_code` varchar(16) NOT NULL,
   `address` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`, `tel`, `country`, `postal_code`, `address`) VALUES
+(1, 'admin@admin.fr', '[\"ROLE_ADMIN\",\"ROLE_USER\"]', 'Admin', 'Admin', 'Admin', '06 04 05 02 09', 'France', '63200', '51 Rue de Konoha'),
+(2, 'user@user.fr', '[]', 'User', 'User', 'User', '06 01 01 01 02', 'France', '63118', '51 Rue du Hueco Mundo');
 
 --
 -- Index pour les tables déchargées
@@ -300,7 +347,7 @@ ALTER TABLE `trottinette`
 -- Index pour la table `trottinette_accessory`
 --
 ALTER TABLE `trottinette_accessory`
-  ADD PRIMARY KEY (`trottinette_id`,`accessory_id`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `IDX_B37F755EF6798F43` (`trottinette_id`),
   ADD KEY `IDX_B37F755E27E8CC78` (`accessory_id`);
 
@@ -311,6 +358,13 @@ ALTER TABLE `trottinette_caracteristique`
   ADD PRIMARY KEY (`id`),
   ADD KEY `IDX_22FC340CF6798F43` (`trottinette_id`),
   ADD KEY `IDX_22FC340C1704EEB7` (`caracteristique_id`);
+
+--
+-- Index pour la table `trottinette_description_section`
+--
+ALTER TABLE `trottinette_description_section`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_B92E215BF6798F43` (`trottinette_id`);
 
 --
 -- Index pour la table `user`
@@ -327,19 +381,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `accessory`
 --
 ALTER TABLE `accessory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `caracteristique`
 --
 ALTER TABLE `caracteristique`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT pour la table `illustration`
 --
 ALTER TABLE `illustration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT pour la table `illustrationaccess`
@@ -360,16 +414,28 @@ ALTER TABLE `trottinette`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT pour la table `trottinette_accessory`
+--
+ALTER TABLE `trottinette_accessory`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT pour la table `trottinette_caracteristique`
 --
 ALTER TABLE `trottinette_caracteristique`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT pour la table `trottinette_description_section`
+--
+ALTER TABLE `trottinette_description_section`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Contraintes pour les tables déchargées
@@ -391,8 +457,8 @@ ALTER TABLE `illustrationaccess`
 -- Contraintes pour la table `trottinette_accessory`
 --
 ALTER TABLE `trottinette_accessory`
-  ADD CONSTRAINT `FK_B37F755E27E8CC78` FOREIGN KEY (`accessory_id`) REFERENCES `accessory` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `FK_B37F755EF6798F43` FOREIGN KEY (`trottinette_id`) REFERENCES `trottinette` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `FK_B37F755E27E8CC78` FOREIGN KEY (`accessory_id`) REFERENCES `accessory` (`id`),
+  ADD CONSTRAINT `FK_B37F755EF6798F43` FOREIGN KEY (`trottinette_id`) REFERENCES `trottinette` (`id`);
 
 --
 -- Contraintes pour la table `trottinette_caracteristique`
@@ -400,6 +466,12 @@ ALTER TABLE `trottinette_accessory`
 ALTER TABLE `trottinette_caracteristique`
   ADD CONSTRAINT `FK_22FC340C1704EEB7` FOREIGN KEY (`caracteristique_id`) REFERENCES `caracteristique` (`id`),
   ADD CONSTRAINT `FK_22FC340CF6798F43` FOREIGN KEY (`trottinette_id`) REFERENCES `trottinette` (`id`);
+
+--
+-- Contraintes pour la table `trottinette_description_section`
+--
+ALTER TABLE `trottinette_description_section`
+  ADD CONSTRAINT `FK_B92E215BF6798F43` FOREIGN KEY (`trottinette_id`) REFERENCES `trottinette` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
