@@ -39,13 +39,13 @@ class AccessoryController extends AbstractController
 
         $illustrations = $accessory->getIllustrationaccess();
 
-        return $this->render('access/single_access.html.twig', [
+        return $this->render('accessoires/single_access.html.twig', [
             'accessory' => $accessory,
             'illustrations' => $illustrations
         ]);
     }
 
-    #[Route('/accessoire/{slug}/trottinettes', name: 'app_accessoire_trottinettes')]
+    #[Route('/accessoire/{slug}/trottinettes', name: 'accessoire_trottinettes')]
     public function showTrottinettes(string $slug): Response
     {
         $accessory = $this->entityManager->getRepository(Accessory::class)
@@ -57,7 +57,7 @@ class AccessoryController extends AbstractController
 
         $trottinettes = $accessory->getTrottinettes(); // relation ManyToMany
 
-        return $this->render('access/show-all-trott.html.twig', [
+        return $this->render('accessoires/show-all-trott.html.twig', [
             'accessory' => $accessory,
             'trottinettes' => $trottinettes
         ]);

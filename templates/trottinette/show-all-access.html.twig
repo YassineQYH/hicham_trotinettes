@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accessoires pour {{ trotinette.name }}{% endblock %}
+{% block title %}Accessoires pour {{ trottinette.name }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('assets/css/nav.css') }}">
@@ -12,21 +12,23 @@
 {% block content %}
     <section class="section-pergo-list" id="pergo-list">
         <div class="title">
-            <h1>Accessoires pour {{ trotinette.name }}</h1>
+            <h1>Accessoires pour {{ trottinette.name }}</h1>
             <p>Découvrez tous les accessoires compatibles</p>
         </div>
 
         <div class="container-pergo-list pergo-list-center">
-            {% for item in accessoires %}
-                <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
-                    <a href="{{ path('accessoire', { 'slug' : item.slug }) }}">
-                        <img src="/uploads/{{ item.image }}" alt="{{ item.name }}">
-                    </a>
-                    <p>{{ item.name }}</p>
-                </div>
+            {% if accessoires is not empty %}
+                {% for item in accessoires %}
+                    <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
+                        <a href="{{ path('accessoire', { 'slug' : item.slug }) }}">
+                            <img src="/uploads/{{ item.image }}" alt="{{ item.name }}">
+                        </a>
+                        <p>{{ item.name }}</p>
+                    </div>
+                {% endfor %}
             {% else %}
                 <p style="text-align:center;">Aucun accessoire disponible pour cette trottinette.</p>
-            {% endfor %}
+            {% endif %}
         </div>
     </section>
 {% endblock %}

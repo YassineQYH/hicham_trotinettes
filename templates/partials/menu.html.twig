@@ -4,13 +4,14 @@
         <img src="{{ asset('/img/logo-trott.png') }}" alt="Logo Hich" />
     </a>
 
+    <!-- messages flash -->
     {% for message in app.flashes('notice') %}
         <div class="alert alert-info" style="color: orange; font-weight: bold;">
             {{ message }}
         </div>
     {% endfor %}
 
-    <!-- menu-btn -->
+    <!-- menu mobile toggle -->
     <input class="menu-btn" type="checkbox" id="menu-btn"/>
     <label class="menu-icon" for="menu-btn">
         <span class="nav-icon"></span>
@@ -24,9 +25,12 @@
             <a href="javascript:void(0)">Nos trottinettes <span><i class="fas fa-chevron-down"></i></span></a>
             <ul class="sous-menu">
                 {% for trottinette in trottinettes_menu %}
-                    <li>
+                    <li class="trottinette-item">
                         <a href="{{ path('trottinette_show', {'slug': trottinette.slug}) }}">
                             {{ trottinette.nameShort }}
+                        </a>
+                        <a class="accessoire-item" href="{{ path('trottinette_accessoires', {'slug': trottinette.slug}) }}">
+                            Accessoires
                         </a>
                     </li>
                 {% endfor %}

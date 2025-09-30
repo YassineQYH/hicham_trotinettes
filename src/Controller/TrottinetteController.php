@@ -56,11 +56,16 @@ class TrottinetteController extends AbstractController
             throw $this->createNotFoundException('Cette trottinette n’existe pas.');
         }
 
-        $accessoires = $trottinette->getAccessories();
+        // Récupère tous les objets Accessory liés à cette trottinette
+        $accessoires = [];
+        foreach ($trottinette->getTrottinetteAccessories() as $ta) {
+            $accessoires[] = $ta->getAccessory();
+        }
 
         return $this->render('trottinette/show-all-access.html.twig', [
             'trottinette' => $trottinette,
             'accessoires' => $accessoires
         ]);
     }
+
 }
