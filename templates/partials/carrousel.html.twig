@@ -10,11 +10,11 @@
             {% for key, trott in headers %}
             <div class="carousel-item {% if key == 0 %}active{% endif %}">
                 {# Image du carrousel spécifique à la trottinette #}
-                <img src="/uploads/{{ trott.image }}" alt="{{ trott.slug }}" />
+                <img src="/uploads/{{ trott.HeaderImage }}" alt="{{ trott.slug }}" />
                 <div class="container">
                     <div class="carousel-caption text-left">
-                        <h1>{{ trott.slug }}</h1> {# Tu peux remplacer par trott.title si tu as un champ title #}
-                        <p>{{ trott.description }}</p>
+                        <h1>{{ trott.nameShort }}</h1> {# Tu peux remplacer par trott.title si tu as un champ title #}
+                        <p>{{ trott.descriptionShort }}</p>
                         {% if trott.headerBtnTitle %}
                             <p>
                                 <a class="btn btn-lg btn-info"

@@ -46,7 +46,6 @@ class TrottinetteCrudController extends AbstractCrudController
                 ->setRequired(false),
 
             TextField::new('headerBtnTitle'),
-            TextField::new('headerBtnUrl'),
 
             // ----------------------
             // Relations
