@@ -17,17 +17,17 @@ class AccessoryController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/accessoires', name: 'app_accessoires')]
+    #[Route('/accessoires', name: 'accessoires')]
     public function index(): Response
     {
         $accessories = $this->entityManager->getRepository(Accessory::class)->findAll();
 
-        return $this->render('access/show.html.twig', [
+        return $this->render('accessoires/show.html.twig', [
             'accessories' => $accessories
         ]);
     }
 
-    #[Route('/accessoire/{slug}', name: 'accessoire')]
+    #[Route('/accessoire/{slug}', name: 'accessory_show')]
     public function show(string $slug): Response
     {
         $accessory = $this->entityManager->getRepository(Accessory::class)
@@ -55,7 +55,12 @@ class AccessoryController extends AbstractController
             throw $this->createNotFoundException('Cet accessoire n’existe pas.');
         }
 
-        $trottinettes = $accessory->getTrottinettes(); // relation ManyToMany
+        // ⚡ si ta relation est ManyToMany via TrottinetteAccessory,
+        // il faut passer par $accessory->getTrottinetteAccessories()
+        $trottinettes = [];
+        foreach ($accessory->getTrottinetteAccessories() as $pivot) {
+            $trottinettes[] = $pivot->getTrottinette();
+        }
 
         return $this->render('accessoires/show-all-trott.html.twig', [
             'accessory' => $accessory,
