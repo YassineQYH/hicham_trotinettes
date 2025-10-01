@@ -24,6 +24,7 @@
         <li class="menu-deroulant">
             <a href="javascript:void(0)">Nos trottinettes <span><i class="fas fa-chevron-down"></i></span></a>
             <ul class="sous-menu">
+                <li class="trottinette-item"> <a href="{{ path('nos_trottinettes') }}">Toutes nos trottinettes</a></li>
                 {% for trottinette in trottinettes_menu %}
                     <li class="trottinette-item">
                         <a href="{{ path('trottinette_show', {'slug': trottinette.slug}) }}">

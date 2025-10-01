@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Trottinette;
 use App\Entity\Accessory;
+use App\Entity\Trottinette;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TrottinetteController extends AbstractController
 {
@@ -18,15 +20,29 @@ class TrottinetteController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/nos-trottinettes', name: 'trottinettes')]
-    public function index(): Response
+    #[Route('/nos-trottinettes', name: 'nos_trottinettes')]
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $trottinettes = $this->entityManager->getRepository(Trottinette::class)->findAll();
+        // On utilise le repository pour créer une query
+        $query = $this->entityManager
+                    ->getRepository(Trottinette::class)
+                    ->createQueryBuilder('t')
+                    ->getQuery();
 
-        return $this->render('trottinette/show.html.twig', [
-            'trotinettes' => $trottinettes
+        // Paginate la query
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+        // On passe la pagination à la vue
+        return $this->render('trottinette/index.html.twig', [
+            'trottinettes' => $pagination
         ]);
     }
+
+
 
     #[Route('/trottinette/{slug}', name: 'trottinette_show')]
     public function show(string $slug): Response

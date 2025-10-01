@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Nos Pergolas{% endblock %}
+{% block title %}Nos Trottinettes{% endblock %}
 
 
 {% block stylesheets %}
     {# Icone réseaux Sociaux #}
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />   
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
     {# fas fa-xxx #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" /> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" >
     <!-- Font Awesome -->
@@ -26,32 +26,30 @@
     <link rel="stylesheet" href="{{ asset('assets/css/lightslider.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/contact-form.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
-    
+
 
 {% endblock %}
 
 {% block content %}
+<section class="section-pergo-list" id="pergo-list">
+    <div class="title">
+        <h1>Nos Trottinettes</h1>
+        <p>Découvrez notre sélection de trottinettes.</p>
+    </div>
 
-    <section class="section-pergo-list" id="pergo-list">
-        <div class="title">
-            <h1>Nos Pergolas</h1>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing.</p>
-        </div>
+    <div class="container-pergo-list pergo-list-center">
+        {% for item in trottinettes %}
+            <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
+                <a href="{{ path('trottinette_show', { 'slug': item.slug }) }}">
+                    <img src="/uploads/{{ item.image }}" alt="{{ item.name }}" />
+                </a>
+                <p>{{ item.name }}</p>
+            </div>
+        {% endfor %}
+    </div>
 
-        
-        <div class="container-pergo-list pergo-list-center">
-            {%for item in products %}
-                <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
-                    <a href="{{ path('pergola', { 'slug' : item.slug } ) }}"> <img src="/uploads/{{ item.image }}" alt="" /></a>
-                    <p>Titre : {{ item.name }}</p>
-                </div>
-            {% endfor %}
-        </div style="color:black;">{{ knp_pagination_render(products) }}
-    </section>
-    
-    <!-- Custom Script -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init();
-    </script>
+    <div class="pagination">
+        {{ knp_pagination_render(trottinettes) }}
+    </div>
+</section>
 {% endblock %}
