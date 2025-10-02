@@ -44,7 +44,7 @@ class ContactType extends AbstractType
             'attr' => [
                 'class' => 'form-element',
                 'id' => 'email',
-                'placeholder' => 'admin@pergolazur.com'
+                'placeholder' => 'admin@hich-trott.com'
             ]
         ])
         ->add('company', TextType::class, [
@@ -53,7 +53,7 @@ class ContactType extends AbstractType
             'attr' => [
                 'class' => 'form-element',
                 'id' => 'company',
-                'placeholder' => 'Https://pergolazur.com'
+                'placeholder' => 'Https://hich-trott.com'
             ]
         ])
         ->add('message', TextareaType::class, [
@@ -62,7 +62,7 @@ class ContactType extends AbstractType
             'attr' => [
                 'class' => 'form-element',
                 'id' => 'message',
-                'placeholder' => "J'aimerais des informations sur des pergolas svp..."
+                'placeholder' => "J'aimerais des informations sur des trottinettes svp..."
             ]
         ])
         ->add('agreeTerms', CheckboxType::class, [
