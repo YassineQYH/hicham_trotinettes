@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Accessory;
 use App\Entity\Trottinette;
+use App\Entity\Illustration;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,9 +57,12 @@ class TrottinetteController extends AbstractController
 
         $accessoires = $trottinette->getAccessories(); // relation ManyToMany
 
-        return $this->render('trottinette/single_trott.html.twig', [
+        $illustrations = $this->entityManager->getRepository(Illustration::class)->findByTrottinette($trottinette);
+
+        return $this->render('trottinette/show.html.twig', [
             'trottinette' => $trottinette,
-            'accessoires' => $accessoires
+            'accessoires' => $accessoires,
+            'illustrations' => $illustrations,
         ]);
     }
 
