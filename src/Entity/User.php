@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Address;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -19,15 +22,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
@@ -40,164 +37,71 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 16)]
     private ?string $tel = null;
 
-    #[ORM\Column(length: 32)]
-    private ?string $country = null;
+    // ------------------- RELATION ADDRESSES -------------------
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Address::class, cascade: ["persist", "remove"], orphanRemoval: true)]
+    private Collection $addresses;
 
-    #[ORM\Column(length: 16)]
-    private ?string $postalCode = null;
-
-    #[ORM\Column(length: 64)]
-    private ?string $address = null;
-
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->addresses = new ArrayCollection();
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+    // ------------------- GETTERS / SETTERS -------------------
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
+    public function getId(): ?int { return $this->id; }
+    public function getEmail(): ?string { return $this->email; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
 
-        return $this;
-    }
+    public function getUserIdentifier(): string { return (string)$this->email; }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
+    public function getRoles(): array { return array_unique(array_merge($this->roles, ['ROLE_USER'])); }
+    public function setRoles(array $roles): static { $this->roles = $roles; return $this; }
 
-    /**
-     * @see UserInterface
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+    public function getPassword(): ?string { return $this->password; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
 
-        return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
     public function __serialize(): array
     {
-        $data = (array) $this;
+        $data = (array)$this;
         $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
-
         return $data;
     }
 
     #[\Deprecated]
-    public function eraseCredentials(): void
-    {
-        // @deprecated, to be removed when upgrading to Symfony 8
-    }
+    public function eraseCredentials(): void {}
 
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function setFirstName(string $firstName): static { $this->firstName = $firstName; return $this; }
 
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
+    public function getLastName(): ?string { return $this->lastName; }
+    public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
 
-    public function setFirstName(string $firstName): static
+    public function getTel(): ?string { return $this->tel; }
+    public function setTel(string $tel): static { $this->tel = $tel; return $this; }
+
+    // ------------------- ADDRESSES -------------------
+
+    /**
+     * @return Collection<int, Address>
+     */
+    public function getAddresses(): Collection { return $this->addresses; }
+
+    public function addAddress(Address $address): static
     {
-        $this->firstName = $firstName;
+        if (!$this->addresses->contains($address)) {
+            $this->addresses->add($address);
+            $address->setUser($this);
+        }
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function removeAddress(Address $address): static
     {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): static
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
-
-    public function getTel(): ?string
-    {
-        return $this->tel;
-    }
-
-    public function setTel(string $tel): static
-    {
-        $this->tel = $tel;
-
-        return $this;
-    }
-
-    public function getCountry(): ?string
-    {
-        return $this->country;
-    }
-
-    public function setCountry(string $country): static
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    public function getPostalCode(): ?string
-    {
-        return $this->postalCode;
-    }
-
-    public function setPostalCode(string $postalCode): static
-    {
-        $this->postalCode = $postalCode;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(string $address): static
-    {
-        $this->address = $address;
-
+        if ($this->addresses->removeElement($address)) {
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
+            }
+        }
         return $this;
     }
 }

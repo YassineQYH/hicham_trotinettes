@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ma commandes : Zone-Frais{% endblock %}
+
+{% block content %} <br><br><br><br><br><br><br><br>
+    <h1>Ma commandes {{ order.reference }}</h1>
+    <a href="{{ path('account_order') }}">Retour</a>
+    <hr>
+    <strong>Statut de la commande : </strong>
+        <td>
+            {% if order.state == 1 %}
+                Paiement accepté / Commande validée
+            {% elseif order.state == 2 %}
+                Préparation en cours
+            {% elseif order.state == 3 %}
+                Livraison en cours
+            {% endif %}
+        </td></br>
+    <strong>Commande passée le :</strong> {{ order.createdAt|date('d/m/Y') }}</br>
+    <strong>Référence de ma commande :</strong><small>{{ order.reference }}</small></br>
+    <hr>
+    <strong>Détails : </strong>
+
+    <table class="table table-striped mt-4">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Produit</th>
+                <th scope="col">Quantité</th>
+                <th scope="col">Poids</th>
+                <th scope="col">Prix unitaire / Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set prix_total_article = null %}
+        {% for item in order.orderDetails %}
+            <tr>
+                <td>{{ item.product }}</td>
+                <td>x{{ item.quantity }}</td>
+                <td>{{ item.weight * item.quantity }} kg</td>
+                <td>{{ (item.price / 100)|number_format(2, ',','.') }} € / {{ (item.total / 100)|number_format(2, ',', '.') }} €</td>
+                {% set prix_total_article = prix_total_article + (item.price * item.quantity) %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-right" style="margin-right:30px;">
+    {# <strong>Nombre de produits :</strong> {{ (quantity_product) }}</br> #}
+    <strong>Sous-total : </strong>{{ (order.getTotal / 100)|number_format(2, ',', '.') }} €</br>
+    <strong>Prix livraison : </strong>{{ (order.carrierPrice)|number_format(2, ',','.') }} €</br>
+    <strong>Total : </strong>{{ ((prix_total_article / 100 ) + price)|number_format(2, ',', '.') }} €</br>
+    </div>
+{% endblock %}

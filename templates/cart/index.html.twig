@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon panier{% endblock %}
+
+{% block menu %}
+    {{ include('partials/menu.html.twig') }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="container"></br></br></br></br></br></br></br>
+        <h1>Mon panier</h1>
+            Retrouvez l'ensemble des produits que vous avez ajouté à votre panier.
+
+            {% if cart|length > 0 %}
+                <table class="table table-striped mt-3">
+                    <thead class="thead-dark">
+                        <tr>
+                        <th scope="col">Produit</th>
+                        <th scope="col"></th>
+                        <th scope="col">Quantité</th>
+                        <th scope="col">Prix/unité</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Poids</th>
+                        <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% set prix_total_article = null %}
+                    {% set poid_total = null %}
+                    {% set prix_total_poid = null %}
+                    {% set articles_panier = null %}
+                        {% for item in cart %}
+                            {# {{ dump(product) }} #}
+                            <tr>
+                                <th>
+                                    <img src="/uploads/{{ item.product.image }}" alt="{{ item.product.name }}" height="75px"></br>
+                                </th>
+                                <td>
+                                {{ item.product.name }} - {# {{ item.product.weight.nakgme }} #}</br>
+                                <small>{{ item.product.description }}</small>
+                                </td>
+                                <td>
+                                    <a href="{{ path('decrease_to_cart', {'id' : item.product.id }) }}">
+                                        <img src="{{ asset('assets/img/less.png') }}" height="12px" style="color:blue"; alt="-">
+                                    </a>
+                                    <small>x</small> {{ item.quantity }}
+                                    {% if item.product.stock <= item.quantity %}
+                                    <a style="color:red;">
+                                        Max <span>(rupture)</span>
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ path('add_to_cart', {'id' : item.product.id }) }}">
+                                        <img src="{{ asset('assets/img/more.png') }}" height="12px" style="color:blue"; alt="+">
+                                    </a>
+                                    {% endif %}
+                                </td>
+                                <td>{{ (item.product.price / 100)|number_format(2, ',','.') }} €</td>
+                                <td>{{ ((item.product.price * item.quantity) / 100)|number_format(2, ',','.') }} €</td>
+                                <td>{{ (item.product.weight.kg * item.quantity) }} Kg</td>
+                                <td>
+                                <a href="{{ path('delete_to_cart', {'id' : item.product.id }) }}" style="color:blue">
+                                    <img src="{{ asset('assets/img/delete.png') }}" height="18px" alt="Supprimer"></td>
+                                </a>
+                            </tr>
+                            {# PRIX TOTAL DES ARTICLES #}
+                            {% set prix_total_article = prix_total_article + (item.product.price * item.quantity) %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="text-right mb-5">
+                    <b>Nombre de produits :</b> {{ (quantity_product) }}</br>
+                    <b>Prix de mon panier :</b> {{ (prix_total_article / 100)|number_format(2, ',','.') }} € </br>
+                    <b>Prix livraison :</b> {{ (poid)|number_format(2, ',','.') }} kg = {{ (price)|number_format(2, ',','.') }} € </br>
+                    <b>Prix Total :</b> {{ ((prix_total_article / 100 ) + price)|number_format(2, ',','.') }} €
+                    <a href="{{ path('order') }}" class="btn btn-success btn-block">Valider mon panier</a>
+                </div>
+            {% else %}
+            <hr>
+            <p><b>Votre panier est vide.</b></p>
+            {% endif %}
+    </div>
+{% endblock %}

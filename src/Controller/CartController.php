@@ -22,10 +22,8 @@ class CartController extends AbstractController
     #[Route('/mon-panier', name: 'cart')]
     public function index(
         Cart $cart,
-        CategoryRepository $categoryRepository,
         WeightRepository $weightRepository
     ): Response {
-        $categories = $categoryRepository->findAll();
 
         $poid = 0.0;
         $quantity_product = 0;
@@ -50,7 +48,6 @@ class CartController extends AbstractController
 
         return $this->render('cart/index.html.twig', [
             'cart' => $cartItems,
-            'categories' => $categories,
             'poid' => $poid,
             'price' => $prix,
             'quantity_product' => $quantity_product,
