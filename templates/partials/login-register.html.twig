@@ -6,7 +6,7 @@
         </span>
 
         <div class="form-box login">
-            
+
             <form method="post">
                 {# {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -48,7 +48,7 @@
                         <label for="inputPassword">Mot De Passe</label>
                         <span class="show-password-login">Afficher</span>
                     </div>
-                    
+
                     <div class="remember-forgot">
                         <label style="font-weight:bold";>
                             <input type="checkbox" name="_remember_me"> Se souvenir de moi
@@ -73,11 +73,10 @@
                     {{ form_row(formregister.email) }}
                     {{ form_row(formregister.firstname) }}
                     {{ form_row(formregister.lastname) }}
-                    {{ form_row(formregister.phone) }}
-                    {{ form_row(formregister.zipcode) }}
+                    {{ form_row(formregister.tel) }}
                     {{ form_row(formregister.password) }}
                     {{ form_row(formregister.submit) }}
-                {{ form_end(formregister) }} 
+                {{ form_end(formregister) }}
                 <input type="hidden" name="type" value="register">
                 {# <div class="remember-forgot">
                     <label style="font-weight:bold";><input type="checkbox">I agree to the terms & conditions</label>
@@ -86,7 +85,7 @@
                 <div class="login-register">
                     <p style="font-weight:bold";>Vous avez déjà un compte ? <a href="#" class="login-link">Se connecter</a></p>
                 </div>
-                
+
             {# </form> #}
         </div>
     </div>

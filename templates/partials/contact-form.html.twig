@@ -5,30 +5,30 @@
 
         <form class="form" name="contactez-moi" action="/" method="POST">
 
-            {{ form_start(form) }}
+            {{ form_start(formcontact) }}
             <div class="form-group">
                 <label for="name">Nom & Prénom*</label>
-                {{ form_widget(form.name) }}
+                {{ form_widget(formcontact.name) }}
             </div>
             <div class="form-group">
                 <label for="tel">N° de téléphone*</label>
-                {{ form_widget(form.tel) }}
+                {{ form_widget(formcontact.tel) }}
             </div>
             <div class="form-group">
                 <label for="email">Adresse E-mail*</label>
-                {{ form_widget(form.email) }}
+                {{ form_widget(formcontact.email) }}
             </div>
             <div class="form-group">
                 <label for="company">Société</label>
-                {{ form_widget(form.company) }}
+                {{ form_widget(formcontact.company) }}
             </div>
             <div class="form-group full">
                 <label for="message">Votre message ?</label>
-                {{ form_widget(form.message) }}
+                {{ form_widget(formcontact.message) }}
             </div>
             <div class="submit-group">
                 <label for="agreeTerms">Confirmer la demande d'envoi</label>
-                {{ form_widget(form.agreeTerms) }}
+                {{ form_widget(formcontact.agreeTerms) }}
             </div>
             {# <div class="form-group">
                 <label for="captchaCode">Captcha</label>
@@ -37,7 +37,7 @@
             <div class="submit-group">
                 <input type="submit" value="Envoyer" />
             </div>
-            {{ form_end(form) }}
+            {{ form_end(formcontact) }}
         </form>
     </div>
 </section>
