@@ -27,13 +27,13 @@
                                 <small class="d-block text-muted">
                                     Quantité : <strong>{{ item.quantity }}</strong>
                                     <a class="lien-cart" href="{{ path('delete_to_cart', {'id': item.product.id}) }}"><br>
-                                        <img src="{{ asset('assets/img/delete.png') }}" height="12px" alt="Supprimer">
+                                        <img src="{{ asset('img/delete.png') }}" height="12px" alt="Supprimer">
                                     </a>
                                     <a class="lien-cart" href="{{ path('decrease_to_cart', {'id': item.product.id}) }}">
-                                        <img src="{{ asset('assets/img/less.png') }}" height="8px" alt="-">
+                                        <img src="{{ asset('img/less.png') }}" height="8px" alt="-">
                                     </a>
                                     <a class="lien-cart" href="{{ path('increase_to_cart', {'id': item.product.id}) }}">
-                                        <img src="{{ asset('assets/img/more.png') }}" height="8px" alt="+">
+                                        <img src="{{ asset('img/more.png') }}" height="8px" alt="+">
                                     </a>
                                 </small>
                                 <small>
