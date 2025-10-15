@@ -42,7 +42,7 @@
         <div class="container-pergo-list pergo-list-center">
             {%for item in accessory %}
                 <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
-                    <a href="{{ path('accessoire', { 'slug' : item.slug } ) }}"> <img src="/uploads/{{ item.image }}" alt="" /></a>
+                    <a href="{{ path('accessoire', { 'slug' : item.slug } ) }}"> <img src="/uploads/accessoires/{{ item.image }}" alt="" /></a>
                     <p>Titre : {{ item.name }}</p>
                 </div>
             {% endfor %}

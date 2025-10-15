@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 13 oct. 2025 à 16:21
+-- Généré le : mer. 15 oct. 2025 à 10:39
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -41,11 +41,11 @@ CREATE TABLE `accessory` (
 --
 
 INSERT INTO `accessory` (`id`, `name`, `slug`, `description`, `image`, `is_best`) VALUES
-(1, 'Volant', 'volant', '<div>Volant</div>', 'banane02.jpg', 1),
-(2, 'Roue', 'roue', '<div>Roue</div>', 'fruits-et-legumes.jpg', 1),
-(3, 'Guidon', 'guidon', '<div>Guidon</div>', 'pomme01.jpg', 0),
-(4, 'Frein', 'frein', '<div>Frein</div>', 'saint-nectaire01.jpg', 0),
-(5, 'Accessoire de test', 'Accessoire-de-test', '<div>Accessoire de test</div>', 'saucissons.jpg', 0);
+(1, 'Siege', 'siege', 'Siege pour trott', 'Xtreme-Siege.jpg', 1),
+(2, 'Roue', 'roue', 'Roue pour trott', 'roues-etoiles.jpg', 1),
+(3, 'Guidon', 'guidon', 'Guidon pour trott', 'guidon-blunt-black-v3.jpg', 0),
+(4, 'Frein', 'frein', 'Frein pour trott', 'freins.jpg', 0),
+(5, 'Accessoire de test', 'Accessoire-de-test', 'Accessoire de test', 'roues-gold.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -193,8 +193,18 @@ CREATE TABLE `illustrationaccess` (
 --
 
 INSERT INTO `illustrationaccess` (`id`, `accessory_id`, `image`) VALUES
-(1, 1, 'saint-nectaire01.jpg'),
-(2, 1, 'pomme01.jpg');
+(1, 1, 'siege-trott-elec.jpg'),
+(2, 1, 'siege-rouge.jpg'),
+(3, 1, 'siege-double.jpg'),
+(4, 2, 'Roues-freestyle.jpg'),
+(5, 2, 'roues-gold.jpg'),
+(6, 2, 'roues-stunt.jpg'),
+(7, 3, 'guidon-blunt-black-v3.jpg'),
+(8, 3, 'guidon-multicolor.png'),
+(9, 3, 'guidon-titanium.jpg'),
+(10, 4, 'freins-jaune.jpg'),
+(11, 4, 'freins-rouge.jpeg'),
+(12, 4, 'etrier-de-frein.jpg');
 
 -- --------------------------------------------------------
 
@@ -473,7 +483,7 @@ ALTER TABLE `illustration`
 -- AUTO_INCREMENT pour la table `illustrationaccess`
 --
 ALTER TABLE `illustrationaccess`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT pour la table `messenger_messages`

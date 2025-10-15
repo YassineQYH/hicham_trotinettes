@@ -27,7 +27,7 @@
             <div class="arrival">
               <div class="cart__like">
                 <div class="image__holder">
-                  <img src="/uploads/{{ trottinette.image }}" alt="{{ trottinette.name }}" />
+                  <img src="/uploads/trottinettes/{{ trottinette.image }}" alt="{{ trottinette.name }}" />
                 </div>
                 <div class="cart__details">
                   <h1>{{ trottinette.name }}</h1>
@@ -78,7 +78,7 @@
         {# On commence avec l’image principale #}
         <button class="glide__bullet" data-glide-dir="=0">
           <div class="thumbnail">
-            <img src="/uploads/{{ trottinette.image }}" alt="{{ trottinette.name }}" />
+            <img src="/uploads/trottinettes/{{ trottinette.image }}" alt="{{ trottinette.name }}" />
           </div>
         </button>
 
@@ -86,7 +86,7 @@
         {% for key, item in illustrations %}
           <button class="glide__bullet" data-glide-dir="={{ key + 1 }}">
             <div class="thumbnail">
-              <img src="/uploads/{{ item.image }}" alt="{{ trottinette.name }}" />
+              <img src="/uploads/trottinettes/{{ item.image }}" alt="{{ trottinette.name }}" />
             </div>
           </button>
         {% endfor %}

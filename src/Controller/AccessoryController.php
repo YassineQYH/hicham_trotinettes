@@ -52,7 +52,7 @@ class AccessoryController extends BaseController
         // -------------------------------
         $formregister = $this->createRegisterForm($request, $encoder);
 
-        return $this->render('accessoires/single_access.html.twig', [
+        return $this->render('accessoires/show.html.twig', [
             'accessory' => $accessory,
             'illustrations' => $illustrations,
             'formregister' => $formregister->createView(),
