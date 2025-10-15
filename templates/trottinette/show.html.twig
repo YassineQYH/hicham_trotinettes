@@ -28,24 +28,6 @@
                 <div class="cart__details">
                   <h1>{{ trottinette.name }}</h1>
                   <p>{{ trottinette.descriptionShort ?? 'Aucune description courte disponible.' }}</p>
-
-                  {# ===== LOGIQUE PANIER ===== #}
-                  {% set product_id = trottinette.id %}
-                  {% if trottinette.stock < 1 %}
-                      <a class="buy-btn">Bientôt de retour</a>
-                  {% elseif cart.data is empty or trottinette.id not in (cart.data|keys) %}
-                      <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
-                  {% elseif cart.get('data')[product_id] < trottinette.stock %}
-                      <a class="buy-btn">Quantité : {{ cart.get('data')[product_id] }}</a><br>
-                      <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminué</a><br>
-                      <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
-                  {% else %}
-                      <a class="buy-btn">Quantité : {{ cart.get('data')[product_id] }}</a><br>
-                      <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminué</a><br>
-                      <a class="buy-btn" style="color:red;">Max (rupture)</a>
-                  {% endif %}
-                  {# ===== FIN LOGIQUE PANIER ===== #}
-
                 </div>
               </div>
             </div>
@@ -62,29 +44,6 @@
                   <div class="cart__details">
                     <h1>{{ trottinette.name }}</h1>
                     <p>{{ trottinette.descriptionShort ?? 'Aucune description courte disponible.' }}</p>
-
-                    {# ===== LOGIQUE PANIER POUR CHAQUE ILLUSTRATION ===== #}
-                    {% set trottinette_id = trottinette.id %}
-
-                    {% if trottinette.stock < 1 %}
-                        <a class="buy-btn">Bientôt de retour</a>
-
-                    {% elseif cart['data'] is empty or trottinette_id not in (cart['data']|keys) %}
-                        <a href="{{ path('add_to_cart', {'id': trottinette_id}) }}" class="buy-btn">Ajouter</a>
-
-                    {% elseif cart['data'][trottinette_id] < trottinette.stock %}
-                        <a class="buy-btn">Quantité : {{ cart['data'][trottinette_id] }}</a><br>
-                        <a href="{{ path('decrease_to_cart', {'id': trottinette_id}) }}" class="buy-btn">Diminué</a><br>
-                        <a href="{{ path('add_to_cart', {'id': trottinette_id}) }}" class="buy-btn">Ajouter</a>
-
-                    {% else %}
-                        <a class="buy-btn">Quantité : {{ cart['data'][trottinette_id] }}</a><br>
-                        <a href="{{ path('decrease_to_cart', {'id': trottinette_id}) }}" class="buy-btn">Diminué</a><br>
-                        <a class="buy-btn" style="color:red;">Max (rupture)</a>
-                    {% endif %}
-                    {# ===== FIN LOGIQUE PANIER ===== #}
-
-
                   </div>
                 </div>
               </div>
@@ -93,31 +52,45 @@
         </ul>
       </div>
 
-      <!-- Flèches -->
+      <!-- Flèches et miniatures restent inchangées -->
       <div class="glide__arrows" data-glide-el="controls">
         <button class="glide__arrow glide__arrow--left" data-glide-dir="<">Précédent</button>
         <button class="glide__arrow glide__arrow--right" data-glide-dir=">">Suivant</button>
       </div>
 
-      <!-- Miniatures -->
       <div class="glide__bullets" data-glide-el="controls[nav]">
         <button class="glide__bullet" data-glide-dir="=0">
-          <div class="thumbnail">
-            <img src="/uploads/trottinettes/{{ trottinette.image }}" alt="{{ trottinette.name }}">
-          </div>
+          <img src="/uploads/trottinettes/{{ trottinette.image }}" alt="{{ trottinette.name }}">
         </button>
-
         {% for key, item in illustrations %}
           <button class="glide__bullet" data-glide-dir="={{ key + 1 }}">
-            <div class="thumbnail">
-              <img src="/uploads/trottinettes/{{ item.image }}" alt="{{ trottinette.name }}">
-            </div>
+            <img src="/uploads/trottinettes/{{ item.image }}" alt="{{ trottinette.name }}">
           </button>
         {% endfor %}
       </div>
     </div>
+
+    <!-- BOUTONS FIXES À DROITE -->
+    <div class="cart__buttons">
+      {% set product_id = trottinette.id %}
+      {% if trottinette.stock < 1 %}
+          <a class="buy-btn">Bientôt de retour</a>
+      {% elseif cart.data is empty or trottinette.id not in (cart.data|keys) %}
+          <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
+      {% elseif cart.get('data')[product_id] < trottinette.stock %}
+          <a class="buy-btn">Quantité : {{ cart.get('data')[product_id] }}</a><br>
+          <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminué</a><br>
+          <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
+      {% else %}
+          <a class="buy-btn">Quantité : {{ cart.get('data')[product_id] }}</a><br>
+          <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminué</a><br>
+          <a class="buy-btn" style="color:red;">Max (rupture)</a>
+      {% endif %}
+    </div>
+
   </div>
 </section>
+
 
 <!-- SECTION 2 : CARACTÉRISTIQUES -->
 <section class="trottinette-caracteristiques container">
