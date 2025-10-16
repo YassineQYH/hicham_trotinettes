@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 16 oct. 2025 à 14:21
+-- Généré le : jeu. 16 oct. 2025 à 15:27
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -382,6 +382,27 @@ INSERT INTO `trottinette_caracteristique` (`id`, `trottinette_id`, `caracteristi
 (1, 1, 1, 1, 'Dimensions', '1380 x 320 x 630 mm'),
 (2, 1, 2, 2, 'Poids', '36 kg'),
 (3, 1, 3, 3, 'Batterie', '48 V 13 Ah'),
+(79, 3, 6, 6, 'Charge maximale', '120 kg'),
+(80, 1, 1, 5, 'Dimensions', '1380 x 320 x 630 mm'),
+(81, 1, 2, 5, 'Poids', '36 kg'),
+(82, 1, 3, 2, 'Batterie', '48 V 13 Ah'),
+(83, 1, 4, 2, 'Vitesse maximale', '45 km/h'),
+(84, 1, 5, 2, 'Autonomie', '40 km'),
+(85, 1, 6, 2, 'Charge maximale', '120 kg'),
+(86, 1, 7, 7, 'Sécurité enfant', 'Oui'),
+(87, 2, 1, 5, 'Dimensions', '1250 x 300 x 600 mm'),
+(88, 2, 2, 5, 'Poids', '32 kg'),
+(89, 2, 3, 2, 'Batterie', '48 V 10 Ah'),
+(90, 2, 4, 2, 'Vitesse maximale', '45 km/h'),
+(91, 2, 5, 2, 'Autonomie', '100 km'),
+(92, 2, 6, 2, 'Charge maximale', '120 kg'),
+(93, 2, 7, 7, 'Sécurité enfant', 'Non'),
+(94, 3, 1, 5, 'Dimensions', '1200 x 280 x 600 mm'),
+(95, 3, 2, 5, 'Poids', '28 kg'),
+(96, 3, 3, 2, 'Batterie', '48 V 15 Ah'),
+(97, 3, 4, 2, 'Vitesse maximale', '40 km/h'),
+(98, 3, 5, 2, 'Autonomie', '35 km'),
+(99, 3, 6, 2, 'Charge maximale', '120 kg'),
 (100, 3, 7, 7, 'Sécurité enfant', 'Oui');
 
 -- --------------------------------------------------------
@@ -403,7 +424,20 @@ CREATE TABLE `trottinette_description_section` (
 --
 
 INSERT INTO `trottinette_description_section` (`id`, `trottinette_id`, `title`, `content`, `section_order`) VALUES
-(1, 3, 'Moteur puissant de 500 W', 'Le BOGIST M5 Pro est propulsé par un moteur de 500 W, offrant une puissance impressionnante...', 1),
+(1, 3, 'Moteur puissant de 500 W', 'Le BOGIST M5 Pro est propulsé par un moteur de 500 W, offrant une puissance impressionnante pour les trajets urbains ou les aventures hors route...', 1),
+(2, 3, 'Batterie haute capacité 48 V 15 Ah', 'Équipé d\'une batterie au lithium 48 V 15 Ah, le M5 Pro offre une autonomie allant jusqu\'à 35 km par charge...', 2),
+(18, 2, 'Freinage efficace', 'Freins à disque arrière avec système de récupération d\'énergie pour un arrêt rapide et sécurisé.', 6),
+(19, 1, 'Moteur haute performance', 'La Honey Whale M5 Max est équipée d\'un moteur puissant de 1000 W, offrant des accélérations rapides et une vitesse maximale de 45 km/h.', 1),
+(20, 1, 'Batterie longue durée', 'Batterie lithium 48 V 13 Ah pour une autonomie allant jusqu\'à 40 km, idéale pour les trajets urbains quotidiens.', 2),
+(21, 1, 'Confort et design', 'Siège ergonomique et suspension optimisée pour un confort maximal lors des trajets.', 3),
+(22, 1, 'Sécurité', 'Éclairage LED avant/arrière et freins à disque pour un freinage sûr dans toutes les conditions.', 4),
+(23, 2, 'Puissance du moteur', 'Moteur 500 W offrant une conduite stable et une vitesse maximale de 45 km/h.', 1),
+(24, 2, 'Autonomie prolongée', 'Batterie 48 V 10 Ah permettant jusqu\'à 100 km d\'autonomie selon le mode de conduite.', 2),
+(25, 2, 'Design compact', 'Structure légère et pliable pour un transport facile et un rangement pratique.', 3),
+(26, 2, 'Freinage sûr', 'Freins à disque arrière avec récupération d\'énergie pour un arrêt rapide.', 4),
+(27, 3, 'Moteur puissant de 500 W', 'Le BOGIST M5 Pro est propulsé par un moteur de 500 W, offrant une puissance impressionnante pour les trajets urbains ou les aventures hors route.', 1),
+(28, 3, 'Batterie haute capacité 48 V 15 Ah', 'Équipé d\'une batterie au lithium 48 V 15 Ah, le M5 Pro offre une autonomie allant jusqu\'à 35 km par charge.', 2),
+(29, 3, 'Confort et maniabilité', 'Pneus de 12 pouces et suspension optimisée pour un confort maximal sur tous les types de routes.', 3),
 (30, 3, 'Sécurité complète', 'Éclairage LED, freins à disque et protection enfant pour une sécurité optimale.', 4);
 
 -- --------------------------------------------------------
