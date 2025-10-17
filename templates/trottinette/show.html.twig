@@ -74,30 +74,35 @@
     <div class="cart__buttons">
         {% set product_id = trottinette.id %}
         {% set cart_data = cart.get() ?? {} %}
-        {% set quantity_in_cart = cart_data[product_id] ?? 0 %}
+        {% set quantity_in_cart = cart_data['trottinette'][product_id]|default(0) %}
 
         {% if trottinette.stock < 1 %}
+            {# Aucun stock, on affiche seulement "Bientôt de retour" #}
             <a class="buy-btn">Bientôt de retour</a>
 
         {% else %}
-            {# Toujours afficher le stock #}
+            {# Toujours afficher le stock disponible #}
             <a class="buy-btn">Stock disponible : {{ trottinette.stock }}</a><br>
 
             {% if quantity_in_cart == 0 %}
-                <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
+                {# Produit pas encore ajouté au panier #}
+                <a href="{{ path('add_to_cart', {'id': product_id, 'type': 'trottinette'}) }}" class="buy-btn">Ajouter</a>
 
             {% elseif quantity_in_cart < trottinette.stock %}
+                {# Produit ajouté mais pas au max du stock #}
                 <a class="buy-btn">Quantité : {{ quantity_in_cart }}</a><br>
-                <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminuer</a><br>
-                <a href="{{ path('add_to_cart', {'id': product_id}) }}" class="buy-btn">Ajouter</a>
+                <a href="{{ path('add_to_cart', {'id': product_id, 'type': 'trottinette'}) }}" class="buy-btn">Ajouter</a>
+                <a href="{{ path('decrease_to_cart', {'id': product_id, 'type': 'trottinette'}) }}" class="buy-btn">Diminuer</a><br>
 
             {% else %}
+                {# Produit au maximum du stock #}
                 <a class="buy-btn">Quantité : {{ quantity_in_cart }}</a><br>
-                <a href="{{ path('decrease_to_cart', {'id': product_id}) }}" class="buy-btn">Diminuer</a><br>
+                <a href="{{ path('decrease_to_cart', {'id': product_id, 'type': 'trottinette'}) }}" class="buy-btn">Diminuer</a><br>
                 <a class="buy-btn" style="color:red;">Max (rupture)</a>
             {% endif %}
         {% endif %}
     </div>
+
 
 
   </div>
