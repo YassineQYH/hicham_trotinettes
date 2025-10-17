@@ -59,14 +59,23 @@
     margin: 0 auto;
 }
 
+.cart-buttons a {
+    margin: 10px;
+    /* supprime tout espace ajouté */
+    padding: 2px;
+    /* supprime tout padding éventuel */
+    line-height: 0;
+    /* évite l'espace vertical */
+}
+
 
 /* Boutons quantité / suppression horizontal */
 
 .cart-buttons {
     display: inline-flex;
-    gap: 0.3em;
+    gap: 0;
     align-items: center;
-    margin-left: 0.5em;
+    /* margin-left: 0.5em; */
 }
 
 
@@ -74,7 +83,7 @@
 
 .lien-cart img {
     display: inline-block;
-    max-height: 16px;
+    max-height: 15px;
     width: auto;
     vertical-align: middle;
 }

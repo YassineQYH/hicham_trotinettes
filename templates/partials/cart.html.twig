@@ -19,7 +19,7 @@
                                 <div class="col-md-12">
                                     <small class="d-block text-sm"><strong>{{ item.product.name }}</strong></small>
                                 </div>
-                                <div class="col-md-6 my-auto">
+                                <div class="col-md-3 my-auto">
                                     {# ⚡ vérifie si item.product.imagePath existe #}
                                     {% if item.product.imagePath %}
                                         <img class="cart-product-image" src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}">
@@ -27,7 +27,7 @@
                                         <img class="cart-product-image" src="{{ asset('img/default.png') }}" alt="image par défaut">
                                     {% endif %}
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-9">
                                     <small class="d-block text-sm">
                                         Prix unité : <strong>{{ (item.product.price / 100)|number_format(2, ',','.') }} €</strong>
                                     </small>
