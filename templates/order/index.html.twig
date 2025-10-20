@@ -35,8 +35,13 @@
                 {% for key, item in cart %}
                     <div class="row {% if key > 0 %}mt-2{% endif %}">
                         <div class="col-4">
-                            <img src="/uploads/{{ item.product.image }}" alt="{{ item.product.name }}" height="75px"></br>
-                        </div>
+                        {% if item.product.imagePath %}
+                            <img class="cart-product-image" src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}" height="75px">
+                        {% else %}
+                            <img class="cart-product-image" src="{{ asset('img/default.png') }}" alt="image par défaut" height="75px">
+                        {% endif %}
+                    </div>
+
                         <div class="col-6 my-auto">
                             {{ item.product.name }} - {{ (item.product.price / 100)|number_format(2, ',', '.') }} €</br>
                             <small>{{ item.product.description }}</small>
