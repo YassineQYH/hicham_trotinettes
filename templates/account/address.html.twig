@@ -2,36 +2,39 @@
 
 {% block title %}Mes adresses : Zone-Frais{% endblock %}
 
-{% block content %}<br><br><br><br><br><br><br>
-    <div class="container">
-        <a href="{{ path('account_address_add') }}" class="btn btn-info btn-sm float-right">Ajouter une adresse</a>
-        <h1>Mes adresses</h1>
-        C'est dans cet espace que vous allez pouvoir gérer toutes vos adresses.</br>
-        <a href="{{ path('account') }}">Retour</a>
-        <hr>
-        {# {{ dump(app.user) }} #}
-        {% if app.user.addresses|length == 0 %}
-        <p class="text-center">
-            Vous n'avez pas encore ajouté d'adresse dans votre compte client. Pour en ajouter une, veuillez <a href="{{ path('account_address_add') }}">Cliquer ici</a>
+{% block content %}
+<div class="container py-5">
+    <a href="{{ path('account_address_add') }}" class="btn btn-info btn-sm float-right mb-3">Ajouter une adresse</a>
+    <h1>Mes adresses</h1>
+    <p>C'est dans cet espace que vous allez pouvoir gérer toutes vos adresses.</p>
+    <a href="{{ path('account') }}">Retour</a>
+    <hr>
+
+    {% if app.user.addresses|length == 0 %}
+        <p class="text-center mt-4">
+            Vous n'avez pas encore ajouté d'adresse dans votre compte client. Pour en ajouter une, veuillez <a href="{{ path('account_address_add') }}">cliquer ici</a>.
         </p>
-        {% else %}
-            <div class="row">
-                {% for address in app.user.addresses %}
-                    <div class="col-md4">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ address.name }}</h5>
-                                <p class="card-text">
-                                    {{ address.address }}</br>
-                                    {{ address.postal }} - {{ address.city }} - {{ address.country }}
-                                    </br>Société : {{ address.company }}
-                                </p>
-                                <a href="{{ path('account_address_edit', { 'id' : address.id }) }}" style="color:blue;">Modifier</a> | <a href="{{ path('account_address_delete', { 'id' : address.id }) }}" style="color:blue;">Supprimer</a>
-                            </div>
+    {% else %}
+        <div class="row g-4">
+            {% for address in app.user.addresses %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ address.name }}</h5>
+                            <p class="card-text">
+                                {{ address.address }}<br>
+                                {{ address.postal }} - {{ address.city }} - {{ address.country }}<br>
+                                {% if address.company %}
+                                    Société : {{ address.company }}
+                                {% endif %}
+                            </p>
+                            <a href="{{ path('account_address_edit', { 'id' : address.id }) }}" class="text-primary">Modifier</a> |
+                            <a href="{{ path('account_address_delete', { 'id' : address.id }) }}" class="text-primary">Supprimer</a>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div><br><br><br><br><br>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
