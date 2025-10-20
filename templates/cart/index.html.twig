@@ -33,7 +33,11 @@
                             {# {{ dump(product) }} #}
                             <tr>
                                 <th>
-                                    <img src="/uploads/{{ item.product.image }}" alt="{{ item.product.name }}" height="75px"></br>
+                                    {% if item.product.imagePath %}
+                                        <img class="cart-product-image" src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}" height="75px">
+                                    {% else %}
+                                        <img class="cart-product-image" src="{{ asset('img/default.png') }}" alt="image par défaut" height="75px">
+                                    {% endif %}
                                 </th>
                                 <td>
                                 {{ item.product.name }} - {# {{ item.product.weight.nakgme }} #}</br>
