@@ -7,7 +7,8 @@
     <a href="{{ path('account_address_add') }}" class="btn btn-info btn-sm float-right mb-3">Ajouter une adresse</a>
     <h1>Mes adresses</h1>
     <p>C'est dans cet espace que vous allez pouvoir gérer toutes vos adresses.</p>
-    <a href="{{ path('account') }}">Retour</a>
+    <a href="{{ path('account') }}" style="color: blue;">Retour</a>
+
     <hr>
 
     {% if app.user.addresses|length == 0 %}
