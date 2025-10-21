@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 16 oct. 2025 à 15:27
+-- Généré le : mar. 21 oct. 2025 à 16:13
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -78,17 +78,17 @@ CREATE TABLE `address` (
   `postal` varchar(20) NOT NULL,
   `city` varchar(255) NOT NULL,
   `country` varchar(255) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `type` varchar(50) DEFAULT NULL
+  `phone` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `address`
 --
 
-INSERT INTO `address` (`id`, `user_id`, `name`, `firstname`, `lastname`, `company`, `address`, `postal`, `city`, `country`, `phone`, `type`) VALUES
-(1, 1, '', '', '', NULL, '51 Rue de Konoha', '63200', '', 'France', '', NULL),
-(2, 2, '', '', '', NULL, '51 Rue du Hueco Mundo', '63118', '', 'France', '', NULL);
+INSERT INTO `address` (`id`, `user_id`, `name`, `firstname`, `lastname`, `company`, `address`, `postal`, `city`, `country`, `phone`) VALUES
+(1, 1, 'Maison', 'Yass', 'Qay', NULL, '51 Rue de Konoha', '63200', 'angleur', 'France', '06.11.55.22.51'),
+(2, 2, 'Maison', 'Hich', 'Qay', NULL, '51 Belle jardinère', '63118', 'sart-tilman', 'France', '06.11.55.22.51'),
+(3, 1, 'Travail', 'Yass', 'Qay', NULL, '51 Rue du Hueco Mundo', '63200', 'clermont ferrand', 'France', '06.11.55.22.51');
 
 -- --------------------------------------------------------
 
@@ -180,7 +180,9 @@ CREATE TABLE `doctrine_migration_versions` (
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
 ('DoctrineMigrations\\Version20250924130421', '2025-09-25 10:42:28', 295),
 ('DoctrineMigrations\\Version20251016112647', '2025-10-16 13:32:30', 80),
-('DoctrineMigrations\\Version20251016114952', '2025-10-16 13:49:55', 784);
+('DoctrineMigrations\\Version20251016114952', '2025-10-16 13:49:55', 784),
+('DoctrineMigrations\\Version20251020123103', '2025-10-20 14:31:12', 488),
+('DoctrineMigrations\\Version20251021122532', '2025-10-21 14:25:42', 224);
 
 -- --------------------------------------------------------
 
@@ -283,6 +285,89 @@ CREATE TABLE `messenger_messages` (
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order`
+--
+
+CREATE TABLE `order` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `carrier_price` double NOT NULL,
+  `delivery` longtext NOT NULL,
+  `reference` varchar(255) NOT NULL,
+  `stripe_session_id` varchar(255) DEFAULT NULL,
+  `state` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `order`
+--
+
+INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`, `reference`, `stripe_session_id`, `state`) VALUES
+(1, 1, '2025-10-21 14:27:06', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77c1a7c6dd', NULL, 0),
+(2, 1, '2025-10-21 14:29:08', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77c9423c2c', NULL, 0),
+(3, 1, '2025-10-21 14:29:28', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77ca83d2a7', NULL, 0),
+(4, 1, '2025-10-21 14:31:59', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d3f4629b', 'cs_test_b1IFG5Q9gll0ZuAgc3zlYqDKvwrd6uJOHwJcWVZSGbXo8AewDIYVEWUcv9', 0),
+(5, 1, '2025-10-21 14:32:57', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d799ff9b', 'cs_test_b1hL2avKtpCc9IokW6GFqrzSV3jEvMmzBlqosbd8TBlykrOREGjpR1c7YE', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `order_details`
+--
+
+CREATE TABLE `order_details` (
+  `id` int(11) NOT NULL,
+  `my_order_id` int(11) NOT NULL,
+  `product` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` double NOT NULL,
+  `total` double NOT NULL,
+  `weight` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `order_details`
+--
+
+INSERT INTO `order_details` (`id`, `my_order_id`, `product`, `quantity`, `price`, `total`, `weight`) VALUES
+(1, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(2, 1, 'roues etoiles', 1, 45, 45, '4'),
+(3, 1, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(4, 1, 'freins rouge', 1, 26, 26, '0.5'),
+(5, 2, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(6, 2, 'roues etoiles', 1, 45, 45, '4'),
+(7, 2, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(8, 2, 'freins rouge', 1, 26, 26, '0.5'),
+(9, 3, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(10, 3, 'roues etoiles', 1, 45, 45, '4'),
+(11, 3, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(12, 3, 'freins rouge', 1, 26, 26, '0.5'),
+(13, 4, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(14, 4, 'roues etoiles', 1, 45, 45, '4'),
+(15, 4, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(16, 4, 'freins rouge', 1, 26, 26, '0.5'),
+(17, 5, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(18, 5, 'roues etoiles', 1, 45, 45, '4'),
+(19, 5, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(20, 5, 'freins rouge', 1, 26, 26, '0.5');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `reset_password`
+--
+
+CREATE TABLE `reset_password` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -461,8 +546,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`, `tel`) VALUES
-(1, 'admin@admin.fr', '[\"ROLE_ADMIN\",\"ROLE_USER\"]', 'Admin', 'Admin', 'Admin', '06 04 05 02 09'),
-(2, 'user@user.fr', '[]', 'User', 'User', 'User', '06 01 01 01 02');
+(1, 'admin@admin.fr', '[\"ROLE_ADMIN\",\"ROLE_USER\"]', '$2y$13$4bwJInzuXY/eug5T/185NOh32jBDFRFDCp2HH79Xzmkb344xMCdJy', 'Admin', 'Admin', '06 04 05 02 09'),
+(2, 'user@user.fr', '[\"ROLE_USER\"]', '$2y$13$LhrRJcEyiJpsDCwVooctFeP6ee/jHM7M8qigKaJSz1v5bwU5Un7qa', 'User', 'User', '06 01 01 01 02');
 
 -- --------------------------------------------------------
 
@@ -514,7 +599,8 @@ INSERT INTO `weight` (`id`, `kg`, `price`) VALUES
 (39, 28, 30.6),
 (40, 29, 31.46),
 (41, 30, 32.28),
-(46, 0.1, 2.65);
+(46, 0.1, 2.65),
+(47, 100, 40);
 
 --
 -- Index pour les tables déchargées
@@ -583,6 +669,27 @@ ALTER TABLE `messenger_messages`
   ADD KEY `IDX_75EA56E016BA31DB` (`delivered_at`);
 
 --
+-- Index pour la table `order`
+--
+ALTER TABLE `order`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_F5299398A76ED395` (`user_id`);
+
+--
+-- Index pour la table `order_details`
+--
+ALTER TABLE `order_details`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_845CA2C1BFCDF877` (`my_order_id`);
+
+--
+-- Index pour la table `reset_password`
+--
+ALTER TABLE `reset_password`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_B9983CE5A76ED395` (`user_id`);
+
+--
 -- Index pour la table `trottinette`
 --
 ALTER TABLE `trottinette`
@@ -640,7 +747,7 @@ ALTER TABLE `accessory`
 -- AUTO_INCREMENT pour la table `address`
 --
 ALTER TABLE `address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `caracteristique`
@@ -679,6 +786,24 @@ ALTER TABLE `messenger_messages`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `order`
+--
+ALTER TABLE `order`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `order_details`
+--
+ALTER TABLE `order_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT pour la table `reset_password`
+--
+ALTER TABLE `reset_password`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `trottinette`
 --
 ALTER TABLE `trottinette`
@@ -712,7 +837,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `weight`
 --
 ALTER TABLE `weight`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- Contraintes pour les tables déchargées
@@ -742,6 +867,24 @@ ALTER TABLE `illustration`
 --
 ALTER TABLE `illustrationaccess`
   ADD CONSTRAINT `FK_EA75D19D27E8CC78` FOREIGN KEY (`accessory_id`) REFERENCES `accessory` (`id`);
+
+--
+-- Contraintes pour la table `order`
+--
+ALTER TABLE `order`
+  ADD CONSTRAINT `FK_F5299398A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- Contraintes pour la table `order_details`
+--
+ALTER TABLE `order_details`
+  ADD CONSTRAINT `FK_845CA2C1BFCDF877` FOREIGN KEY (`my_order_id`) REFERENCES `order` (`id`);
+
+--
+-- Contraintes pour la table `reset_password`
+--
+ALTER TABLE `reset_password`
+  ADD CONSTRAINT `FK_B9983CE5A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Contraintes pour la table `trottinette`
