@@ -53,9 +53,6 @@ class Address
     #[Assert\NotBlank]
     private ?string $phone = null;
 
-    #[ORM\Column(type: "string", length: 50, nullable: true)]
-    private ?string $type = null;
-
     public function __toString(): string
     {
         return sprintf(
@@ -100,6 +97,4 @@ class Address
     public function getPhone(): ?string { return $this->phone; }
     public function setPhone(string $phone): self { $this->phone = $phone; return $this; }
 
-    public function getType(): ?string { return $this->type; }
-    public function setType(?string $type): self { $this->type = $type; return $this; }
 }

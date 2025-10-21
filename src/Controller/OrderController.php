@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use DateTime;
 use App\Classe\Cart;
+use App\Entity\User;
 use App\Entity\Order;
 use App\Entity\OrderDetails;
 use App\Form\OrderType;
 use App\Repository\WeightRepository;
-use App\Repository\CategoryAccessoryRepository; // ✅ On importe la bonne classe
+use App\Repository\CategoryAccessoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,16 +30,18 @@ class OrderController extends AbstractController
     ): Response {
         $categories = $categoryAccessoryRepository->findAll();
 
+        /** @var User $user */
         $user = $this->getUser();
 
-        // 🔐 Si non connecté → redirection vers login
+        // 🔹 Dump de l'utilisateur
+        //dump($user);
+
         if (!$user) {
             $this->addFlash('login_required', 'Vous devez être connecté pour valider votre panier.');
             return $this->redirectToRoute('cart');
         }
 
-        // 🏠 Vérifie que l’utilisateur a au moins une adresse
-        if (!$user->getAddresses()->getValues()) {
+        if ($user->getAddresses()->isEmpty()) {
             return $this->redirectToRoute('account_address_add');
         }
 
@@ -53,21 +56,38 @@ class OrderController extends AbstractController
         ]);
     }
 
-
     #[Route('/commande/recapitulatif', name: 'order_recap', methods: ['POST'])]
     public function add(
         Cart $cart,
         Request $request,
         WeightRepository $weightRepository,
-        CategoryAccessoryRepository $categoryAccessoryRepository // ✅
+        CategoryAccessoryRepository $categoryAccessoryRepository
     ): Response {
-        $categories = $categoryAccessoryRepository->findAll(); // ✅
+        $categories = $categoryAccessoryRepository->findAll();
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // 🔹 Dump pour vérifier l'utilisateur
+        //dump($user);
+
+        if (!$user) {
+            return $this->redirectToRoute('cart');
+        }
 
         $form = $this->createForm(OrderType::class, null, [
-            'user' => $this->getUser(),
+            'user' => $user,
         ]);
 
         $form->handleRequest($request);
+
+        // 🔹 Dump du formulaire pour vérifier submission et validité
+        /* dump([
+            'isSubmitted' => $form->isSubmitted(),
+            'isValid' => $form->isValid(),
+            'request_method' => $request->getMethod(),
+            'request_data' => $request->request->all(),
+        ]); */
 
         $poidsTotal = 0.0;
         $quantiteTotale = 0;
@@ -87,6 +107,9 @@ class OrderController extends AbstractController
         $priceList = $this->fillPriceList($weightRepository);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // 🔹 Dump pour confirmer qu'on passe dans la condition
+            //dd('Formulaire soumis et valide !');
+
             $date = new DateTime();
             $delivery = $form->get('addresses')->getData();
 
@@ -105,7 +128,7 @@ class OrderController extends AbstractController
             $reference = $date->format('dmY') . '-' . uniqid();
 
             $order->setReference($reference);
-            $order->setUser($this->getUser());
+            $order->setUser($user);
             $order->setCreatedAt($date);
             $order->setCarrierPrice($prixLivraison);
             $order->setDelivery($deliveryContent);
@@ -130,15 +153,13 @@ class OrderController extends AbstractController
 
             $this->entityManager->flush();
 
-            return $this->render('order/add.html.twig', [
-                'cart' => $cart->getFull(),
-                'delivery' => $deliveryContent,
-                'reference' => $order->getReference(),
-                'price' => $prixLivraison,
-                'totalLivraison' => null,
-                'categories' => $categories,
+            return $this->redirectToRoute('stripe_create_session', [
+                'reference' => $order->getReference()
             ]);
         }
+
+        // 🔹 Si formulaire pas soumis ou invalide, dump et stop
+        //dd('Formulaire pas soumis ou invalide', $request->request->all());
 
         return $this->redirectToRoute('cart');
     }

@@ -21,7 +21,7 @@ class OrderType extends AbstractType
                 'label' => false,
                 'required' => true,
                 'class' => Address::class,
-                'choices' => $user->getAddresses()->toArray(), // <-- convertit la collection en tableau
+                'choices' => $user->getAddresses(),
                 'multiple' => false,
                 'expanded' => true,
                 'choice_label' => function (Address $address) {
@@ -42,7 +42,7 @@ class OrderType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'user' => null,
+            'user' => array()
         ]);
     }
 }
