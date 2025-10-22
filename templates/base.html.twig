@@ -48,7 +48,44 @@
                 {{ include('partials/menu.html.twig') }}
             {% endblock %}
 
+            {# ✅ Messages d’inscription (erreur et succès) #}
+            {% for message in app.flashes('register_error') %}
+                <div class="register-alert register-error">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('register_success') %}
+                <div class="register-alert register-success">{{ message }}</div>
+            {% endfor %}
+
             {% block carrousel %}{% endblock %}
+
+            <style>
+                .register-alert {
+                    padding: 12px 20px;
+                    font-weight: bold;
+                    text-align: center;
+                    margin: 0;
+                    font-size: 1rem;
+                    animation: fadeInDown 0.6s ease;
+                    z-index: 9999;
+                }
+
+                .register-error {
+                    background-color: #fff3cd; /* jaune clair */
+                    color: #856404; /* orange foncé */
+                    border: 1px solid #ffeeba;
+                }
+
+                .register-success {
+                    background-color: #d4edda; /* vert clair */
+                    color: #155724; /* vert foncé */
+                    border: 1px solid #c3e6cb;
+                }
+
+                @keyframes fadeInDown {
+                    from { opacity: 0; transform: translateY(-20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            </style>
         </header>
 
         <main>
@@ -91,8 +128,8 @@
                 $(document).ready(function(){
                     // Gestion du mini-panier
                     $('#cart-toggle').click(function(e){
-                        e.preventDefault(); // empêche la redirection
-                        $('.cart__slide').toggleClass('open'); // ouvre/ferme le panier
+                        e.preventDefault();
+                        $('.cart__slide').toggleClass('open');
                     });
 
                     // Gestion des sous-menus
@@ -123,6 +160,16 @@
                         passwordField.attr('type', type);
                         $(this).text(type === 'text' ? 'cacher' : 'afficher');
                     });
+                });
+
+                // 🔔 Ouvrir automatiquement le modal d'inscription si erreur
+                document.addEventListener('DOMContentLoaded', function() {
+                    {% if app.flashes('register_error') is not empty %}
+                        const registerModal = document.querySelector('login');
+                        if(registerModal) {
+                            registerModal.style.display = 'block';
+                        }
+                    {% endif %}
                 });
             </script>
         {% endblock %}

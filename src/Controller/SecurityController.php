@@ -47,25 +47,37 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $existingUser = $this->entityManager
                 ->getRepository(User::class)
                 ->findOneByEmail($user->getEmail());
 
-            if (!$existingUser) {
+            if ($form->isValid() && !$existingUser) {
                 // Hachage du mot de passe
                 $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
                 $user->setPassword($hashedPassword);
 
-                // ✅ Pas de création d’adresse ici
+                // Persistance utilisateur
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
-                $notification = "Votre inscription s'est bien déroulée. Vous pouvez maintenant vous connecter.";
+                // Message de succès
+                $this->addFlash('register_success', "✅ Votre inscription s'est bien déroulée. Vous pouvez maintenant vous connecter.");
             } else {
-                $notification = "L'adresse e-mail est déjà utilisée.";
+                if ($existingUser) {
+                    // Email déjà utilisé
+                    $this->addFlash('register_error', "⚠️ L'adresse e-mail est déjà utilisée.");
+                } else {
+                    // Formulaire invalide
+                    $this->addFlash('register_error', "⚠️ L’inscription n’a pas pu aboutir. Veuillez vérifier vos informations.");
+                }
             }
         }
+
+
+        /* if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('register_error', '⚠️ L’inscription n’a pas pu aboutir. Veuillez vérifier vos informations.');
+        } */
 
         return $this->render('register/index.html.twig', [
             'formregister' => $form->createView(),
