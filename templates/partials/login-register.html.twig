@@ -114,21 +114,24 @@
             {# Champ E-mail #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                {{ form_widget(formregister.email, {'attr': {'placeholder': 'Saisissez votre e-mail',
-                                                            'pattern': '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$',
-                                                            'title': 'Format attendu: xx@xxxx.xx'}}) }}
+                {{ form_widget(formregister.email, {'attr': {
+                    'placeholder': 'Saisissez votre e-mail',
+                    'pattern': '^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}(\.[a-z]{2,})?$',
+                    'title': 'Veuillez saisir un email valide, format: xxx@xxx.xx ou xxx@xxx.xx.xx',
+                    'required': true
+                }}) }}
                 {{ form_label(formregister.email) }}
                 {{ form_errors(formregister.email) }}
             </div>
 
+
             {# Champ mot de passe #}
-            {# ⚠️ Doubler les antislashs pour éviter que Twig les échappe : \\d #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
                 {{ form_widget(formregister.password.first, {'attr': {
                     'placeholder': 'Saisissez votre mot de passe',
-                    'pattern': '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.]).{10,}',
-                    'title': 'Min 10 caractères, 1 maj, 1 min, 1 chiffre, 1 point "."',
+                    'pattern': '.{10,}',  # juste longueur minimale
+                    'title': 'Min 10 caractères',
                     'required': true
                 }}) }}
 
@@ -138,13 +141,12 @@
             </div>
 
             {# Champ confirmation du mot de passe #}
-            {# même pattern pour cohérence front #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
                 {{ form_widget(formregister.password.second, {'attr': {
                     'placeholder': 'Confirmez votre mot de passe',
-                    'pattern': '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.]).{10,}',
-                    'title': 'Min 10 caractères, 1 maj, 1 min, 1 chiffre, 1 point "."',
+                    'pattern': '.{10,}',
+                    'title': 'Min 10 caractères',
                     'required': true
                 }}) }}
                 {{ form_label(formregister.password.second) }}
