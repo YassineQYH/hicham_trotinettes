@@ -40,10 +40,16 @@ a .slider {
 }
 
 .slide-img img {
-    width: 100%;
-    height: 100%;
+    width: 85%;
+    height: 85%;
     object-fit: cover;
+    display: block;
+    margin: auto;
+    /* centre horizontalement et verticalement */
     box-sizing: border-box;
+    position: relative;
+    top: 10%;
+    /* descend l'image de 10% du parent */
 }
 
 .detail-box {
@@ -130,16 +136,19 @@ a .slider {
         width: 420px;
     }
 }
+
 @media only screen and (max-width: 505px) {
     .box {
         width: 350px;
     }
 }
+
 @media only screen and (max-width: 405px) {
     .box {
         width: 250px;
     }
 }
+
 @media only screen and (max-width: 305px) {
     .box {
         width: 200px;
