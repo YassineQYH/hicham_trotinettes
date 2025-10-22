@@ -94,35 +94,64 @@
                 {{ form_errors(formregister.lastname) }}
             </div>
 
+            {# Champ N° Tel #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="call"></ion-icon></span>
-                {{ form_widget(formregister.tel, {'attr': {'placeholder': '+33612345678'}}) }}
+                {{ form_widget(formregister.tel, {
+                    attr: formregister.tel.vars.attr|merge({
+                        'placeholder': '+33612345678',
+                        'pattern': '^\\+((33[67]\\d{8})|(32[4-7]\\d{8}))$',
+                        'title': 'Veuillez saisir un numéro valide : +33 6XXXXXXXX (France) ou +32 4XXXXXXXX (Belgique)',
+                        'required': true
+                    })
+                }) }}
+
                 {{ form_label(formregister.tel) }}
                 {{ form_errors(formregister.tel) }}
             </div>
 
+
+            {# Champ E-mail #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                {{ form_widget(formregister.email, {'attr': {'placeholder': 'Saisissez votre e-mail'}}) }}
+                {{ form_widget(formregister.email, {'attr': {'placeholder': 'Saisissez votre e-mail',
+                                                            'pattern': '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$',
+                                                            'title': 'Format attendu: xx@xxxx.xx'}}) }}
                 {{ form_label(formregister.email) }}
                 {{ form_errors(formregister.email) }}
             </div>
 
+            {# Champ mot de passe #}
+            {# ⚠️ Doubler les antislashs pour éviter que Twig les échappe : \\d #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                {{ form_widget(formregister.password.first, {'attr': {'placeholder': 'Saisissez votre mot de passe'}}) }}
+                {{ form_widget(formregister.password.first, {'attr': {
+                    'placeholder': 'Saisissez votre mot de passe',
+                    'pattern': '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.]).{10,}',
+                    'title': 'Min 10 caractères, 1 maj, 1 min, 1 chiffre, 1 point "."',
+                    'required': true
+                }}) }}
+
                 {{ form_label(formregister.password.first) }}
                 {{ form_errors(formregister.password.first) }}
                 <span class="show-password">Afficher</span>
             </div>
 
+            {# Champ confirmation du mot de passe #}
+            {# même pattern pour cohérence front #}
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                {{ form_widget(formregister.password.second, {'attr': {'placeholder': 'Confirmez votre mot de passe'}}) }}
+                {{ form_widget(formregister.password.second, {'attr': {
+                    'placeholder': 'Confirmez votre mot de passe',
+                    'pattern': '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.]).{10,}',
+                    'title': 'Min 10 caractères, 1 maj, 1 min, 1 chiffre, 1 point "."',
+                    'required': true
+                }}) }}
                 {{ form_label(formregister.password.second) }}
                 {{ form_errors(formregister.password.second) }}
                 <span class="show-password-retype">Afficher</span>
             </div>
+
 
             {{ form_widget(formregister.submit, {'attr': {'class': 'btn'}}) }}
 
