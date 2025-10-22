@@ -19,11 +19,16 @@ a .slider {
 }
 
 .box {
-    width: 550px;
+    width: 450px;
+    /* largeur fixe */
+    height: 450px;
+    /* hauteur fixe pour que tous les cadres soient identiques */
     box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
     overflow: hidden;
     margin: 25px;
+    flex-direction: column;
+    /* pour bien gérer image + détail */
 }
 
 .box-show {
