@@ -5,7 +5,7 @@ namespace App\Classe;
 use Mailjet\Client;
 use Mailjet\Resources;
 
-class Mail 
+class Mail
 {
     private $api_key = '105c1f0ad9f45b622e03b8a1a90ff8cb';
     private $api_key_secret = '681521a691ef5cd2de1c0da57ff9c151';
@@ -18,8 +18,8 @@ class Mail
             'Messages' => [
                 [
                     'From' => [
-                        'Email' => "qayouh.yassine@outlook.be",
-                        'Name' => "Pergolazur "
+                        'Email' => "yassine.qyh@gmail.com",
+                        'Name' => "Hich Trott "
                     ],
                     'To' => [
                         [
