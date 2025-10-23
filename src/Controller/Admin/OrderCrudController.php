@@ -34,16 +34,25 @@ class OrderCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')
-            ->linkToCrudAction('updatePreparation');
+            ->linkToCrudAction('updatePreparation')
+            ->displayIf(static function ($entityInstance) {
+                return $entityInstance->getState() < 2;
+            })
+            ->setHtmlAttributes(['data-id' => 'entity.id']);
 
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')
-            ->linkToCrudAction('updateDelivery');
+            ->linkToCrudAction('updateDelivery')
+            ->displayIf(static function ($entityInstance) {
+                return $entityInstance->getState() == 2;
+            })
+            ->setHtmlAttributes(['data-id' => 'entity.id']);
 
         return $actions
             ->add(Crud::PAGE_DETAIL, $updatePreparation)
             ->add(Crud::PAGE_DETAIL, $updateDelivery)
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
     }
+
 
     private function handleOrderState(Order $order, int $state, string $message)
     {
@@ -65,31 +74,42 @@ class OrderCrudController extends AbstractCrudController
 
     public function updatePreparation(AdminContext $context)
     {
-        $entityDto = $context->getEntity();
-        if (!$entityDto) {
+        $orderId = $context->getRequest()->query->get('entityId');
+        $order = $this->entityManager->getRepository(Order::class)->find($orderId);
+
+        if (!$order) {
             $this->addFlash('danger', 'Commande introuvable.');
             return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('index')->generateUrl());
         }
 
-        $order = $entityDto->getInstance();
         $this->handleOrderState($order, 2, '<u>en cours de préparation</u>');
 
-        return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('detail')->setEntityId($order->getId())->generateUrl());
+        return $this->redirect($this->adminUrlGenerator
+            ->setController(self::class)
+            ->setAction('detail')
+            ->setEntityId($order->getId())
+            ->generateUrl());
     }
 
     public function updateDelivery(AdminContext $context)
     {
-        $entityDto = $context->getEntity();
-        if (!$entityDto) {
+        $orderId = $context->getRequest()->query->get('entityId');
+        $order = $this->entityManager->getRepository(Order::class)->find($orderId);
+
+        if (!$order) {
             $this->addFlash('danger', 'Commande introuvable.');
             return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('index')->generateUrl());
         }
 
-        $order = $entityDto->getInstance();
         $this->handleOrderState($order, 3, '<u>en cours de livraison</u>');
 
-        return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('detail')->setEntityId($order->getId())->generateUrl());
+        return $this->redirect($this->adminUrlGenerator
+            ->setController(self::class)
+            ->setAction('detail')
+            ->setEntityId($order->getId())
+            ->generateUrl());
     }
+
 
     public function configureCrud(Crud $crud): Crud
     {
