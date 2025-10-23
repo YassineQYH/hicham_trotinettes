@@ -2,8 +2,8 @@
 <table class="table table-sm">
     <thead>
         <tr>
+            <th>Poids</th>
             <th>Produit</th>
-            <th>Taille</th>
             <th>Quantité</th>
             <th>Prix unitaire</th>
             <th>Total</th>
@@ -13,8 +13,8 @@
         {% for detail in field.value %}
             <tr>
                 <td>{{ detail.product }}</td>
-                <td>{{ detail.weight }}</td>
                 <td>{{ detail.quantity }}</td>
+                <td>{{ detail.weight }} kg</td>
                 <td>{{ detail.price|number_format(2, ',', ' ') }} €</td>
                 <td>{{ detail.total|number_format(2, ',', ' ') }} €</td>
             </tr>

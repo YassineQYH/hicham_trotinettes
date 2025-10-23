@@ -47,7 +47,7 @@ class OrderDetailsCrudController extends AbstractCrudController
                 ->setStoredAsCents(false)
                 ->onlyOnDetail(),
 
-            TextField::new('weight', 'Taille'),
+            TextField::new('weight', 'Poids'),
         ];
     }
 }
