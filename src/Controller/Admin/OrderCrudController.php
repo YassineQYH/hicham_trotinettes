@@ -33,13 +33,17 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        // Bouton rapide "Préparation en cours" uniquement si commande en attente
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')
             ->linkToCrudAction('updatePreparation')
-            ->displayIf(static fn(Order $order) => $order->getDeliveryState() === 0);
+            ->displayIf(static fn($order) => $order->getDeliveryState() === 0)
+            ->setHtmlAttributes(['data-id' => 'entity.id']);
 
+        // Bouton rapide "Livraison en cours" uniquement si commande en préparation
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')
             ->linkToCrudAction('updateDelivery')
-            ->displayIf(static fn(Order $order) => $order->getDeliveryState() === 1 && $order->getPaymentState() === 1);
+            ->displayIf(static fn($order) => $order->getDeliveryState() === 1)
+            ->setHtmlAttributes(['data-id' => 'entity.id']);
 
         return $actions
             ->add(Crud::PAGE_DETAIL, $updatePreparation)
@@ -47,20 +51,21 @@ class OrderCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
     }
 
-    private function handleDeliveryState(Order $order, int $state, string $message)
+    private function handleOrderState(Order $order, int $deliveryState, string $message)
     {
-        $order->setDeliveryState($state);
+        $order->setDeliveryState($deliveryState);
         $this->entityManager->flush();
 
         $this->addFlash('notice', $message);
 
         // Envoi du mail
         $mail = new Mail();
-        $content = "Bonjour " . $order->getUser()->getFirstName() . "<br>Hich'Trott vous informe que votre commande n°<strong>" . $order->getReference() . "</strong> est " . $message;
+        $content = "Bonjour ".$order->getUser()->getFirstName()."<br>Hich'Trott vous informe que votre commande n°<strong>"
+            .$order->getReference()."</strong> est ".$message;
         $mail->send(
             $order->getUser()->getEmail(),
             $order->getUser()->getFirstName(),
-            "Votre commande " . $order->getReference(),
+            "Votre commande ".$order->getReference(),
             $content
         );
     }
@@ -75,7 +80,7 @@ class OrderCrudController extends AbstractCrudController
             return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('index')->generateUrl());
         }
 
-        $this->handleDeliveryState($order, 1, '<u>en cours de préparation</u>');
+        $this->handleOrderState($order, 1, '<u>en cours de préparation</u>');
 
         return $this->redirect($this->adminUrlGenerator
             ->setController(self::class)
@@ -94,7 +99,7 @@ class OrderCrudController extends AbstractCrudController
             return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction('index')->generateUrl());
         }
 
-        $this->handleDeliveryState($order, 2, '<u>en cours de livraison</u>');
+        $this->handleOrderState($order, 2, '<u>en cours de livraison</u>');
 
         return $this->redirect($this->adminUrlGenerator
             ->setController(self::class)
@@ -114,7 +119,6 @@ class OrderCrudController extends AbstractCrudController
             IdField::new('id')->onlyOnIndex(),
             DateTimeField::new('createdAt', 'Passée le'),
 
-            // Affiche le user mais ne le rend pas éditable
             TextField::new('user', 'Utilisateur')
                 ->onlyOnDetail()
                 ->formatValue(fn($value, $entity) => (string) $entity->getUser()),
@@ -123,7 +127,6 @@ class OrderCrudController extends AbstractCrudController
             MoneyField::new('total', 'Total produit')->setCurrency('EUR')->setStoredAsCents(false),
             MoneyField::new('carrierPrice', 'Frais de livraison')->setCurrency('EUR')->setStoredAsCents(false),
 
-            // Paiement séparé
             ChoiceField::new('paymentState', 'Paiement')
                 ->setChoices([
                     'Non payée' => 0,
@@ -134,7 +137,6 @@ class OrderCrudController extends AbstractCrudController
                     1 => 'success',
                 ]),
 
-            // Livraison / traitement
             ChoiceField::new('deliveryState', 'Traitement')
                 ->setChoices([
                     'Commande en attente' => 0,
