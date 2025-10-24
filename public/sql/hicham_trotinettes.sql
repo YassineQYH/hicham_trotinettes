@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 21 oct. 2025 à 16:13
+-- Généré le : ven. 24 oct. 2025 à 14:46
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -47,18 +47,18 @@ CREATE TABLE `accessory` (
 INSERT INTO `accessory` (`id`, `weight_id`, `category_id`, `name`, `slug`, `description`, `stock`, `price`, `image`, `is_best`) VALUES
 (1, 3, 3, 'Xtreme Siege', 'Xtreme-Siege', 'Siege pour trott', 3, 15, 'Xtreme-Siege.jpg', 1),
 (2, 8, 4, 'roues etoiles', 'roues-etoiles', 'Roue pour trott', 4, 45, 'roues-etoiles.jpg', 1),
-(3, 2, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'Guidon pour trott', 2, 49, 'guidon-blunt-black-v3.jpg', 0),
+(3, 2, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'Guidon pour trott', 1, 49, 'guidon-blunt-black-v3.jpg', 0),
 (4, 1, 2, 'Frein Jaune', 'freinfreins-jaune', 'Frein pour trott', 0, 19, 'freins-jaune.jpg', 0),
-(6, 5, 2, 'etrier de frein', 'etrier-de-frein', 'etrier-de-frein', 2, 56, 'etrier-de-frein.jpg', 1),
-(7, 3, 4, 'Roues freestyle', 'Roues-freestyle', 'Roues-freestyle', 4, 1, 'Roues-freestyle.jpg', 0),
-(8, 2, 4, 'roues gold', 'roues-gold.jpg', 'roues-gold', 5, 89, 'roues-gold.jpg', 0),
+(6, 5, 2, 'etrier de frein', 'etrier-de-frein', 'etrier-de-frein', 2, 56, 'etrier-de-frein.jpg', 0),
+(7, 3, 4, 'Roues freestyle', 'Roues-freestyle', 'Roues-freestyle', 1, 1, 'Roues-freestyle.jpg', 1),
+(8, 2, 4, 'roues gold', 'roues-gold.jpg', 'roues-gold', 5, 89, 'roues-gold.jpg', 1),
 (9, 4, 4, 'roues stunt', 'roues-stunt', 'roues-stunt', 4, 55, 'roues-stunt.jpg', 0),
-(10, 2, 2, 'freins rouge', 'freins-rouge', 'freins-rouge', 3, 26, 'freins-rouge.jpeg', 0),
+(10, 2, 2, 'freins rouge', 'freins-rouge', 'freins-rouge', 1, 26, 'freins-rouge.jpeg', 1),
 (11, 4, 3, 'siege double', 'siege-double', 'siege-double', 2, 21, 'siege-double.jpg', 0),
-(12, 2, 3, 'siege rouge', 'siege-rouge', 'siege-rouge', 6, 45, 'siege-rouge.jpg', 1),
+(12, 2, 3, 'siege rouge', 'siege-rouge', 'siege-rouge', 6, 45, 'siege-rouge.jpg', 0),
 (13, 3, 3, 'Xtreme Siege', 'Xtreme-Siege', 'Xtreme-Siege', 0, 25, 'Xtreme-Siege.jpg', 0),
 (14, 7, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'guidon-blunt-black-v3', 3, 89, 'guidon-blunt-black-v3.jpg', 0),
-(15, 7, 1, 'guidon multicolor', 'guidon-multicolor', 'guidon-multicolor', 4, 25, 'guidon-multicolor.jpg', 0),
+(15, 7, 1, 'guidon multicolor', 'guidon-multicolor', '<div>guidon-multicolor</div>', 4, 25, 'guidon-multicolor.png', 1),
 (16, 4, 1, 'guidon titanium', 'guidon-titanium', 'guidon-titanium', 0, 48, 'guidon-titanium.jpg', 0);
 
 -- --------------------------------------------------------
@@ -88,7 +88,8 @@ CREATE TABLE `address` (
 INSERT INTO `address` (`id`, `user_id`, `name`, `firstname`, `lastname`, `company`, `address`, `postal`, `city`, `country`, `phone`) VALUES
 (1, 1, 'Maison', 'Yass', 'Qay', NULL, '51 Rue de Konoha', '63200', 'angleur', 'France', '06.11.55.22.51'),
 (2, 2, 'Maison', 'Hich', 'Qay', NULL, '51 Belle jardinère', '63118', 'sart-tilman', 'France', '06.11.55.22.51'),
-(3, 1, 'Travail', 'Yass', 'Qay', NULL, '51 Rue du Hueco Mundo', '63200', 'clermont ferrand', 'France', '06.11.55.22.51');
+(3, 1, 'Travail', 'Yass', 'Qay', NULL, '51 Rue du Hueco Mundo', '63200', 'clermont ferrand', 'France', '06.11.55.22.51'),
+(4, 4, 'Maison', 'Yass', 'Qay', NULL, '17 marie marving', '63200', 'riom', 'FR', '+33641515128');
 
 -- --------------------------------------------------------
 
@@ -182,7 +183,10 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20251016112647', '2025-10-16 13:32:30', 80),
 ('DoctrineMigrations\\Version20251016114952', '2025-10-16 13:49:55', 784),
 ('DoctrineMigrations\\Version20251020123103', '2025-10-20 14:31:12', 488),
-('DoctrineMigrations\\Version20251021122532', '2025-10-21 14:25:42', 224);
+('DoctrineMigrations\\Version20251021122532', '2025-10-21 14:25:42', 224),
+('DoctrineMigrations\\Version20251023123528', '2025-10-23 14:36:34', 124),
+('DoctrineMigrations\\Version20251024083750', '2025-10-24 10:38:21', 79),
+('DoctrineMigrations\\Version20251024124332', '2025-10-24 14:43:49', 219);
 
 -- --------------------------------------------------------
 
@@ -301,19 +305,28 @@ CREATE TABLE `order` (
   `delivery` longtext NOT NULL,
   `reference` varchar(255) NOT NULL,
   `stripe_session_id` varchar(255) DEFAULT NULL,
-  `state` int(11) NOT NULL
+  `payment_state` int(11) NOT NULL,
+  `delivery_state` int(11) NOT NULL,
+  `tracking_number` varchar(255) DEFAULT NULL,
+  `carrier` varchar(255) DEFAULT NULL,
+  `secondary_carrier_tracking_number` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `order`
 --
 
-INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`, `reference`, `stripe_session_id`, `state`) VALUES
-(1, 1, '2025-10-21 14:27:06', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77c1a7c6dd', NULL, 0),
-(2, 1, '2025-10-21 14:29:08', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77c9423c2c', NULL, 0),
-(3, 1, '2025-10-21 14:29:28', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77ca83d2a7', NULL, 0),
-(4, 1, '2025-10-21 14:31:59', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d3f4629b', 'cs_test_b1IFG5Q9gll0ZuAgc3zlYqDKvwrd6uJOHwJcWVZSGbXo8AewDIYVEWUcv9', 0),
-(5, 1, '2025-10-21 14:32:57', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d799ff9b', 'cs_test_b1hL2avKtpCc9IokW6GFqrzSV3jEvMmzBlqosbd8TBlykrOREGjpR1c7YE', 0);
+INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`, `reference`, `stripe_session_id`, `payment_state`, `delivery_state`, `tracking_number`, `carrier`, `secondary_carrier_tracking_number`) VALUES
+(1, 1, '2025-10-21 14:27:06', 23.22, 'Yass Qay 06.11.55.22.51 51 Rue de Konoha 63200 angleur<br>Franc', '21102025-68f77c1a7c6dd', NULL, 0, 0, '13211311123113112211', 'BPOST', NULL),
+(2, 1, '2025-10-21 14:29:08', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77c9423c2c', NULL, 0, 0, '31131211131221', 'BPOST', NULL),
+(3, 1, '2025-10-21 14:29:28', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77ca83d2a7', NULL, 0, 0, '1113213211', 'BPOST', NULL),
+(4, 1, '2025-10-21 14:31:59', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d3f4629b', 'cs_test_b1IFG5Q9gll0ZuAgc3zlYqDKvwrd6uJOHwJcWVZSGbXo8AewDIYVEWUcv9', 0, 0, 'CC088942925FR', 'BPOST', NULL),
+(5, 1, '2025-10-21 14:32:57', 23.22, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f77d799ff9b', 'cs_test_b1hL2avKtpCc9IokW6GFqrzSV3jEvMmzBlqosbd8TBlykrOREGjpR1c7YE', 1, 0, '6G61316524338', 'BPOST', NULL),
+(6, 1, '2025-10-21 16:34:49', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f79a09bd15f', NULL, 1, 0, '6G61366363482', 'BPOST', NULL),
+(7, 1, '2025-10-21 16:35:23', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f79a2bbf571', NULL, 1, 3, '6G61397378424', 'BPOST', NULL),
+(8, 1, '2025-10-21 16:37:04', 19.8, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f79a902672b', 'cs_test_b11AmvahjrP8RuTIhMPNCtqZwyg6T0fJQ81CLWFBzisnEATWsvQWmN8fSD', 1, 1, '6G61397895822', 'LAPOSTE', NULL),
+(9, 1, '2025-10-22 09:35:14', 19.8, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '22102025-68f88932a6b2e', 'cs_test_b1MfDJ2kREupjottpXlscZl1IhorILdWvOFmrGBHtokfu5bVWFuqXapsYo', 1, 3, '6G61398207501', 'LAPOSTE', NULL),
+(10, 4, '2025-10-22 16:28:00', 20.65, 'Yass Qay<br>+33641515128<br>17 marie marving<br>63200 riom<br>FR', '22102025-68f8e9f1541e1', 'cs_test_b16TGqtnQO05GSgFvVzu0G8kdkwP4QvAaAaCwIZ289xG8H11x0UVaRWmMH', 1, 2, 'CC084147325FR', 'LAPOSTE', NULL);
 
 -- --------------------------------------------------------
 
@@ -355,7 +368,24 @@ INSERT INTO `order_details` (`id`, `my_order_id`, `product`, `quantity`, `price`
 (17, 5, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
 (18, 5, 'roues etoiles', 1, 45, 45, '4'),
 (19, 5, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(20, 5, 'freins rouge', 1, 26, 26, '0.5');
+(20, 5, 'freins rouge', 1, 26, 26, '0.5'),
+(21, 6, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(22, 6, 'roues etoiles', 1, 45, 45, '4'),
+(23, 6, 'freins rouge', 1, 26, 26, '0.5'),
+(24, 7, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(25, 7, 'roues etoiles', 1, 45, 45, '4'),
+(26, 7, 'freins rouge', 1, 26, 26, '0.5'),
+(27, 8, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(28, 8, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(29, 8, 'freins rouge', 1, 26, 26, '0.5'),
+(30, 8, 'Roues freestyle', 1, 1, 1, '0.75'),
+(31, 9, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(32, 9, 'guidon blunt black v3', 1, 49, 49, '0.5'),
+(33, 9, 'freins rouge', 1, 26, 26, '0.5'),
+(34, 9, 'Roues freestyle', 1, 1, 1, '0.75'),
+(35, 10, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
+(36, 10, 'Roues freestyle', 2, 1, 2, '0.75'),
+(37, 10, 'freins rouge', 1, 26, 26, '0.5');
 
 -- --------------------------------------------------------
 
@@ -398,7 +428,7 @@ CREATE TABLE `trottinette` (
 --
 
 INSERT INTO `trottinette` (`id`, `weight_id`, `name`, `name_short`, `slug`, `description`, `description_short`, `image`, `is_best`, `is_header`, `header_image`, `header_btn_title`, `stock`, `price`) VALUES
-(1, 25, 'Trottinette électrique honey whale m5 max avec siège', 'Honey Whale M5 Max', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km', 'trottbleue-01.png', 1, 1, 'foot-soccer.jpg', 'test', 5, 599),
+(1, 25, 'Trottinette électrique honey whale m5 max avec siège', 'Honey Whale M5 Max', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km', 'trottbleue-01.png', 1, 1, 'foot-soccer.jpg', 'test', 3, 599),
 (2, 22, 'KUGOO Kukirin C1 Pro', 'KUGOO C1 Pro', 'KUGOO-Kukirin-C1-Pro', 'Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège', 'Vitesse 45 km/h, autonomie 100 km, charge max 120 kg', 'trottjaune-01.jpg', 1, 0, 'foot-hiver.jpg', 'test', 0, 1299),
 (3, 28, 'Bogist M5 Pro', 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km', 'trottvert-01.jpg', 1, 1, 'foot-ete.jpg', 'test', 4, 754);
 
@@ -547,7 +577,9 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `email`, `roles`, `password`, `first_name`, `last_name`, `tel`) VALUES
 (1, 'admin@admin.fr', '[\"ROLE_ADMIN\",\"ROLE_USER\"]', '$2y$13$4bwJInzuXY/eug5T/185NOh32jBDFRFDCp2HH79Xzmkb344xMCdJy', 'Admin', 'Admin', '06 04 05 02 09'),
-(2, 'user@user.fr', '[\"ROLE_USER\"]', '$2y$13$LhrRJcEyiJpsDCwVooctFeP6ee/jHM7M8qigKaJSz1v5bwU5Un7qa', 'User', 'User', '06 01 01 01 02');
+(2, 'user@user.fr', '[\"ROLE_USER\"]', '$2y$13$LhrRJcEyiJpsDCwVooctFeP6ee/jHM7M8qigKaJSz1v5bwU5Un7qa', 'User', 'User', '06 01 01 01 02'),
+(3, 'test@test.fr', '[]', '$2y$13$A0Y74ufwtfrtYNJZ9cHUYufIrqqrpudNWJ.wWbuCURqXN1c8KCYcC', 'test', 'test', '+33641414141'),
+(4, 'yassine.qyh@gmail.com', '[]', '$2y$13$YRpq.Q95CEOdyQSWa.TnLe0oU0QykXGeOHHkcWxQnh3x/909Rd4kO', 'Yass', 'Qay', '+33641512128');
 
 -- --------------------------------------------------------
 
@@ -747,7 +779,7 @@ ALTER TABLE `accessory`
 -- AUTO_INCREMENT pour la table `address`
 --
 ALTER TABLE `address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `caracteristique`
@@ -789,13 +821,13 @@ ALTER TABLE `messenger_messages`
 -- AUTO_INCREMENT pour la table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT pour la table `reset_password`
@@ -831,7 +863,7 @@ ALTER TABLE `trottinette_description_section`
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `weight`
