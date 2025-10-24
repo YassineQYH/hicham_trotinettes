@@ -142,12 +142,15 @@ class OrderCrudController extends AbstractCrudController
                     'Commande en attente' => 0,
                     'Préparation en cours' => 1,
                     'Livraison en cours' => 2,
+                    'Livraison terminée' => 3, // <-- nouveau statut
                 ])
                 ->renderAsBadges([
                     0 => 'secondary',
                     1 => 'warning',
                     2 => 'info',
+                    3 => 'success', // badge vert
                 ]),
+
 
             ArrayField::new('orderDetails', 'Produits achetés')
                 ->setTemplatePath('admin/fields/order_details.html.twig')

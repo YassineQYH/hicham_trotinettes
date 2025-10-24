@@ -44,6 +44,8 @@ class Order
     #[ORM\Column(type: 'integer')]
     private ?int $deliveryState = 0;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $trackingNumber = null;
 
     public function __construct()
     {
@@ -117,4 +119,7 @@ class Order
     // ✅ Livraison (0 = Préparation en cours, 1 = Livraison en cours)
     public function getDeliveryState(): ?int { return $this->deliveryState; }
     public function setDeliveryState(int $deliveryState): self { $this->deliveryState = $deliveryState; return $this; }
+
+    public function getTrackingNumber(): ?string { return $this->trackingNumber; }
+    public function setTrackingNumber(?string $trackingNumber): self { $this->trackingNumber = $trackingNumber; return $this; }
 }
