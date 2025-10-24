@@ -70,14 +70,12 @@ class DeliveryChecker
         // 🔧 MODE DEV : on simule que le colis est livré
         /* return true; */ // Décommenter pour test avec cette cmd : php bin/console app:check-deliveries
 
-
         // -- TEST LOCAL : numéro précis simulé livré --
         /* if ($trackingNumber === '6G61398207501' && $carrier === 'colissimo') {
             // ⚠️ Simulation pour ce numéro de suivi précis
             return true;
         } */
 
-            
         // -- Partie réelle avec l'API Track123 --
         $apiKey = '76b446ff2aa94c6f9622c0b4acd4dab3';
         $url = "https://api.track123.com/v1/trackings/{$trackingNumber}?carrier={$carrier}";
