@@ -2,77 +2,107 @@
 
 {% block content %}
 <div class="dashboard-container" style="max-width:1200px; margin:0 auto; padding:20px;">
+
     <h1>Statistiques Hicham Trotinettes</h1>
 
-    <div class="charts" style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-around;">
-        <!-- 📊 Commandes par mois -->
-        <div style="flex:1 1 500px; min-width:300px;">
+    <!-- Ligne 1 : Commandes par mois et Statut des commandes -->
+    <div style="display:flex; flex-wrap:wrap; gap:30px; justify-content:space-between;">
+
+        <div style="flex:1 1 500px; min-width:300px; max-height:400px;">
             <h2>Commandes par mois</h2>
-            <canvas id="ordersByMonth"></canvas>
+            <canvas id="ordersByMonth" class="dashboard-canvas"></canvas>
         </div>
 
-        <!-- 🥧 Répartition par statut -->
-        <div style="flex:1 1 500px; min-width:300px; max-width:400px;">
+        <div style="flex:1 1 400px; min-width:300px; max-height:400px;">
             <h2>Statut des commandes</h2>
-            <canvas id="ordersByStatus" style="height:300px;"></canvas>
+            <canvas id="ordersByStatus" class="dashboard-canvas"></canvas>
         </div>
 
     </div>
-</div>
 
-<div style="flex:1 1 100%; min-width:300px;">
-    <h2>Chiffre d'affaires par mois (€)</h2>
-    <canvas id="revenueChart"></canvas>
-</div>
+    <!-- Ligne 2 : Chiffre d'affaires -->
+    <div style="margin-top:40px; flex:1 1 100%; min-width:300px; max-height:400px;">
+        <h2>Chiffre d'affaires par mois (€)</h2>
+        <canvas id="revenueChart" class="dashboard-canvas"></canvas>
+    </div>
 
+</div>
 
 {# Chart.js CDN #}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const orderStatusStats = {{ orderStatusStats|json_encode|raw }};
+    const ordersByMonth = {{ ordersByMonth|json_encode|raw }};
+    const orderStatusStats = {{ orderStatusStats|json_encode|raw }};
+    const revenueByMonth = {{ revenueByMonth|json_encode|raw }};
 
-// 📊 Graphique commandes par mois
-const revenueByMonth = {{ revenueByMonth|json_encode|raw }};
+    // 📊 Commandes par mois
+    new Chart(document.getElementById('ordersByMonth'), {
+        type: 'bar',
+        data: {
+            labels: ordersByMonth.labels,
+            datasets: [{
+                label: 'Commandes',
+                data: ordersByMonth.values,
+                backgroundColor: 'rgba(54,162,235,0.7)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
 
-// 💰 Graphique du chiffre d'affaires
-new Chart(document.getElementById('revenueChart'), {
-    type: 'line',
-    data: {
-        labels: revenueByMonth.labels,
-        datasets: [{
-            label: 'Revenu mensuel (€)',
-            data: revenueByMonth.values,
-            fill: true,
-            borderColor: 'rgba(40,167,69,0.9)',
-            backgroundColor: 'rgba(40,167,69,0.2)',
-            tension: 0.3
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: { y: { beginAtZero: true } },
-        plugins: { legend: { position: 'bottom' } }
-    }
-});
+    // 🥧 Statut des commandes
+    new Chart(document.getElementById('ordersByStatus'), {
+        type: 'pie',
+        data: {
+            labels: orderStatusStats.labels,
+            datasets: [{
+                label: 'Commandes par statut',
+                data: orderStatusStats.values,
+                backgroundColor: [
+                    '#007bff', '#28a745', '#ffc107', '#17a2b8', '#6c757d', '#dc3545'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
 
-
-// 🥧 Graphique répartition des statuts
-new Chart(document.getElementById('ordersByStatus'), {
-    type: 'pie',
-    data: {
-        labels: orderStatusStats.labels,
-        datasets: [{
-            label: 'Commandes par statut',
-            data: orderStatusStats.values,
-            backgroundColor: [
-                '#007bff', '#28a745', '#ffc107', '#17a2b8', '#6c757d', '#dc3545'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: { legend: { position: 'bottom' } }
-    }
-});
+    // 💰 Chiffre d'affaires
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: revenueByMonth.labels,
+            datasets: [{
+                label: 'Revenu mensuel (€)',
+                data: revenueByMonth.values,
+                fill: true,
+                borderColor: 'rgba(40,167,69,0.9)',
+                backgroundColor: 'rgba(40,167,69,0.2)',
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
 </script>
+
+<style>
+    /* Classe pour harmoniser tous les canvas */
+    .dashboard-canvas {
+        height: 300px;
+        max-height: 400px;
+        width: 100%;
+    }
+</style>
 {% endblock %}
