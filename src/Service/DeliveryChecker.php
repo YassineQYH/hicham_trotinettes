@@ -26,17 +26,25 @@ class DeliveryChecker
         $orders = $this->orderRepository->findBy(['deliveryState' => 2]);
 
         foreach ($orders as $order) {
-            $trackingNumber = $order->getTrackingNumber();
-            $carrier = $order->getCarrier(); // ← il faut que ce champ existe sur ta commande
-            $secondaryTracking = $order->getSecondaryCarrierTrackingNumber(); // ← futur usage, peut être null
+            $primaryTracking = $order->getTrackingNumber();
+            $primaryCarrier = $order->getCarrier();
 
-            // Si pas de tracking ou pas de carrier, on skip
-            if (!$trackingNumber || !$carrier) {
+            $secondaryTracking = $order->getSecondaryCarrierTrackingNumber();
+            $secondaryCarrier = $order->getSecondaryCarrier(); // Optionnel pour l’instant, null si non utilisé
+
+            // Skip si pas de tracking principal ou carrier
+            if (!$primaryTracking || !$primaryCarrier) {
                 continue;
             }
 
-            // Vérifie le statut via Track123
-            if ($this->isDelivered($trackingNumber, $carrier)) {
+            $delivered = $this->isDelivered($primaryTracking, $primaryCarrier);
+
+            // Vérifie le second tracking si existant et non livré
+            if (!$delivered && $secondaryTracking && $secondaryCarrier) {
+                $delivered = $this->isDelivered($secondaryTracking, $secondaryCarrier);
+            }
+
+            if ($delivered) {
                 $order->setDeliveryState(3);
                 $this->em->persist($order);
 
@@ -60,10 +68,10 @@ class DeliveryChecker
     private function isDelivered(string $trackingNumber, string $carrier): bool
     {
         // 🔧 MODE DEV : on simule que le colis est livré
-        /* return true; */ // Force le statut livré pour test */ /* Mettre return true pour tester en DEV pour dire que le colis est livré sans passer par l'API */
+        return true; // Décommenter pour test
 
-        // -- Partie réelle à réactiver --
-        $apiKey = '76b446ff2aa94c6f9622c0b4acd4dab3';
+        // -- Partie réelle avec l'API Track123 --
+        /* $apiKey = '76b446ff2aa94c6f9622c0b4acd4dab3';
         $url = "https://api.track123.com/v1/trackings/{$trackingNumber}?carrier={$carrier}";
 
         $ch = curl_init();
@@ -76,6 +84,6 @@ class DeliveryChecker
         $data = json_decode($response, true);
 
         // Retourne true si le colis est livré
-        return isset($data['status']) && $data['status'] === 'delivered';
+        return isset($data['status']) && $data['status'] === 'delivered'; */
     }
 }

@@ -33,13 +33,11 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        // Bouton rapide "Préparation en cours" uniquement si commande en attente
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')
             ->linkToCrudAction('updatePreparation')
             ->displayIf(static fn($order) => $order->getDeliveryState() === 0)
             ->setHtmlAttributes(['data-id' => 'entity.id']);
 
-        // Bouton rapide "Livraison en cours" uniquement si commande en préparation
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')
             ->linkToCrudAction('updateDelivery')
             ->displayIf(static fn($order) => $order->getDeliveryState() === 1)
@@ -58,14 +56,13 @@ class OrderCrudController extends AbstractCrudController
 
         $this->addFlash('notice', $message);
 
-        // Envoi du mail
         $mail = new Mail();
-        $content = "Bonjour ".$order->getUser()->getFirstName()."<br>Hich'Trott vous informe que votre commande n°<strong>"
-            .$order->getReference()."</strong> est ".$message;
+        $content = "Bonjour " . $order->getUser()->getFirstName() . "<br>Hich'Trott vous informe que votre commande n°<strong>"
+            . $order->getReference() . "</strong> est " . $message;
         $mail->send(
             $order->getUser()->getEmail(),
             $order->getUser()->getFirstName(),
-            "Votre commande ".$order->getReference(),
+            "Votre commande " . $order->getReference(),
             $content
         );
     }
@@ -142,16 +139,21 @@ class OrderCrudController extends AbstractCrudController
                     'Commande en attente' => 0,
                     'Préparation en cours' => 1,
                     'Livraison en cours' => 2,
-                    'Livraison terminée' => 3, // <-- nouveau statut
+                    'Livraison terminée' => 3,
                 ])
                 ->renderAsBadges([
                     0 => 'secondary',
                     1 => 'warning',
                     2 => 'info',
-                    3 => 'success', // badge vert
+                    3 => 'success',
                 ]),
 
+            // 🟢 Transporteur & suivi - maintenant éditables
+            TextField::new('carrier', 'Transporteur principal')->onlyOnDetail()->setFormTypeOption('disabled', false),
+            TextField::new('trackingNumber', 'Numéro de suivi principal')->onlyOnDetail()->setFormTypeOption('disabled', false),
+            TextField::new('secondaryCarrierTrackingNumber', 'Numéro de suivi secondaire')->onlyOnDetail()->setFormTypeOption('disabled', false),
 
+            // 🟢 Produits achetés
             ArrayField::new('orderDetails', 'Produits achetés')
                 ->setTemplatePath('admin/fields/order_details.html.twig')
                 ->onlyOnDetail(),

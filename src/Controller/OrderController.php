@@ -124,6 +124,7 @@ class OrderController extends AbstractController
 
             // Création de la commande
             $order = new Order();
+            $order->setCarrier('bpost'); // 🚚 Transporteur par défaut
             $reference = $date->format('dmY') . '-' . uniqid();
 
             $order->setReference($reference);

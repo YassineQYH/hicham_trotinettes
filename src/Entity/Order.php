@@ -50,15 +50,19 @@ class Order
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $carrier = null;
 
+    // 🟢 --- SECONDARY TRANSPORT ---
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $secondaryCarrierTrackingNumber = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $secondaryCarrier = null;
 
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
     }
 
-        public function __toString(): string
+    public function __toString(): string
     {
         return $this->reference ?? 'Commande n°' . $this->id;
     }
@@ -132,7 +136,9 @@ class Order
     public function getCarrier(): ?string { return $this->carrier; }
     public function setCarrier(?string $carrier): self { $this->carrier = $carrier; return $this; }
 
-    public function getSecondaryCarrierTrackingNumber(): ?string {return $this->secondaryCarrierTrackingNumber; }
-    public function setSecondaryCarrierTrackingNumber(?string $trackingNumber): self {$this->secondaryCarrierTrackingNumber = $trackingNumber;return $this; }
+    public function getSecondaryCarrierTrackingNumber(): ?string { return $this->secondaryCarrierTrackingNumber; }
+    public function setSecondaryCarrierTrackingNumber(?string $trackingNumber): self { $this->secondaryCarrierTrackingNumber = $trackingNumber; return $this; }
 
+    public function getSecondaryCarrier(): ?string { return $this->secondaryCarrier; }
+    public function setSecondaryCarrier(?string $carrier): self { $this->secondaryCarrier = $carrier; return $this; }
 }
