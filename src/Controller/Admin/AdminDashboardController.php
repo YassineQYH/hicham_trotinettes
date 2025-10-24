@@ -35,8 +35,9 @@ class AdminDashboardController extends AbstractDashboardController
     {
         // Affichage du template custom avec les graphiques
         return $this->render('admin/dashboard.html.twig', [
-            'statsAccessories' => $this->getAccessoryStats(),
-            'statsTrottinettes' => $this->getTrottinetteStats(),
+            'orderStatusStats' => $this->getOrderStatusStats(),
+            'ordersByMonth' => $this->getOrdersByMonth(),
+            'revenueByMonth' => $this->getRevenueByMonth(),
         ]);
     }
 
@@ -89,43 +90,117 @@ class AdminDashboardController extends AbstractDashboardController
     // -------------------------------
     // Méthodes pour récupérer les données graphiques
     // -------------------------------
-    private function getAccessoryStats(): array
+    private function getOrderStats(): array
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('a.name AS accessory', 'COUNT(ta.id) AS trottinettes')
-            ->from(Accessory::class, 'a')
-            ->leftJoin('a.trottinetteAccessories', 'ta')
-            ->groupBy('a.id');
+        $conn = $this->em->getConnection();
+        $sql = "
+            SELECT
+                DATE_FORMAT(o.created_at, '%Y-%m') AS month,
+                COUNT(o.id) AS total_orders
+            FROM `order` o
+            GROUP BY month
+            ORDER BY month ASC
+        ";
 
-        $results = $qb->getQuery()->getResult();
+        $results = $conn->executeQuery($sql)->fetchAllAssociative();
 
         $labels = [];
         $values = [];
+
         foreach ($results as $row) {
-            $labels[] = $row['accessory'];
-            $values[] = $row['trottinettes'];
+            $labels[] = $row['month'];
+            $values[] = $row['total_orders'];
         }
 
         return ['labels' => $labels, 'values' => $values];
     }
 
-    private function getTrottinetteStats(): array
-    {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('t.isBest', 't.isHeader', 'COUNT(t.id) AS count')
-            ->from(Trottinette::class, 't')
-            ->groupBy('t.isBest')
-            ->addGroupBy('t.isHeader');
 
-        $results = $qb->getQuery()->getResult();
+    private function getOrdersByMonth(): array
+    {
+        $conn = $this->em->getConnection();
+        $sql = "
+            SELECT
+                MONTH(o.created_at) AS month,
+                COUNT(o.id) AS total
+            FROM `order` o
+            GROUP BY month
+            ORDER BY month ASC
+        ";
+
+        $results = $conn->executeQuery($sql)->fetchAllAssociative();
 
         $labels = [];
         $values = [];
+
         foreach ($results as $row) {
-            $labels[] = ($row['isBest'] ? 'Best ' : '') . ($row['isHeader'] ? 'Header' : '');
-            $values[] = $row['count'];
+            // Pour rendre le mois lisible, tu peux convertir le numéro en texte
+            $labels[] = date('F', mktime(0, 0, 0, $row['month'], 1));
+            $values[] = $row['total'];
         }
 
         return ['labels' => $labels, 'values' => $values];
     }
+
+    private function getOrderStatusStats(): array
+    {
+        $conn = $this->em->getConnection();
+        $sql = "
+            SELECT
+                CONCAT(o.payment_state, '-', o.delivery_state) AS combined_status,
+                COUNT(o.id) AS total
+            FROM `order` o
+            GROUP BY combined_status
+        ";
+
+        $results = $conn->executeQuery($sql)->fetchAllAssociative();
+
+        $labels = [];
+        $values = [];
+
+        foreach ($results as $row) {
+            [$payment, $delivery] = explode('-', $row['combined_status']);
+            $statusLabel = '';
+
+            if ($payment == 0) $statusLabel = 'Non payée';
+            elseif ($payment == 1 && $delivery == 0) $statusLabel = 'Payée - Préparation';
+            elseif ($payment == 1 && $delivery == 1) $statusLabel = 'Payée - En livraison';
+            else $statusLabel = 'Inconnu';
+
+            $labels[] = $statusLabel;
+            $values[] = $row['total'];
+        }
+
+        return ['labels' => $labels, 'values' => $values];
+    }
+
+    private function getRevenueByMonth(): array
+    {
+        $conn = $this->em->getConnection();
+
+        $sql = "
+            SELECT
+                DATE_FORMAT(o.created_at, '%Y-%m') AS month,
+                SUM(od.price * od.quantity) AS revenue
+            FROM `order` o
+            JOIN order_details od ON od.my_order_id = o.id
+            WHERE o.payment_state = 1
+            GROUP BY month
+            ORDER BY month ASC
+        ";
+
+        $results = $conn->executeQuery($sql)->fetchAllAssociative();
+
+        $labels = [];
+        $values = [];
+
+        foreach ($results as $row) {
+            $labels[] = $row['month'];
+            $values[] = round($row['revenue'], 2);
+        }
+
+        return ['labels' => $labels, 'values' => $values];
+    }
+
+
 }
