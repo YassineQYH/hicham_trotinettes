@@ -68,22 +68,42 @@ class DeliveryChecker
     private function isDelivered(string $trackingNumber, string $carrier): bool
     {
         // 🔧 MODE DEV : on simule que le colis est livré
-        return true; // Décommenter pour test
+        /* return true; */ // Décommenter pour test avec cette cmd : php bin/console app:check-deliveries
 
+
+        // -- TEST LOCAL : numéro précis simulé livré --
+        /* if ($trackingNumber === '6G61398207501' && $carrier === 'colissimo') {
+            // ⚠️ Simulation pour ce numéro de suivi précis
+            return true;
+        } */
+
+            
         // -- Partie réelle avec l'API Track123 --
-        /* $apiKey = '76b446ff2aa94c6f9622c0b4acd4dab3';
+        $apiKey = '76b446ff2aa94c6f9622c0b4acd4dab3';
         $url = "https://api.track123.com/v1/trackings/{$trackingNumber}?carrier={$carrier}";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer {$apiKey}"]);
+
+        // ⚠️ OPTIONS POUR TEST LOCAL : ignorer les erreurs SSL
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // à enlever une fois en PROD
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // à enlever une fois en PROD
+
         $response = curl_exec($ch);
+
+        if ($response === false) {
+            // Affiche l'erreur curl si besoin
+            var_dump(curl_error($ch));
+        }
+
         curl_close($ch);
 
         $data = json_decode($response, true);
 
         // Retourne true si le colis est livré
-        return isset($data['status']) && $data['status'] === 'delivered'; */
+        return isset($data['status']) && $data['status'] === 'delivered';
     }
+
 }
