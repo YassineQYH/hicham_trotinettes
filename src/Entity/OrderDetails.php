@@ -32,6 +32,9 @@ class OrderDetails
     #[ORM\Column(type: 'string', length: 64)]
     private ?string $weight = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $tva = null;
+
     public function __toString(): string
     {
         return $this->getProduct().' x'.$this->getQuantity().' - Taille '.$this->getWeight();
@@ -56,4 +59,7 @@ class OrderDetails
 
     public function getWeight(): ?string { return $this->weight; }
     public function setWeight(string $weight): self { $this->weight = $weight; return $this; }
+
+    public function getTva(): ?float{return $this->tva;}
+    public function setTva(?float $tva): self{$this->tva = $tva;return $this;}
 }

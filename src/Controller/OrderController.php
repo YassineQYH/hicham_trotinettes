@@ -94,7 +94,7 @@ class OrderController extends AbstractController
         $prixLivraison = $poidsTarif ? $poidsTarif->getPrice() : 0;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $date = new DateTime();
+            $date = new \DateTime();
             $delivery = $form->get('addresses')->getData();
 
             $deliveryContent = sprintf(
@@ -133,6 +133,10 @@ class OrderController extends AbstractController
                 $orderDetails->setPrice($produit->getPrice());
                 $orderDetails->setTotal($produit->getPrice() * $quantite);
 
+                // ----- AJOUT DE LA TVA -----
+                $tvaValue = $produit->getTva() ? $produit->getTva()->getValue() : 0;
+                $orderDetails->setTva($tvaValue);
+
                 $this->entityManager->persist($orderDetails);
             }
 
@@ -150,6 +154,7 @@ class OrderController extends AbstractController
 
         return $this->redirectToRoute('cart');
     }
+
 
     #[Route('/account/order/{reference}/facture', name: 'account_order_invoice', methods: ['GET'])]
     public function generateInvoice(string $reference, Request $request): Response

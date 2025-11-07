@@ -68,10 +68,10 @@
                     <td>{{ item.product }}</td>
                     <td>x{{ item.quantity }}</td>
                     <td>{{ item.weight * item.quantity }} kg</td>
-                    <td>{{ (item.price / 100)|number_format(2, ',', '.') }} €</td>
-                    <td>{{ ((item.price * (1 + tvaRate)) / 100)|number_format(2, ',', '.') }} €</td>
-                    <td>{{ (totalItemHT / 100)|number_format(2, ',', '.') }} €</td>
-                    <td>{{ (totalItemTTC / 100)|number_format(2, ',', '.') }} €</td>
+                    <td>{{ (item.price)|number_format(2, ',', '.') }} €</td>
+                    <td>{{ ((item.price * (1 + tvaRate)))|number_format(2, ',', '.') }} €</td>
+                    <td>{{ (totalItemHT)|number_format(2, ',', '.') }} €</td>
+                    <td>{{ (totalItemTTC)|number_format(2, ',', '.') }} €</td>
                 </tr>
                 {% set totalHT = totalHT + totalItemHT %}
                 {% set totalTTC = totalTTC + totalItemTTC %}
@@ -81,23 +81,22 @@
     </table>
 
     {# Totaux de la commande #}
-    {% set tvaAmount = totalHT * tvaRate %}
-    {% set totalProduitsTTC = totalHT + tvaAmount %}
-    {% set totalCommande = totalProduitsTTC + order.carrierPrice * 100 %}
+    {% set totalProduitsTTC = totalTTC %}
+    {% set totalCommande = totalProduitsTTC + order.carrierPrice %}
 
     <table class="table table-bordered mt-4" style="max-width: 400px; float: right;">
         <tbody>
             <tr>
                 <td><strong>Total produits HT :</strong></td>
-                <td class="text-end">{{ (totalHT / 100)|number_format(2, ',', '.') }} €</td>
+                <td class="text-end">{{ (totalHT)|number_format(2, ',', '.') }} €</td>
             </tr>
             <tr>
-                <td><strong>TVA ({{ (tvaRate*100)|number_format(0) }}%) :</strong></td>
-                <td class="text-end">{{ (tvaAmount / 100)|number_format(2, ',', '.') }} €</td>
+                <td><strong>TVA :</strong></td>
+                <td class="text-end">{{ (totalTTC - totalHT)|number_format(2, ',', '.') }} €</td>
             </tr>
             <tr>
                 <td><strong>Total produits TTC :</strong></td>
-                <td class="text-end">{{ (totalProduitsTTC / 100)|number_format(2, ',', '.') }} €</td>
+                <td class="text-end">{{ (totalProduitsTTC)|number_format(2, ',', '.') }} €</td>
             </tr>
             <tr>
                 <td><strong>Frais de livraison :</strong></td>
@@ -105,7 +104,7 @@
             </tr>
             <tr>
                 <td><strong>Total commande :</strong></td>
-                <td class="text-end">{{ (totalCommande / 100)|number_format(2, ',', '.') }} €</td>
+                <td class="text-end">{{ (totalCommande)|number_format(2, ',', '.') }} €</td>
             </tr>
             <tr>
                 <td><strong>Transporteur :</strong></td>
@@ -113,6 +112,7 @@
             </tr>
         </tbody>
     </table>
+
 
 </div>
 {% endblock %}

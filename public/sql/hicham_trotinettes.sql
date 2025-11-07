@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 07 nov. 2025 à 15:21
+-- Généré le : ven. 07 nov. 2025 à 15:59
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -190,7 +190,8 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20251024124332', '2025-10-24 14:43:49', 219),
 ('DoctrineMigrations\\Version20251024130735', '2025-10-24 15:07:47', 186),
 ('DoctrineMigrations\\Version20251107134020', '2025-11-07 14:40:53', 364),
-('DoctrineMigrations\\Version20251107134816', '2025-11-07 14:48:27', 191);
+('DoctrineMigrations\\Version20251107134816', '2025-11-07 14:48:27', 191),
+('DoctrineMigrations\\Version20251107144945', '2025-11-07 15:49:51', 104);
 
 -- --------------------------------------------------------
 
@@ -347,53 +348,54 @@ CREATE TABLE `order_details` (
   `quantity` int(11) NOT NULL,
   `price` double NOT NULL,
   `total` double NOT NULL,
-  `weight` varchar(64) NOT NULL
+  `weight` varchar(64) NOT NULL,
+  `tva` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `order_details`
 --
 
-INSERT INTO `order_details` (`id`, `my_order_id`, `product`, `quantity`, `price`, `total`, `weight`) VALUES
-(1, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(2, 1, 'roues etoiles', 1, 45, 45, '4'),
-(3, 1, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(4, 1, 'freins rouge', 1, 26, 26, '0.5'),
-(5, 2, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(6, 2, 'roues etoiles', 1, 45, 45, '4'),
-(7, 2, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(8, 2, 'freins rouge', 1, 26, 26, '0.5'),
-(9, 3, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(10, 3, 'roues etoiles', 1, 45, 45, '4'),
-(11, 3, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(12, 3, 'freins rouge', 1, 26, 26, '0.5'),
-(13, 4, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(14, 4, 'roues etoiles', 1, 45, 45, '4'),
-(15, 4, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(16, 4, 'freins rouge', 1, 26, 26, '0.5'),
-(17, 5, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(18, 5, 'roues etoiles', 1, 45, 45, '4'),
-(19, 5, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(20, 5, 'freins rouge', 1, 26, 26, '0.5'),
-(21, 6, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(22, 6, 'roues etoiles', 1, 45, 45, '4'),
-(23, 6, 'freins rouge', 1, 26, 26, '0.5'),
-(24, 7, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(25, 7, 'roues etoiles', 1, 45, 45, '4'),
-(26, 7, 'freins rouge', 1, 26, 26, '0.5'),
-(27, 8, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(28, 8, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(29, 8, 'freins rouge', 1, 26, 26, '0.5'),
-(30, 8, 'Roues freestyle', 1, 1, 1, '0.75'),
-(31, 9, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(32, 9, 'guidon blunt black v3', 1, 49, 49, '0.5'),
-(33, 9, 'freins rouge', 1, 26, 26, '0.5'),
-(34, 9, 'Roues freestyle', 1, 1, 1, '0.75'),
-(35, 10, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(36, 10, 'Roues freestyle', 2, 1, 2, '0.75'),
-(37, 10, 'freins rouge', 1, 26, 26, '0.5'),
-(38, 11, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14'),
-(39, 11, 'Xtreme Siege', 1, 15, 15, '0.75');
+INSERT INTO `order_details` (`id`, `my_order_id`, `product`, `quantity`, `price`, `total`, `weight`, `tva`) VALUES
+(1, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(2, 1, 'roues etoiles', 1, 45, 45, '4', 21),
+(3, 1, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(4, 1, 'freins rouge', 1, 26, 26, '0.5', 21),
+(5, 2, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(6, 2, 'roues etoiles', 1, 45, 45, '4', 21),
+(7, 2, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(8, 2, 'freins rouge', 1, 26, 26, '0.5', 21),
+(9, 3, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(10, 3, 'roues etoiles', 1, 45, 45, '4', 21),
+(11, 3, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(12, 3, 'freins rouge', 1, 26, 26, '0.5', 21),
+(13, 4, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(14, 4, 'roues etoiles', 1, 45, 45, '4', 21),
+(15, 4, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(16, 4, 'freins rouge', 1, 26, 26, '0.5', 21),
+(17, 5, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(18, 5, 'roues etoiles', 1, 45, 45, '4', 21),
+(19, 5, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(20, 5, 'freins rouge', 1, 26, 26, '0.5', 21),
+(21, 6, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(22, 6, 'roues etoiles', 1, 45, 45, '4', 21),
+(23, 6, 'freins rouge', 1, 26, 26, '0.5', 21),
+(24, 7, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(25, 7, 'roues etoiles', 1, 45, 45, '4', 21),
+(26, 7, 'freins rouge', 1, 26, 26, '0.5', 21),
+(27, 8, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(28, 8, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(29, 8, 'freins rouge', 1, 26, 26, '0.5', 21),
+(30, 8, 'Roues freestyle', 1, 1, 1, '0.75', 21),
+(31, 9, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(32, 9, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
+(33, 9, 'freins rouge', 1, 26, 26, '0.5', 21),
+(34, 9, 'Roues freestyle', 1, 1, 1, '0.75', 21),
+(35, 10, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(36, 10, 'Roues freestyle', 2, 1, 2, '0.75', 21),
+(37, 10, 'freins rouge', 1, 26, 26, '0.5', 21),
+(38, 11, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
+(39, 11, 'Xtreme Siege', 1, 15, 15, '0.75', 21);
 
 -- --------------------------------------------------------
 
