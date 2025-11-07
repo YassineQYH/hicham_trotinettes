@@ -10,6 +10,7 @@ use App\Entity\Illustrationaccess;
 use App\Entity\TrottinetteAccessory;
 use App\Entity\Weight;
 use App\Entity\CategoryAccessory;
+use App\Entity\Tva;
 
 #[ORM\Entity(repositoryClass: AccessoryRepository::class)]
 class Accessory
@@ -40,21 +41,21 @@ class Accessory
 
     // ------------------- Relations -------------------
 
-    // Pivot TrottinetteAccessory
     #[ORM\OneToMany(mappedBy: "accessory", targetEntity: TrottinetteAccessory::class, cascade: ["persist", "remove"])]
     private Collection $trottinetteAccessories;
 
-    // Illustrations
     #[ORM\OneToMany(mappedBy:"accessory", targetEntity: Illustrationaccess::class, cascade: ["persist", "remove"])]
     private Collection $illustrationaccess;
 
-    // Poids
     #[ORM\ManyToOne(targetEntity: Weight::class, inversedBy: "accessories")]
     private ?Weight $weight = null;
 
-    // Catégorie
     #[ORM\ManyToOne(targetEntity: CategoryAccessory::class, inversedBy: "accessories")]
     private ?CategoryAccessory $category = null;
+
+    #[ORM\ManyToOne(inversedBy: "accessories")]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tva $tva = null;
 
     public function __construct()
     {
@@ -72,8 +73,8 @@ class Accessory
         return '/uploads/accessoires/' . $this->image;
     }
 
-
     // ------------------- GETTERS & SETTERS -------------------
+
     public function getId(): ?int { return $this->id; }
 
     public function getName(): ?string { return $this->name; }
@@ -97,7 +98,9 @@ class Accessory
     public function getIsBest(): bool { return $this->isBest; }
     public function setIsBest(bool $isBest): self { $this->isBest = $isBest; return $this; }
 
-    // ------------------- Illustrations -------------------
+    public function getTva(): ?Tva { return $this->tva; }
+    public function setTva(?Tva $tva): self { $this->tva = $tva; return $this; }
+
     /** @return Collection<int, Illustrationaccess> */
     public function getIllustrationaccess(): Collection { return $this->illustrationaccess; }
     public function addIllustrationaccess(Illustrationaccess $illustrationaccess): self {
@@ -116,7 +119,6 @@ class Accessory
         return $this;
     }
 
-    // ------------------- TrottinetteAccessories -------------------
     /** @return Collection<int, TrottinetteAccessory> */
     public function getTrottinetteAccessories(): Collection { return $this->trottinetteAccessories; }
     public function addTrottinetteAccessory(TrottinetteAccessory $ta): self {
@@ -133,11 +135,9 @@ class Accessory
         return $this;
     }
 
-    // ------------------- Weight -------------------
     public function getWeight(): ?Weight { return $this->weight; }
     public function setWeight(?Weight $weight): self { $this->weight = $weight; return $this; }
 
-    // ------------------- Category -------------------
     public function getCategory(): ?CategoryAccessory { return $this->category; }
     public function setCategory(?CategoryAccessory $category): self { $this->category = $category; return $this; }
 }

@@ -11,6 +11,7 @@ use App\Entity\TrottinetteDescriptionSection;
 use App\Entity\TrottinetteAccessory;
 use App\Entity\Illustration;
 use App\Entity\Weight;
+use App\Entity\Tva;
 
 #[ORM\Entity(repositoryClass: TrottinetteRepository::class)]
 class Trottinette
@@ -57,6 +58,10 @@ class Trottinette
     #[ORM\ManyToOne(targetEntity: Weight::class, inversedBy: "trottinettes")]
     private ?Weight $weight = null;
 
+    #[ORM\ManyToOne(inversedBy: "trottinettes")]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Tva $tva = null;
+
     // ------------------- Relations -------------------
 
     #[ORM\OneToMany(mappedBy: "trottinette", targetEntity: Illustration::class, cascade: ["persist", "remove"])]
@@ -88,7 +93,6 @@ class Trottinette
     {
         return '/uploads/trottinettes/' . $this->image;
     }
-
 
     // ------------------- GETTERS & SETTERS -------------------
 
@@ -133,7 +137,9 @@ class Trottinette
     public function getWeight(): ?Weight { return $this->weight; }
     public function setWeight(?Weight $weight): self { $this->weight = $weight; return $this; }
 
-    // ------------------- Illustrations -------------------
+    public function getTva(): ?Tva { return $this->tva; }
+    public function setTva(?Tva $tva): self { $this->tva = $tva; return $this; }
+
     /** @return Collection<int, Illustration> */
     public function getIllustration(): Collection { return $this->illustration; }
     public function addIllustration(Illustration $illustration): self {
@@ -152,7 +158,6 @@ class Trottinette
         return $this;
     }
 
-    // ------------------- TrottinetteCaracteristiques -------------------
     /** @return Collection<int, TrottinetteCaracteristique> */
     public function getTrottinetteCaracteristiques(): Collection { return $this->trottinetteCaracteristiques; }
     public function addTrottinetteCaracteristique(TrottinetteCaracteristique $tc): self {
@@ -169,7 +174,6 @@ class Trottinette
         return $this;
     }
 
-    // ------------------- TrottinetteAccessories -------------------
     /** @return Collection<int, TrottinetteAccessory> */
     public function getTrottinetteAccessories(): Collection { return $this->trottinetteAccessories; }
     public function addTrottinetteAccessory(TrottinetteAccessory $ta): self {
@@ -188,7 +192,6 @@ class Trottinette
 
     public function getAccessories(): Collection { return $this->getTrottinetteAccessories(); }
 
-    // ------------------- DescriptionSections -------------------
     /** @return Collection<int, TrottinetteDescriptionSection> */
     public function getDescriptionSections(): Collection { return $this->descriptionSections; }
     public function addDescriptionSection(TrottinetteDescriptionSection $section): self {
