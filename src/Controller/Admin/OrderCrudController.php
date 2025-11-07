@@ -99,9 +99,21 @@ class OrderCrudController extends AbstractCrudController
         $order = $this->getOrderFromContext($context);
         if (!$order) return $this->redirectToOrderIndex();
 
+        // Génération d’un QR code interne basé sur la référence commande
+        $qrCode = new QrCode($order->getReference());
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+
+        // Sauvegarde temporaire du QR
+        $tempPath = sys_get_temp_dir() . '/qr_internal_' . $order->getId() . '.png';
+        $result->saveToFile($tempPath);
+
         return $this->pdfService->generate(
             'admin/order/internal_label.html.twig',
-            ['order' => $order],
+            [
+                'order' => $order,
+                'qrCodePath' => $tempPath
+            ],
             'etiquette_interne_' . $order->getReference() . '.pdf',
             'attachment'
         );
