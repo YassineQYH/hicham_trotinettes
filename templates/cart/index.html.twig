@@ -17,32 +17,25 @@
                     <th scope="col">Produit</th>
                     <th scope="col"></th>
                     <th scope="col">Quantité</th>
-                    <th scope="col">Prix/unité HT</th>
-                    <th scope="col">Prix/unité TTC</th>
-                    <th scope="col">Total HT</th>
                     <th scope="col">Total TTC</th>
                     <th scope="col">Poids</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
-                {% set totalHT = 0 %}
                 {% set totalTTC = 0 %}
                 {% set totalWeight = 0 %}
                 {% for item in cart %}
                     {% set priceHT = item.product.price %}
                     {% set tvaRate = (item.product.tva.value ?? 20) / 100 %}
-                    {% set totalItemHT = priceHT * item.quantity %}
-                    {% set totalItemTTC = totalItemHT * (1 + tvaRate) %}
+                    {% set priceTTC = priceHT * (1 + tvaRate) %}
+                    {% set totalItemTTC = priceTTC * item.quantity %}
                     {% set totalWeight = totalWeight + (item.product.weight.kg * item.quantity) %}
 
                     <tr>
                         <td>{{ item.product.name }}</td>
                         <td>{{ item.product.description|default('') }}</td>
                         <td>x{{ item.quantity }}</td>
-                        <td>{{ priceHT|number_format(2, ',', '.') }} €</td>
-                        <td>{{ (priceHT * (1 + tvaRate))|number_format(2, ',', '.') }} €</td>
-                        <td>{{ totalItemHT|number_format(2, ',', '.') }} €</td>
                         <td>{{ totalItemTTC|number_format(2, ',', '.') }} €</td>
                         <td>{{ (item.product.weight.kg * item.quantity) }} Kg</td>
                         <td>
@@ -52,24 +45,20 @@
                         </td>
                     </tr>
 
-                    {% set totalHT = totalHT + totalItemHT %}
                     {% set totalTTC = totalTTC + totalItemTTC %}
                 {% endfor %}
-
-
-
             </tbody>
         </table>
 
         <div class="text-right mb-5">
             <b>Nombre de produits :</b> {{ quantity_product }}<br>
-            <b>Total HT :</b> {{ totalHT|number_format(2, ',', '.') }} €<br>
             <b>Total TTC :</b> {{ totalTTC|number_format(2, ',', '.') }} €<br>
             <b>Poids total :</b> {{ totalWeight }} kg<br>
             <b>Prix livraison :</b> {{ price|number_format(2, ',', '.') }} €<br>
-            <b>Prix Total :</b> {{ (totalTTC + price)|number_format(2, ',', '.') }} €
+            <b>Prix Total :</b> {{ (totalTTC + price)|number_format(2, ',', '.') }} €<br>
+            <small class="text-muted">TVA incluse</small>
 
-            <a href="{{ path('order') }}" class="btn btn-success btn-block">Valider mon panier</a>
+            <a href="{{ path('order') }}" class="btn btn-success btn-block mt-3">Valider mon panier</a>
         </div>
     {% else %}
         <hr>

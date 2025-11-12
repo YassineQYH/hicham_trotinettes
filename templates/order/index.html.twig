@@ -9,7 +9,7 @@
 {% block content %}<br><br><br><br><br><br><br>
     <div class="container">
         <h2>Je passe ma commande</h2>
-        <p>Choisissez vos préférences avant de passer votre commande sur La Boutique SY-Shop.</p>
+        <p>Choisissez vos préférences avant de passer votre commande sur La Boutique Hich-Trott.</p>
         <hr>
         <div class="row">
             <div class="col-md-6">
@@ -22,26 +22,32 @@
                 {% endset %}
 
                 {{ formHtml|replace({'[br]' : '</br>'})|raw }}
-
             </div>
+
             <div class="col-md-6">
                 <div class="text-center">
                     <b>Récap de ma commande</b></br>
                     <p>Retrouvez le récapitulatif de vos produits.</p>
                 </div>
-                {# {{ dump(cart) }} #}
+
                 <div class="order-summary">
-                    {% for key,item in cart %}{# key => pour être en mesure de compter #}
-                        <div class="row {% if key> 0 %}mt-2{% endif %}">
+                    {% set totalTTC = 0 %}
+                    {% for key, item in cart %}
+                        {% set tvaRate = item.product.tva.value ?? 20 %}
+                        {% set priceTTC = item.product.price * (1 + (tvaRate / 100)) %}
+                        {% set totalItemTTC = priceTTC * item.quantity %}
+                        {% set totalTTC = totalTTC + totalItemTTC %}
+
+                        <div class="row {% if key > 0 %}mt-2{% endif %}">
                             <div class="col-4">
                                 {% if item.product.imagePath %}
-                                <img src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}" height="75px">
+                                    <img src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}" height="75px">
                                 {% else %}
-                                <img src="{{ asset('img/default.png') }}" alt="image par défaut" height="75px">
+                                    <img src="{{ asset('img/default.png') }}" alt="image par défaut" height="75px">
                                 {% endif %}
                             </div>
                             <div class="col-6 my-auto">
-                                {{ item.product.name }} - {{ (item.product.price)|number_format(2, ',', '.') }} €</br>
+                                {{ item.product.name }} — {{ priceTTC|number_format(2, ',', '.') }} € TTC</br>
                                 <small>{{ item.product.description }}</small>
                             </div>
                             <div class="col-2 my-auto">
@@ -49,7 +55,15 @@
                             </div>
                         </div></br>
                     {% endfor %}
-                </div></br></br>
+                </div>
+
+                <hr>
+                <div class="text-right">
+                    <b>Panier :</b> {{ totalTTC|number_format(2, ',', '.') }} €<br>
+                    <b>Livraison :</b> {{ price|number_format(2, ',', '.') }} €<br>
+                    <b>Total TTC :</b> {{ (totalTTC + price)|number_format(2, ',', '.') }} €
+                </div>
+                </br></br>
             </div>
         </div>
     </div>

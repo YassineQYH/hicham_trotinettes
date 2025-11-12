@@ -7,16 +7,22 @@
 
 <div aria-labelledby="cartdetails" class="dropdown-menu dropdown-menu-left p-2" style="margin-top:13px!important; width: 360px;">
     <div class="navbar-cart-product-wrapper">
-        {% set total = 0 %}
+        {% set totalTTC = 0 %}
         <div class="navbar-cart-product-list">
             {% if cart_items is not empty %}
                 {% for item in cart_items %}
+                    {% set priceHT = item.product.price %}
+                    {% set tvaRate = (item.product.tva.value ?? 20) / 100 %}
+                    {% set priceTTC = priceHT * (1 + tvaRate) %}
+                    {% set totalItemTTC = priceTTC * item.quantity %}
+
                     <div class="navbar-cart-product">
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-md-12">
                                     <small class="d-block text-sm"><strong>{{ item.product.name }}</strong></small>
                                 </div>
+
                                 <div class="col-md-3 my-auto">
                                     {% if item.product.imagePath %}
                                         <img class="cart-product-image" src="{{ asset(item.product.imagePath) }}" alt="{{ item.product.name }}">
@@ -24,9 +30,10 @@
                                         <img class="cart-product-image" src="{{ asset('img/default.png') }}" alt="image par défaut">
                                     {% endif %}
                                 </div>
+
                                 <div class="col-md-9">
                                     <small class="d-block text-sm">
-                                        Prix unité : <strong>{{ (item.product.price)|number_format(2, ',','.') }} €</strong>
+                                        Prix unité TTC : <strong>{{ priceTTC|number_format(2, ',', '.') }} €</strong>
                                     </small>
                                     <small class="d-block text-muted">
                                         Quantité : <strong>{{ item.quantity }}</strong>
@@ -43,13 +50,14 @@
                                         </span>
                                     </small>
                                     <small>
-                                        Prix total : <strong>{{ ((item.product.price * item.quantity))|number_format(2, ',','.') }} €</strong>
+                                        Prix total TTC : <strong>{{ totalItemTTC|number_format(2, ',', '.') }} €</strong>
                                     </small>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% set total = total + (item.product.price * item.quantity) %}
+
+                    {% set totalTTC = totalTTC + totalItemTTC %}
                 {% endfor %}
             {% else %}
                 <p>Votre panier est vide</p>
@@ -58,8 +66,8 @@
 
         <div class="navbar-cart-total">
             <span class="text-uppercase text-muted btn btn-outline-test">
-                Total commande : <br>
-                <strong class="text-uppercase">{{ (total)|number_format(2, ',','.') }} €</strong>
+                Total commande TTC : <br>
+                <strong class="text-uppercase">{{ totalTTC|number_format(2, ',', '.') }} €</strong>
             </span>
         </div>
 

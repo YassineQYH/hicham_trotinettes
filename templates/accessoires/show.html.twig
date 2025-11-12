@@ -105,6 +105,11 @@
                 <a href="{{ path('decrease_to_cart', {'id': product_id, 'type': 'accessory'}) }}" class="buy-btn">Diminuer</a><br>
                 <a class="buy-btn" style="color:red;">Max (rupture)</a>
             {% endif %}
+
+            {# Ajout du prix TTC #}
+            {% set tvaRate = (trottinette.tva.value ?? 20) / 100 %}
+            {% set priceTTC = accessory.price * (1 + tvaRate) %}
+            <a class="buy-btn" style="margin-top:5px;">Prix TTC : {{ priceTTC|number_format(2, ',', '.') }} €</a>
         {% endif %}
     </div>
 

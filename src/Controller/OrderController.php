@@ -29,7 +29,8 @@ class OrderController extends AbstractController
     public function index(
         Cart $cart,
         Request $request,
-        CategoryAccessoryRepository $categoryAccessoryRepository
+        CategoryAccessoryRepository $categoryAccessoryRepository,
+        WeightRepository $weightRepository
     ): Response {
         $categories = $categoryAccessoryRepository->findAll();
 
@@ -50,10 +51,23 @@ class OrderController extends AbstractController
             'user' => $user,
         ]);
 
+        // Calcul du poids total
+        $poidsTotal = 0.0;
+        foreach ($cart->getFull() as $element) {
+            $produit = $element['product'];
+            $quantite = (int) $element['quantity'];
+            $poids = $produit->getWeight() ? (float) $produit->getWeight()->getKg() : 0.0;
+            $poidsTotal += $poids * $quantite;
+        }
+
+        $poidsTarif = $weightRepository->findByKgPrice($poidsTotal);
+        $prixLivraison = $poidsTarif ? $poidsTarif->getPrice() : 0.0;
+
         return $this->render('order/index.html.twig', [
             'form' => $form->createView(),
             'cart' => $cart->getFull(),
             'categories' => $categories,
+            'price' => $prixLivraison, // <--- ajouté
         ]);
     }
 

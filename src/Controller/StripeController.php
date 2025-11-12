@@ -60,10 +60,11 @@ class StripeController extends AbstractController
             }
 
             // 💶 Préparation des produits pour Stripe
+            $priceTTC = $product->getPrice() * (1 + ($product->getTva() / 100));
             $product_for_stripe[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => $product->getPrice(),
+                    'unit_amount' => round($priceTTC * 100),
                     'product_data' => [
                         'name' => $productName,
                         'images' => [$productImage],
@@ -71,6 +72,7 @@ class StripeController extends AbstractController
                 ],
                 'quantity' => $product->getQuantity(),
             ];
+
         }
 
         // 🚚 Frais de livraison
