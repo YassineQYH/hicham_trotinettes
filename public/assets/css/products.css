@@ -528,3 +528,81 @@ img {
     /* reste visible au scroll */
     align-self: flex-start;
 }
+
+
+/* ===== OVERRIDE LOCAL SHOW-PAGE : boutons VOIR PANIER et COMMANDER ===== */
+
+
+/* ===================== SOUS-MENU "Nos trottinettes" ===================== */
+
+.menu-nav .sous-menu-trottinettes,
+.menu-nav ul li ul.sous-menu-trottinettes {
+    font-size: 1.1rem !important;
+    line-height: 1.2 !important;
+}
+
+.menu-nav ul li ul li a,
+.menu-nav .sous-menu-trottinettes li a {
+    font-size: 1.1rem !important;
+    padding: 5px 10px !important;
+    display: inline-block;
+}
+
+.menu-nav .sous-menu-trottinettes li {
+    font-size: 1.1rem !important;
+    padding: 4px 10px !important;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+
+/* ===================== MINI-PANIER ===================== */
+
+.menu-nav li.menu-panier ul,
+.menu-nav li.menu-panier .cart-dropdown,
+.menu-nav li.menu-panier>* ul,
+.menu-nav li.menu-panier ul li,
+.menu-nav li.menu-panier ul li a,
+.menu-nav li.menu-panier .cart-dropdown p,
+.menu-nav li.menu-panier .cart-dropdown span,
+.menu-nav li.menu-panier .navbar-cart-product,
+.menu-nav li.menu-panier .navbar-cart-total,
+.menu-nav li.menu-panier .cart-dropdown .cart-total p {
+    font-size: 1.4rem !important;
+    /* taille normale du panier */
+    line-height: 1.4 !important;
+}
+
+
+/* ===================== BOUTONS VOIR PANIER ET COMMANDER ===================== */
+
+.menu-nav li.menu-panier .cart-dropdown .btn,
+.menu-nav li.menu-panier .cart-dropdown .lien-panier a {
+    font-size: 1.6rem !important;
+    /* seulement ici on augmente la taille */
+    line-height: 1.5 !important;
+    font-weight: 500 !important;
+    height: 45px !important;
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    background-color: #162938 !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+
+/* ===================== MIN-WIDTH ET SÉPARATEURS ===================== */
+
+.menu-nav ul li ul {
+    min-width: 320px !important;
+    width: auto !important;
+}
+
+.menu-nav .separator {
+    font-size: 1.1rem !important;
+}
