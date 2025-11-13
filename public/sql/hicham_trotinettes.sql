@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 07 nov. 2025 à 15:59
+-- Généré le : jeu. 13 nov. 2025 à 09:35
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -56,7 +56,7 @@ INSERT INTO `accessory` (`id`, `weight_id`, `category_id`, `name`, `slug`, `desc
 (9, 4, 4, 'roues stunt', 'roues-stunt', 'roues-stunt', 4, 55, 'roues-stunt.jpg', 0, 1),
 (10, 2, 2, 'freins rouge', 'freins-rouge', 'freins-rouge', 1, 26, 'freins-rouge.jpeg', 1, 1),
 (11, 4, 3, 'siege double', 'siege-double', 'siege-double', 2, 21, 'siege-double.jpg', 0, 1),
-(12, 2, 3, 'siege rouge', 'siege-rouge', 'siege-rouge', 6, 45, 'siege-rouge.jpg', 0, 1),
+(12, 2, 3, 'siege rouge', 'siege-rouge', 'siege-rouge', 5, 45, 'siege-rouge.jpg', 0, 1),
 (13, 3, 3, 'Xtreme Siege', 'Xtreme-Siege', 'Xtreme-Siege', 0, 25, 'Xtreme-Siege.jpg', 0, 1),
 (14, 7, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'guidon-blunt-black-v3', 3, 89, 'guidon-blunt-black-v3.jpg', 0, 1),
 (15, 7, 1, 'guidon multicolor', 'guidon-multicolor', '<div>guidon-multicolor</div>', 4, 25, 'guidon-multicolor.png', 1, 1),
@@ -212,7 +212,16 @@ CREATE TABLE `illustration` (
 INSERT INTO `illustration` (`id`, `trottinette_id`, `image`) VALUES
 (1, 1, 'trottbleue-02.png'),
 (2, 1, 'trottbleue-03.png'),
-(12, 3, 'trottvert-05.jpg');
+(12, 3, 'trottvert-05.jpg'),
+(13, 1, 'trottbleue-04.png'),
+(14, 1, 'trottbleue-05.png'),
+(15, 2, 'trottjaune-02.jpg'),
+(16, 2, 'trottjaune-03.jpg'),
+(17, 2, 'trottjaune-04.jpg'),
+(18, 2, 'trottjaune-05.jpg'),
+(19, 3, 'trottvert-02.jpg'),
+(20, 3, 'trottvert-03.jpg'),
+(21, 3, 'trottvert-04.jpg');
 
 -- --------------------------------------------------------
 
@@ -333,7 +342,14 @@ INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`,
 (8, 1, '2025-10-21 16:37:04', 19.8, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21102025-68f79a902672b', 'cs_test_b11AmvahjrP8RuTIhMPNCtqZwyg6T0fJQ81CLWFBzisnEATWsvQWmN8fSD', 1, 1, '6G61397895822', 'colissimo', NULL, NULL),
 (9, 1, '2025-10-22 09:35:14', 19.8, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '22102025-68f88932a6b2e', 'cs_test_b1MfDJ2kREupjottpXlscZl1IhorILdWvOFmrGBHtokfu5bVWFuqXapsYo', 1, 2, '6G61398207501', 'colissimo', NULL, NULL),
 (10, 4, '2025-10-22 16:28:00', 20.65, 'Yass Qay<br>+33641515128<br>17 marie marving<br>63200 riom<br>FR', '22102025-68f8e9f1541e1', 'cs_test_b16TGqtnQO05GSgFvVzu0G8kdkwP4QvAaAaCwIZ289xG8H11x0UVaRWmMH', 1, 3, 'CC084147325FR', 'colissimo', NULL, NULL),
-(11, 1, '2025-10-24 16:05:28', 18.95, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '24102025-68fb87a892a1e', 'cs_test_b1WyzxbI3cyBvwK3HaidvFnWnn9KC5Jcw7aihkIPGyNNW9iLukn8DDkEii', 1, 2, '6G61398207501', 'bpost', NULL, NULL);
+(11, 1, '2025-10-24 16:05:28', 18.95, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '24102025-68fb87a892a1e', 'cs_test_b1WyzxbI3cyBvwK3HaidvFnWnn9KC5Jcw7aihkIPGyNNW9iLukn8DDkEii', 1, 2, '6G61398207501', 'bpost', NULL, NULL),
+(12, 1, '2025-11-07 16:17:59', 24.68, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '07112025-690e0da74f3bb', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(13, 1, '2025-11-07 16:18:34', 24.68, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '07112025-690e0dcac0a47', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(14, 1, '2025-11-07 16:19:23', 24.68, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '07112025-690e0dfb84c42', 'cs_test_b1dBawcIBxgReWwFYdp09zUSRn0vimwwlZwUe6m2CXGlYsTdow69zvzqmT', 0, 0, NULL, 'bpost', NULL, NULL),
+(15, 1, '2025-11-12 11:12:15', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-69145d7f8c9aa', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(16, 1, '2025-11-12 11:19:26', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-69145f2e7cd25', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(17, 1, '2025-11-12 14:20:27', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-6914899bf088f', 'cs_test_b16icOL3eKCOGSrpXI3joO157yTvlZIKVeDH6eR9PGlS0syx3O2afkwIbk', 0, 0, NULL, 'bpost', NULL, NULL),
+(18, 1, '2025-11-12 14:24:54', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-69148aa67739b', 'cs_test_b16mYHKZuSZ7gTMJK7Ww3962lF1lGARoS7euwCkcFAjjPjhi7NwoQNSr22', 1, 0, NULL, 'bpost', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -395,7 +411,21 @@ INSERT INTO `order_details` (`id`, `my_order_id`, `product`, `quantity`, `price`
 (36, 10, 'Roues freestyle', 2, 1, 2, '0.75', 21),
 (37, 10, 'freins rouge', 1, 26, 26, '0.5', 21),
 (38, 11, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(39, 11, 'Xtreme Siege', 1, 15, 15, '0.75', 21);
+(39, 11, 'Xtreme Siege', 1, 15, 15, '0.75', 21),
+(40, 12, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(41, 12, 'roues etoiles', 1, 45, 45, '4', 21),
+(42, 13, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(43, 13, 'roues etoiles', 1, 45, 45, '4', 21),
+(44, 14, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(45, 14, 'roues etoiles', 1, 45, 45, '4', 21),
+(46, 15, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(47, 15, 'siege rouge', 1, 45, 45, '0.5', 21),
+(48, 16, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(49, 16, 'siege rouge', 1, 45, 45, '0.5', 21),
+(50, 17, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(51, 17, 'siege rouge', 1, 45, 45, '0.5', 21),
+(52, 18, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
+(53, 18, 'siege rouge', 1, 45, 45, '0.5', 21);
 
 -- --------------------------------------------------------
 
@@ -441,7 +471,7 @@ CREATE TABLE `trottinette` (
 INSERT INTO `trottinette` (`id`, `weight_id`, `name`, `name_short`, `slug`, `description`, `description_short`, `image`, `is_best`, `is_header`, `header_image`, `header_btn_title`, `stock`, `price`, `tva_id`) VALUES
 (1, 25, 'Trottinette électrique honey whale m5 max avec siège', 'Honey Whale M5 Max', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km', 'trottbleue-01.png', 1, 1, 'foot-soccer.jpg', 'test', 2, 599, 1),
 (2, 22, 'KUGOO Kukirin C1 Pro', 'KUGOO C1 Pro', 'KUGOO-Kukirin-C1-Pro', 'Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège', 'Vitesse 45 km/h, autonomie 100 km, charge max 120 kg', 'trottjaune-01.jpg', 1, 0, 'foot-hiver.jpg', 'test', 0, 1299, 1),
-(3, 28, 'Bogist M5 Pro', 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km', 'trottvert-01.jpg', 1, 1, 'foot-ete.jpg', 'test', 4, 754, 1);
+(3, 28, 'Bogist M5 Pro', 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km', 'trottvert-01.jpg', 1, 1, 'foot-ete.jpg', 'test', 3, 754, 1);
 
 -- --------------------------------------------------------
 
@@ -844,7 +874,7 @@ ALTER TABLE `category_accessory`
 -- AUTO_INCREMENT pour la table `illustration`
 --
 ALTER TABLE `illustration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT pour la table `illustrationaccess`
@@ -862,13 +892,13 @@ ALTER TABLE `messenger_messages`
 -- AUTO_INCREMENT pour la table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT pour la table `reset_password`
