@@ -9,6 +9,10 @@ class PromotionService
 {
     /**
      * Applique une promotion sur un prix donné
+     *
+     * La logique a été modifiée :
+     * - Le targetType "TARGET_CATEGORY_ACCESS" vérifie désormais que
+     *   le type Doctrine du produit est "accessoire"
      */
     public function applyPromotion(Promotion $promo, float $price, Product $product = null): float
     {
@@ -18,14 +22,19 @@ class PromotionService
 
         // Vérifie que le produit correspond au targetType
         switch ($promo->getTargetType()) {
+
             case Promotion::TARGET_ALL:
+                // aucune restriction
                 break;
 
-            case Promotion::TARGET_CATEGORY:
-                if (!$product || $product->getCategory() !== $promo->getCategory()) {
-                    throw new \LogicException("Promotion '{$promo->getCode()}' is not valid for this category.");
-                }
-                break;
+            case Promotion::TARGET_CATEGORY_ACCESS:
+                // IMPORTANT :
+                // On vérifie maintenant le type du produit via Doctrine (discriminator)
+                // Accessoire → "accessoire"
+                    if (!$product || $product->getType() !== 'accessoire') {
+                        throw new \LogicException("Cette promotion n'est valable que sur les accessoires.");
+                    }
+                    break;
 
             case Promotion::TARGET_PRODUCT:
                 if (!$product || $product !== $promo->getProduct()) {
@@ -40,16 +49,16 @@ class PromotionService
                 break;
         }
 
-        // Applique la remise
+        // Application de la remise
         if ($promo->getDiscountAmount() !== null) {
+            // Remise en valeur (€)
             $price -= $promo->getDiscountAmount();
         } elseif ($promo->getDiscountPercent() !== null) {
+            // Remise en %
             $price -= $price * ($promo->getDiscountPercent() / 100);
         }
 
-        // Incrémente le compteur d'utilisation
-        $promo->incrementUsed();
-
-        return max(0, $price); // le prix ne peut pas être négatif
+        // Sécurité : prix minimum = 0
+        return max(0, $price);
     }
 }

@@ -5,10 +5,15 @@
     {{ include('partials/menu.html.twig') }}
 {% endblock %}
 
+{% block javascripts %}
+    {# Scripts code-promo.js #}
+    <script src="{{ asset('assets/js/code-promo.js') }}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container"></br></br></br></br></br></br></br>
+<div class="container mt-5">
     <h1>Mon panier</h1>
-    Retrouvez l'ensemble des produits que vous avez ajouté à votre panier.
+    <p>Retrouvez l'ensemble des produits que vous avez ajoutés à votre panier.</p>
 
     {% if cart|length > 0 %}
         <table class="table table-striped mt-3">
@@ -27,56 +32,40 @@
 
                 {% for item in cart %}
                     {% set priceHT = item.product.price %}
-                    {# TVA dynamique depuis la BDD #}
-                    {% if item.product.tva %}
-                        {% set tvaRate = item.product.tva.value / 100 %}
-                    {% else %}
-                        {% set tvaRate = 0 %}
-                    {% endif %}
-
-                    {# Calcul TTC #}
+                    {% set tvaRate = item.product.tva ? (item.product.tva.value / 100) : 0 %}
                     {% set priceTTC = priceHT * (1 + tvaRate) %}
-
                     {% set totalItemTTC = priceTTC * item.quantity %}
                     {% set totalWeight = totalWeight + (item.product.weight.kg * item.quantity) %}
 
-                    {# récupération de la première illustration #}
                     {% set illustration = item.product.illustrations|first %}
 
                     <tr>
                         <td>
                             <div style="display:flex; align-items:center; gap:10px;">
-                                {# Conteneur fixe pour l'image #}
                                 <div style="width:60px; flex-shrink:0; text-align:center;">
                                     <a href="{{ path(item.type == 'accessory' ? 'accessory_show' : 'trottinette_show', {
                                         slug: item.product.slug
                                     }) }}">
                                         {% if illustration %}
                                             <img src="/uploads/{{ item.product.uploadDirectory }}/{{ illustration.image }}"
-                                                alt="{{ item.product.name }}"
-                                                style="height:50px; width:auto;">
+                                                 alt="{{ item.product.name }}"
+                                                 style="height:50px; width:auto;">
                                         {% else %}
                                             <img src="/uploads/{{ item.product.uploadDirectory }}/default.jpg"
-                                                alt="image par défaut"
-                                                style="height:50px; width:auto;">
+                                                 alt="image par défaut"
+                                                 style="height:50px; width:auto;">
                                         {% endif %}
                                     </a>
                                 </div>
-
-                                {# Texte du produit avec largeur flexible #}
                                 <span style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                                     {{ item.product.name }}
                                 </span>
                             </div>
                         </td>
 
-
                         <td>x{{ item.quantity }}</td>
-
                         <td>{{ totalItemTTC|number_format(2, ',', '.') }} €</td>
-
                         <td>{{ (item.product.weight.kg * item.quantity) }} Kg</td>
-
                         <td>
                             <a href="{{ path('delete_to_cart', {
                                 'id' : item.product.id,
@@ -92,19 +81,49 @@
             </tbody>
         </table>
 
-
-
+        {% set totalAfterPromo = totalTTC + price %}
+        {% set promoDiscount = cartObject.getReduction() %}
+        {% set promoCode = cartObject.getPromoCode() %}
 
         <div class="text-right mb-5">
             <b>Nombre de produits :</b> {{ quantity_product }}<br>
             <b>Total TTC :</b> {{ totalTTC|number_format(2, ',', '.') }} €<br>
             <b>Poids total :</b> {{ totalWeight }} kg<br>
             <b>Prix livraison :</b> {{ price|number_format(2, ',', '.') }} €<br>
-            <b>Prix Total :</b> {{ (totalTTC + price)|number_format(2, ',', '.') }} €<br>
+
+            <b>Prix Total :</b>
+            <span id="totalOriginal" {% if promoDiscount > 0 %}style="text-decoration: line-through;"{% endif %}>
+                {{ totalAfterPromo|number_format(2, ',', '.') }} €
+            </span><br>
+
+            {% if promoDiscount > 0 %}
+                <b>Prix Total remisé :</b>
+                <span id="totalRemise">{{ (totalAfterPromo - promoDiscount)|number_format(2, ',', '.') }} €</span><br>
+                <b>Réduction promo :</b>
+                <span id="reductionPromo">-{{ promoDiscount|number_format(2, ',', '.') }} €</span><br>
+            {% else %}
+                <div id="totalRemiseContainer" style="display:none;">
+                    <b>Prix Total remisé :</b>
+                    <span id="totalRemise"></span><br>
+                    <b>Réduction promo :</b>
+                    <span id="reductionPromo"></span><br>
+                </div>
+            {% endif %}
+
             <small class="text-muted">TVA incluse</small>
+
+            <div style="text-align:right; margin-top:10px; max-width:300px; margin-left:auto;">
+                <form id="promoForm" action="{{ path('cart_apply_promo') }}" method="POST" class="d-flex">
+                    <input type="text" name="promo_code" id="promoCode" class="form-control me-2" placeholder="Code promo" value="{{ promoCode ?? '' }}">
+                    <button class="btn btn-primary" type="submit">Appliquer</button>
+                </form>
+                <small id="promoMessage" class="text-danger"></small>
+            </div>
 
             <a href="{{ path('order') }}" class="btn btn-success btn-block mt-3">Valider mon panier</a>
         </div>
+
+
     {% else %}
         <hr>
         <p><b>Votre panier est vide.</b></p>

@@ -12,6 +12,7 @@ class Cart
 {
     private EntityManagerInterface $entityManager;
     private ?SessionInterface $session;
+    private float $reduction = 0.0;
 
     public function __construct(EntityManagerInterface $entityManager, RequestStack $requestStack)
     {
@@ -26,16 +27,26 @@ class Cart
         }
     }
 
+    // ------------------- Code promo -------------------
+    public function setPromoCode(?string $code): void
+    {
+        if ($this->session) {
+            $this->session->set('promo_code', $code);
+        }
+    }
+
+    public function getPromoCode(): ?string
+    {
+        return $this->session ? $this->session->get('promo_code') : null;
+    }
+
     // ------------------- Ajout au panier -------------------
     public function add(int $id, string $type = 'trottinette'): void
     {
         if (!$this->session) return;
 
         $cart = $this->session->get('cart', []);
-
-        // On distingue les types (trottinette ou accessoire)
         $cart[$type][$id] = ($cart[$type][$id] ?? 0) + 1;
-
         $this->session->set('cart', $cart);
     }
 
@@ -134,4 +145,34 @@ class Cart
         }
         return $totalWeight;
     }
+
+    // ------------------- Réduction -------------------
+    public function setReduction(float $montant): void
+    {
+        $this->reduction = $montant;
+    }
+
+    public function getReduction(): float
+    {
+        return $this->reduction;
+    }
+
+    // ------------------- Quantité totale -------------------
+    public function getTotalQuantity(): int
+    {
+        $total = 0;
+        foreach ($this->getFull() as $element) {
+            $total += $element['quantity'];
+        }
+        return $total;
+    }
+
+    // ------------------- Prix livraison -------------------
+    public function getLivraisonPrice(\App\Repository\WeightRepository $weightRepository): float
+    {
+        $poids = $this->getTotalWeight();
+        $weightEntity = $weightRepository->findByKgPrice($poids);
+        return $weightEntity ? $weightEntity->getPrice() : 0;
+    }
+
 }

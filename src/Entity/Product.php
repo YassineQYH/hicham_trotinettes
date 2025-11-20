@@ -14,7 +14,7 @@ use App\Entity\Tva;
 #[ORM\DiscriminatorColumn(name:"type", type:"string")]
 #[ORM\DiscriminatorMap([
     "trottinette" => Trottinette::class,
-    "accessory" => Accessory::class
+    "accessoire" => Accessory::class
 ])]
 #[ORM\HasLifecycleCallbacks]
 class Product
@@ -117,6 +117,26 @@ class Product
         }
         return $this;
     }
+
+    /**
+     * Retourne le type Doctrine / discriminator du produit
+     * "trottinette" | "accessoire" | "product" (fallback)
+     */
+    public function getType(): string
+    {
+        // On utilise instanceof pour être sûr (Doctrine met en place le bon objet enfant)
+        if ($this instanceof \App\Entity\Trottinette) {
+            return 'trottinette';
+        }
+
+        if ($this instanceof \App\Entity\Accessory) {
+            return 'accessoire';
+        }
+
+        // fallback si jamais
+        return 'product';
+    }
+
 
     // ------------------------ CREATED / UPDATED ------------------------
 
