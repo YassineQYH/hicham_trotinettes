@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mer. 19 nov. 2025 à 17:05
+-- Généré le : ven. 21 nov. 2025 à 16:34
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -169,7 +169,9 @@ CREATE TABLE `doctrine_migration_versions` (
 --
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20251119155034', '2025-11-19 16:50:37', 1708);
+('DoctrineMigrations\\Version20251119155034', '2025-11-19 16:50:37', 1708),
+('DoctrineMigrations\\Version20251120155512', '2025-11-20 16:55:21', 238),
+('DoctrineMigrations\\Version20251121142003', '2025-11-21 15:20:19', 255);
 
 -- --------------------------------------------------------
 
@@ -311,7 +313,28 @@ INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`,
 (17, 1, '2025-11-12 14:20:27', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-6914899bf088f', 'cs_test_b16icOL3eKCOGSrpXI3joO157yTvlZIKVeDH6eR9PGlS0syx3O2afkwIbk', 0, 0, NULL, 'bpost', NULL, NULL),
 (18, 1, '2025-11-12 14:24:54', 21.5, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12112025-69148aa67739b', 'cs_test_b16mYHKZuSZ7gTMJK7Ww3962lF1lGARoS7euwCkcFAjjPjhi7NwoQNSr22', 1, 0, NULL, 'bpost', NULL, NULL),
 (19, 1, '2025-11-19 11:15:04', 32.28, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '19112025-691d98a8a849f', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
-(20, 1, '2025-11-19 11:16:03', 32.28, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '19112025-691d98e3552fb', 'cs_test_b1iOr5roGWuli6Qegu7XxdSlHYXZdbyiyH5N63YSlfHA2PbRdCVjWmzLMW', 1, 0, NULL, 'bpost', NULL, NULL);
+(20, 1, '2025-11-19 11:16:03', 32.28, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '19112025-691d98e3552fb', 'cs_test_b1iOr5roGWuli6Qegu7XxdSlHYXZdbyiyH5N63YSlfHA2PbRdCVjWmzLMW', 1, 0, NULL, 'bpost', NULL, NULL),
+(21, 1, '2025-11-20 09:54:18', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '20112025-691ed73ac2b2c', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(22, 1, '2025-11-20 09:58:27', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '20112025-691ed833da4c8', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(23, 1, '2025-11-20 10:01:07', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '20112025-691ed8d3d4876', 'cs_test_b1SIqJGeIaesZnuUNln1hbcdEjBp3cnFCknphr3nqV9RApBwtgEF9mYedD', 1, 0, NULL, 'bpost', NULL, NULL),
+(24, 1, '2025-11-21 10:25:24', 24.68, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69203004670c1', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(25, 1, '2025-11-21 14:30:01', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206959f2044', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(26, 1, '2025-11-21 14:39:14', 0, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206b82550be', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(27, 1, '2025-11-21 14:41:07', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206bf310820', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(28, 1, '2025-11-21 14:53:14', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206eca7e072', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(29, 1, '2025-11-21 14:55:09', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206f3d0c3b8', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(30, 1, '2025-11-21 14:56:32', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69206f902430d', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(31, 1, '2025-11-21 14:59:52', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69207058e8b2a', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(32, 1, '2025-11-21 15:02:11', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-692070e3087a8', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(33, 1, '2025-11-21 15:02:36', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-692070fc1a2fa', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(34, 1, '2025-11-21 15:02:43', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69207103b245e', NULL, 0, 0, NULL, 'bpost', NULL, NULL),
+(35, 1, '2025-11-21 15:03:19', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-69207127c5cb7', 'cs_test_b1CToltoIUvDc7BiAvOuuTnrBa4jMYxRJFKqnyK5n0jRhMzFUQpyi97Q56', 0, 0, NULL, 'bpost', NULL, NULL),
+(36, 1, '2025-11-21 15:10:55', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-692072efc7298', 'cs_test_b11PX2F0pIqPXdxOfw7AEl9E6NxEnrIgxTaOH933jv76lQMgLVRHEdcXc7', 0, 0, NULL, 'bpost', NULL, NULL),
+(38, 1, '2025-11-21 15:20:26', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-6920752a758ca', 'cs_test_b15QApSnckG00aqtR2lB3s8K71dX93r7E6LCcstV3P8ASBpTWlxaJsDzxd', 0, 0, NULL, 'bpost', NULL, NULL),
+(39, 1, '2025-11-21 15:24:31', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-6920761fea2de', 'cs_test_b1wcjF2o3ohl1H4bLvAo6ckSMtq5LD8BFVwCiBdPjtc4Z7xI2AV4DjPmzP', 0, 0, NULL, 'bpost', NULL, NULL),
+(40, 1, '2025-11-21 15:27:09', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-692076bd78bbd', 'cs_test_b1NcmTfawrvu2DoO6U9ftJHLlynN7gwgBRdq8Xe4Xz0Gf5Za1DESLomH03', 0, 0, NULL, 'bpost', NULL, NULL),
+(41, 1, '2025-11-21 15:31:29', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-692077c14302c', 'cs_test_b1V8UOdDZ1LdEZag7qyT716AnuAwbUbdzCpy0SG6UNxFCvJ8vAOhR7U5gv', 1, 0, NULL, 'bpost', NULL, NULL),
+(42, 1, '2025-11-21 16:28:46', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '21112025-6920852ee7076', 'cs_test_b1X4XMyohiuCr1k9Ee129fJgLjCrKv7lrafxmbSM9i7UYVnds0OIWcju3j', 1, 0, NULL, 'bpost', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -328,73 +351,114 @@ CREATE TABLE `order_details` (
   `price` double NOT NULL,
   `total` double NOT NULL,
   `weight` varchar(64) NOT NULL,
-  `tva` double DEFAULT NULL
+  `tva` double DEFAULT NULL,
+  `price_ttc` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `order_details`
 --
 
-INSERT INTO `order_details` (`id`, `my_order_id`, `product_entity_id`, `product`, `quantity`, `price`, `total`, `weight`, `tva`) VALUES
-(1, 1, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(2, 1, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(3, 1, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(4, 1, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(5, 2, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(6, 2, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(7, 2, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(8, 2, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(9, 3, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(10, 3, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(11, 3, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(12, 3, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(13, 4, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(14, 4, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(15, 4, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(16, 4, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(17, 5, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(18, 5, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(19, 5, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(20, 5, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(21, 6, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(22, 6, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(23, 6, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(24, 7, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(25, 7, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(26, 7, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(27, 8, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(28, 8, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(29, 8, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(30, 8, 9, 'Roues freestyle', 1, 1, 1, '0.75', 21),
-(31, 9, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(32, 9, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21),
-(33, 9, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(34, 9, 9, 'Roues freestyle', 1, 1, 1, '0.75', 21),
-(35, 10, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(36, 10, 9, 'Roues freestyle', 2, 1, 2, '0.75', 21),
-(37, 10, 12, 'freins rouge', 1, 26, 26, '0.5', 21),
-(38, 11, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(39, 11, 4, 'Xtreme Siege', 1, 15, 15, '0.75', 21),
-(40, 12, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(41, 12, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(42, 13, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(43, 13, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(44, 14, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(45, 14, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(46, 15, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(47, 15, 14, 'siege rouge', 1, 45, 45, '0.5', 21),
-(48, 16, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(49, 16, 14, 'siege rouge', 1, 45, 45, '0.5', 21),
-(50, 17, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(51, 17, 14, 'siege rouge', 1, 45, 45, '0.5', 21),
-(52, 18, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(53, 18, 14, 'siege rouge', 1, 45, 45, '0.5', 21),
-(54, 19, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(55, 19, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(56, 19, 5, 'roues etoiles', 1, 45, 45, '4', 21),
-(57, 20, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21),
-(58, 20, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21),
-(59, 20, 5, 'roues etoiles', 1, 45, 45, '4', 21);
+INSERT INTO `order_details` (`id`, `my_order_id`, `product_entity_id`, `product`, `quantity`, `price`, `total`, `weight`, `tva`, `price_ttc`) VALUES
+(1, 1, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(2, 1, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(3, 1, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(4, 1, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(5, 2, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(6, 2, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(7, 2, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(8, 2, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(9, 3, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(10, 3, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(11, 3, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(12, 3, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(13, 4, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(14, 4, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(15, 4, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(16, 4, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(17, 5, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(18, 5, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(19, 5, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(20, 5, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(21, 6, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(22, 6, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(23, 6, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(24, 7, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(25, 7, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(26, 7, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(27, 8, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(28, 8, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(29, 8, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(30, 8, 9, 'Roues freestyle', 1, 1, 1, '0.75', 21, 0),
+(31, 9, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(32, 9, 6, 'guidon blunt black v3', 1, 49, 49, '0.5', 21, 0),
+(33, 9, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(34, 9, 9, 'Roues freestyle', 1, 1, 1, '0.75', 21, 0),
+(35, 10, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(36, 10, 9, 'Roues freestyle', 2, 1, 2, '0.75', 21, 0),
+(37, 10, 12, 'freins rouge', 1, 26, 26, '0.5', 21, 0),
+(38, 11, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(39, 11, 4, 'Xtreme Siege', 1, 15, 15, '0.75', 21, 0),
+(40, 12, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(41, 12, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(42, 13, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(43, 13, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(44, 14, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(45, 14, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(46, 15, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(47, 15, 14, 'siege rouge', 1, 45, 45, '0.5', 21, 0),
+(48, 16, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(49, 16, 14, 'siege rouge', 1, 45, 45, '0.5', 21, 0),
+(50, 17, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(51, 17, 14, 'siege rouge', 1, 45, 45, '0.5', 21, 0),
+(52, 18, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(53, 18, 14, 'siege rouge', 1, 45, 45, '0.5', 21, 0),
+(54, 19, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(55, 19, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(56, 19, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(57, 20, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(58, 20, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(59, 20, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(60, 21, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(61, 21, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(62, 22, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(63, 22, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(64, 23, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(65, 23, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(66, 24, 3, 'Bogist M5 Pro', 1, 754, 754, '17', 21, 0),
+(67, 24, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(68, 25, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(69, 25, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(70, 27, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(71, 27, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(72, 28, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(73, 28, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(74, 29, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(75, 29, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(76, 30, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(77, 30, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(78, 31, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(79, 31, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(80, 32, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(81, 32, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(82, 33, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(83, 33, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(84, 34, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(85, 34, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(86, 35, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(87, 35, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(88, 36, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 0),
+(89, 36, 5, 'roues etoiles', 1, 45, 45, '4', 21, 0),
+(90, 38, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79),
+(91, 38, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45),
+(92, 39, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79),
+(93, 39, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45),
+(94, 40, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79),
+(95, 40, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45),
+(96, 41, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79),
+(97, 41, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45),
+(98, 42, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79),
+(99, 42, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45);
 
 -- --------------------------------------------------------
 
@@ -422,22 +486,22 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `weight_id`, `tva_id`, `name`, `slug`, `description`, `price`, `stock`, `is_best`, `created_at`, `updated_at`, `type`) VALUES
-(1, 25, 1, 'Trottinette électrique honey whale m5 max avec siège', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 599, 1, 1, '2025-11-18 16:19:20', '2025-11-19 11:30:29', 'trottinette'),
+(1, 25, 1, 'Trottinette électrique honey whale m5 max avec siège', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 599, 6, 1, '2025-11-18 16:19:20', '2025-11-21 16:32:40', 'trottinette'),
 (2, 22, 1, 'KUGOO Kukirin C1 Pro', 'KUGOO-Kukirin-C1-Pro', 'Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège', 1299, 0, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'trottinette'),
 (3, 28, 1, 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 754, 2, 1, '2025-11-18 16:19:20', '2025-11-19 11:30:29', 'trottinette'),
-(4, 3, 1, 'Xtreme Siege', 'Xtreme-Siege', 'Siege pour trott', 15, 2, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(5, 8, 1, 'roues etoiles', 'roues-etoiles', 'Roue pour trott', 45, 3, 1, '2025-11-18 16:19:20', '2025-11-19 11:30:29', 'accessory'),
-(6, 2, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'Guidon pour trott', 49, 1, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(7, 1, 1, 'Frein Jaune', 'freinfreins-jaune', 'Frein pour trott', 19, 0, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(8, 5, 1, 'etrier de frein', 'etrier-de-frein', 'etrier-de-frein', 56, 2, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(9, 3, 1, 'Roues freestyle', 'Roues-freestyle', 'Roues-freestyle', 1, 1, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(10, 2, 1, 'roues gold', 'roues-gold', 'roues-gold', 89, 5, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(11, 4, 1, 'roues stunt', 'roues-stunt', 'roues-stunt', 55, 4, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(12, 2, 1, 'freins rouge', 'freins-rouge', 'freins-rouge', 26, 1, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(13, 4, 1, 'siege double', 'siege-double', 'siege-double', 21, 2, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(14, 2, 1, 'siege rouge', 'siege-rouge', 'siege-rouge', 45, 5, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(15, 7, 1, 'guidon multicolor', 'guidon-multicolor', '<div>guidon-multicolor</div>', 25, 4, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory'),
-(16, 4, 1, 'guidon titanium', 'guidon-titanium', 'guidon-titanium', 48, 0, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessory');
+(4, 3, 1, 'Xtreme Siege', 'Xtreme-Siege', 'Siege pour trott', 15, 2, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(5, 8, 1, 'roues etoiles', 'roues-etoiles', 'Roue pour trott', 45, 6, 1, '2025-11-18 16:19:20', '2025-11-21 16:32:40', 'accessoire'),
+(6, 2, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'Guidon pour trott', 49, 1, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(7, 1, 1, 'Frein Jaune', 'freinfreins-jaune', 'Frein pour trott', 19, 0, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(8, 5, 1, 'etrier de frein', 'etrier-de-frein', 'etrier-de-frein', 56, 2, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(9, 3, 1, 'Roues freestyle', 'Roues-freestyle', 'Roues-freestyle', 1, 1, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(10, 2, 1, 'roues gold', 'roues-gold', 'roues-gold', 89, 5, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(11, 4, 1, 'roues stunt', 'roues-stunt', 'roues-stunt', 55, 4, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(12, 2, 1, 'freins rouge', 'freins-rouge', 'freins-rouge', 26, 1, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(13, 4, 1, 'siege double', 'siege-double', 'siege-double', 21, 2, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(14, 2, 1, 'siege rouge', 'siege-rouge', 'siege-rouge', 45, 5, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(15, 7, 1, 'guidon multicolor', 'guidon-multicolor', '<div>guidon-multicolor</div>', 25, 4, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
+(16, 4, 1, 'guidon titanium', 'guidon-titanium', 'guidon-titanium', 48, 0, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire');
 
 -- --------------------------------------------------------
 
@@ -465,10 +529,10 @@ CREATE TABLE `product_history` (
 
 CREATE TABLE `promotion` (
   `id` int(11) NOT NULL,
-  `category_id` int(11) DEFAULT NULL,
+  `category_access_id` int(11) DEFAULT NULL,
   `product_id` int(11) DEFAULT NULL,
   `code` varchar(100) NOT NULL,
-  `target_type` varchar(20) NOT NULL,
+  `target_type` varchar(30) NOT NULL,
   `discount_amount` double DEFAULT NULL,
   `discount_percent` double DEFAULT NULL,
   `start_date` datetime NOT NULL,
@@ -476,6 +540,13 @@ CREATE TABLE `promotion` (
   `quantity` int(11) NOT NULL,
   `used` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `promotion`
+--
+
+INSERT INTO `promotion` (`id`, `category_access_id`, `product_id`, `code`, `target_type`, `discount_amount`, `discount_percent`, `start_date`, `end_date`, `quantity`, `used`) VALUES
+(5, NULL, NULL, 'family-25', 'TARGET_ALL', NULL, 25, '2025-11-20 16:09:25', NULL, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -839,8 +910,8 @@ ALTER TABLE `product_history`
 ALTER TABLE `promotion`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `UNIQ_C11D7DD177153098` (`code`),
-  ADD KEY `IDX_C11D7DD112469DE2` (`category_id`),
-  ADD KEY `IDX_C11D7DD14584665A` (`product_id`);
+  ADD KEY `IDX_C11D7DD14584665A` (`product_id`),
+  ADD KEY `IDX_C11D7DD1888AB5FF` (`category_access_id`);
 
 --
 -- Index pour la table `promotion_product`
@@ -950,13 +1021,13 @@ ALTER TABLE `messenger_messages`
 -- AUTO_INCREMENT pour la table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT pour la table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT pour la table `product`
@@ -974,7 +1045,7 @@ ALTER TABLE `product_history`
 -- AUTO_INCREMENT pour la table `promotion`
 --
 ALTER TABLE `promotion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `reset_password`
@@ -1071,8 +1142,8 @@ ALTER TABLE `product_history`
 -- Contraintes pour la table `promotion`
 --
 ALTER TABLE `promotion`
-  ADD CONSTRAINT `FK_C11D7DD112469DE2` FOREIGN KEY (`category_id`) REFERENCES `category_accessory` (`id`),
-  ADD CONSTRAINT `FK_C11D7DD14584665A` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
+  ADD CONSTRAINT `FK_C11D7DD14584665A` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  ADD CONSTRAINT `FK_C11D7DD1888AB5FF` FOREIGN KEY (`category_access_id`) REFERENCES `category_accessory` (`id`);
 
 --
 -- Contraintes pour la table `promotion_product`
