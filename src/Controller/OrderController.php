@@ -148,6 +148,15 @@ class OrderController extends AbstractController
             $order->setPaymentState(0);
             $order->setDeliveryState(0);
 
+            // --- Enregistrement du code promo et de la réduction le cas échéant ---
+            if (method_exists($cart, 'getPromoCode')) {
+                $order->setPromoCode($cart->getPromoCode());
+            }
+            if (method_exists($cart, 'getReduction')) {
+                $order->setPromoReduction($cart->getReduction());
+            }
+
+            // On sauvegarde la commande
             $this->entityManager->persist($order);
 
             foreach ($cart->getFull() as $element) {

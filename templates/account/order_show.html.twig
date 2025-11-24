@@ -101,7 +101,9 @@
 
     {# Totaux de la commande #}
     {% set totalProduitsTTC = totalTTC %}
-    {% set totalCommande = totalProduitsTTC + order.carrierPrice %}
+    {% set promo = order.promoReduction ?? 0 %}
+    {% set totalCommande = totalProduitsTTC - promo + order.carrierPrice %}
+
 
     <table class="table table-bordered mt-4" style="max-width: 400px; float: right;">
         <tbody>
@@ -117,6 +119,12 @@
                 <td><strong>Total produits TTC :</strong></td>
                 <td class="text-end">{{ (totalProduitsTTC)|number_format(2, ',', '.') }} €</td>
             </tr>
+            {% if promo > 0 %}
+            <tr>
+                <td><strong>Réduction ({{ order.promoCode }}):</strong></td>
+                <td class="text-end">-{{ promo|number_format(2, ',', '.') }} €</td>
+            </tr>
+            {% endif %}
             <tr>
                 <td><strong>Frais de livraison :</strong></td>
                 <td class="text-end">{{ (order.carrierPrice)|number_format(2, ',', '.') }} €</td>

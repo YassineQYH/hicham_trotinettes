@@ -57,6 +57,12 @@ class Order
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $secondaryCarrier = null;
 
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $promoCode = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $promoReduction = null;
+
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
@@ -141,4 +147,10 @@ class Order
 
     public function getSecondaryCarrier(): ?string { return $this->secondaryCarrier; }
     public function setSecondaryCarrier(?string $carrier): self { $this->secondaryCarrier = $carrier; return $this; }
+
+    public function getPromoCode(): ?string { return $this->promoCode; }
+    public function setPromoCode(?string $promoCode): self { $this->promoCode = $promoCode; return $this; }
+
+    public function getPromoReduction(): ?float { return $this->promoReduction; }
+    public function setPromoReduction(?float $promoReduction): self { $this->promoReduction = $promoReduction; return $this; }
 }
