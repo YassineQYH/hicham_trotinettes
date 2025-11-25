@@ -44,21 +44,44 @@
                                         Prix unité TTC : <strong>{{ priceTTC|number_format(2, ',', '.') }} €</strong>
                                     </small>
                                     <small class="d-block text-muted">
-                                        Quantité : <strong>{{ item.quantity }}</strong>
+                                        Quantité : <strong class="cart-quantity">{{ item.quantity }}</strong>
                                         <span class="cart-buttons">
-                                            <a class="lien-cart" href="{{ path('delete_to_cart', {'id': item.product.id, 'type': item.type|default('trottinette') }) }}">
+                                            {# ------------------------------- #}
+                                            {# BOUTON SUPPRESSION - AJOUT AJAX #}
+                                            {# ------------------------------- #}
+                                            <button class="lien-cart ajax-cart"
+                                                    data-action="delete"
+                                                    data-id="{{ item.product.id }}"
+                                                    data-type="{{ item.type|default('trottinette') }}">
                                                 <img src="{{ asset('img/delete.png') }}" alt="Supprimer">
-                                            </a>
-                                            <a class="lien-cart" href="{{ path('decrease_to_cart', {'id': item.product.id, 'type': item.type|default('trottinette') }) }}">
+                                            </button>
+
+                                            {# ----------------------------- #}
+                                            {# BOUTON - (DECREASE) - AJAX   #}
+                                            {# ----------------------------- #}
+                                            <button class="lien-cart ajax-cart"
+                                                    data-action="decrease"
+                                                    data-id="{{ item.product.id }}"
+                                                    data-type="{{ item.type|default('trottinette') }}">
                                                 <img src="{{ asset('img/less.png') }}" alt="-">
-                                            </a>
-                                            <a class="lien-cart" href="{{ path('increase_to_cart', {'id': item.product.id, 'type': item.type|default('trottinette') }) }}">
+                                            </button>
+
+                                            {# ----------------------------- #}
+                                            {# BOUTON + (INCREASE) - AJAX   #}
+                                            {# ----------------------------- #}
+                                            <button class="lien-cart ajax-cart"
+                                                    data-action="increase"
+                                                    data-id="{{ item.product.id }}"
+                                                    data-type="{{ item.type|default('trottinette') }}">
                                                 <img src="{{ asset('img/more.png') }}" alt="+">
-                                            </a>
-                                        </span>
-                                    </small>
+                                            </button>
+                                            </span>
+                                        </small>
                                     <small>
-                                        Prix total TTC : <strong>{{ totalItemTTC|number_format(2, ',', '.') }} €</strong>
+                                        Prix total TTC :
+                                        <strong class="cart-total"
+                                                data-price-ht="{{ item.product.price }}"
+                                                data-tva="{{ item.product.tva.value / 100 }}">{{ totalItemTTC|number_format(2, ',', '.') }} €</strong>
                                     </small>
                                 </div>
                             </div>
