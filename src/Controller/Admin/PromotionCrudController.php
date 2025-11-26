@@ -34,8 +34,10 @@ class PromotionCrudController extends AbstractCrudController
                     'Produit' => Promotion::TARGET_PRODUCT,
                     'Liste de produits' => Promotion::TARGET_PRODUCT_LIST,
                 ]),
-            MoneyField::new('discountAmount', 'Montant')->setCurrency('EUR'),
-                        NumberField::new('discountPercent', 'Pourcentage')
+            MoneyField::new('discountAmount', 'Montant')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false), // stocke directement 5.0 en BDD au lieu de 500
+            NumberField::new('discountPercent', 'Pourcentage')
                 ->setNumDecimals(0)
                 ->setHelp('Entrez la valeur en % (ex : 25 pour 25%)')
                 ->formatValue(function ($value) {
