@@ -25,38 +25,55 @@ class PromotionService
         foreach ($cartFull as $item) {
             $product = $item['product'];
             $quantity = $item['quantity'];
-            $linePrice = $product->getPrice() * $quantity;
+            $unitPrice = $product->getPrice(); // ✅ on prend toujours le prix depuis l'entité
 
             switch ($promo->getTargetType()) {
                 case Promotion::TARGET_ALL:
-                    // S'applique sur tout le panier
-                    $reduction = $promo->getDiscountAmount() ?? $linePrice * ($promo->getDiscountPercent() / 100 ?? 0);
-                    $totalReduction += $reduction;
+                    // Calcul du total TTC du panier
+                    $totalTTC = 0;
+                    foreach ($cartFull as $item) {
+                        $product = $item['product'];
+                        $quantity = $item['quantity'];
+                        $unitPriceTTC = $product->getPrice() * (1 + ($product->getTva()?->getValue() / 100 ?? 0));
+                        $totalTTC += $unitPriceTTC * $quantity;
+                    }
+                    // Réduction = montant fixe ou pourcentage sur le total
+                    $totalReduction = $promo->getDiscountAmount() ?? ($totalTTC * ($promo->getDiscountPercent() / 100));
                     break;
-
                 case Promotion::TARGET_CATEGORY_ACCESS:
-                    // Vérifie type "accessoire" + bonne catégorie
-                    if (
-                        $product->getType() === 'accessoire'
-                        && $product->getCategory() === $promo->getCategoryAccess()
-                    ) {
-                        // 💡 Appliquer la réduction pour CHAQUE quantité
-                        $totalReduction += $promo->getDiscountAmount() * $item['quantity'];
+                    if ($product->getType() === 'accessoire' && $product->getCategory() === $promo->getCategoryAccess()) {
+                        if ($promo->getDiscountAmount() !== null) {
+                            // Promo en € (montant fixe)
+                            $totalReduction += $promo->getDiscountAmount() * $quantity;
+                        } elseif ($promo->getDiscountPercent() !== null) {
+                            // Promo en % -> on prend le prix TTC par produit
+                            $unitPriceTTC = $product->getPrice() * (1 + ($product->getTva()?->getValue() / 100 ?? 0));
+                            $totalReduction += ($unitPriceTTC * ($promo->getDiscountPercent() / 100)) * $quantity;
+                        }
                     }
                     break;
-
-
                 case Promotion::TARGET_PRODUCT:
                     if ($product === $promo->getProduct()) {
-                        $reduction = $promo->getDiscountAmount() ?? $linePrice * ($promo->getDiscountPercent() / 100 ?? 0);
-                        $totalReduction += $reduction;
+                        if ($promo->getDiscountAmount() !== null) {
+                            // Promo en € (montant fixe)
+                            $totalReduction += $promo->getDiscountAmount() * $quantity;
+                        } elseif ($promo->getDiscountPercent() !== null) {
+                            // Promo en % -> calculer sur le prix TTC unitaire
+                            $unitPriceTTC = $product->getPrice() * (1 + ($product->getTva()?->getValue() / 100 ?? 0));
+                            $totalReduction += ($unitPriceTTC * ($promo->getDiscountPercent() / 100)) * $quantity;
+                        }
                     }
                     break;
-
                 case Promotion::TARGET_PRODUCT_LIST:
                     if ($promo->getProducts()->contains($product)) {
-                        $reduction = $promo->getDiscountAmount() ?? $linePrice * ($promo->getDiscountPercent() / 100 ?? 0);
-                        $totalReduction += $reduction;
+                        if ($promo->getDiscountAmount() !== null) {
+                            // Promo en € (montant fixe)
+                            $totalReduction += $promo->getDiscountAmount() * $quantity;
+                        } elseif ($promo->getDiscountPercent() !== null) {
+                            // Promo en % -> calculer sur le prix TTC unitaire
+                            $unitPriceTTC = $product->getPrice() * (1 + ($product->getTva()?->getValue() / 100 ?? 0));
+                            $totalReduction += ($unitPriceTTC * ($promo->getDiscountPercent() / 100)) * $quantity;
+                        }
                     }
                     break;
             }
@@ -64,6 +81,7 @@ class PromotionService
 
         return max(0, $totalReduction);
     }
+
 
     /**
      * Applique une promotion sur un prix unitaire d'un produit
