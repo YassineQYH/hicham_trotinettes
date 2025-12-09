@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Classe\Cart;
 use App\Entity\User;
 use App\Entity\Weight;
+use App\Form\OrderType;
 use App\Entity\Promotion;
 use App\Service\PromotionService;
 use App\Repository\WeightRepository;
@@ -12,6 +13,7 @@ use App\Repository\PromotionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\CategoryAccessoryRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -19,57 +21,91 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use App\Entity\Order;
+use App\Service\PdfService;
+use App\Entity\OrderDetails;
+
 class CartController extends BaseController
 {
-    #[Route('/mon-panier', name: 'cart')]
-    public function index(Request $requete,
-            Cart $panier,
-            WeightRepository $weightRepository,
-            PromotionService $promotionService,
-            PromotionRepository $promoRepo
-        ): Response
+    private readonly PdfService $pdfService;
+
+    public function __construct(EntityManagerInterface $entityManager, PdfService $pdfService)
     {
-        $allPromotions = $promoRepo->findAll();
+        parent::__construct($entityManager); // ⚠️ appelle le constructeur de BaseController
+        $this->pdfService = $pdfService;
+    }
 
-        $articlesPanier = $panier->getFull();
+    #[Route('/mon-panier', name: 'cart')]
+    public function index(
+        Request $request,
+        Cart $cart,
+        WeightRepository $weightRepository,
+        PromotionService $promotionService,
+        PromotionRepository $promoRepo,
+        CategoryAccessoryRepository $categoryAccessoryRepository
+    ): Response {
+        $user = $this->getUser();
 
-        // Calcul poids et quantité
-        $poids = 0.0;
-        $quantite_produits = 0;
-        foreach ($articlesPanier as $article) {
-            $kg = $article['product']->getWeight()?->getKg() ?? 0;
-            $poids += $kg * $article['quantity'];
-            $quantite_produits += $article['quantity'];
+        // ⚠️ Vérification utilisateur connecté
+        if (!$user) {
+            $this->addFlash('info-alert', 'Vous devez être connecté pour valider votre panier.');
+            return $this->redirectToRoute('cart');
         }
 
-        $poidsEntity = $weightRepository->findByKgPrice($poids);
-        $prixLivraison = $poidsEntity ? $poidsEntity->getPrice() : 0;
+        /** @var User $user */
+        $user = $this->getUser();
 
-        $user = new User();
-        $formregister = $this->createForm(\App\Form\RegisterType::class, $user);
-        $formregister->handleRequest($requete);
+        // ⚠️ Vérification adresse
+        if ($user->getAddresses()->isEmpty()) {
+            $this->addFlash('info-alert', 'Veuillez ajouter une adresse avant de passer commande.');
+            return $this->redirectToRoute('account_address_add');
+        }
 
+        $formOrder = $this->createForm(OrderType::class, null, ['user' => $user]);
+        $formOrder->handleRequest($request);
+
+        if ($formOrder->isSubmitted()) {
+            dump($formOrder->getData());
+            dump($formOrder->get('addresses')->getData());
+        }
+        
+        $articlesPanier = $cart->getFull();
+
+        // Calcul poids total
+        $poidsTotal = 0.0;
+        foreach ($articlesPanier as $element) {
+            $produit = $element['product'];
+            $quantite = (int) $element['quantity'];
+            $poids = $produit->getWeight() ? (float) $produit->getWeight()->getKg() : 0.0;
+            $poidsTotal += $poids * $quantite;
+        }
+        $poidsTarif = $weightRepository->findByKgPrice($poidsTotal);
+        $prixLivraison = $poidsTarif ? $poidsTarif->getPrice() : 0.0;
+
+        // Promo
+        $promoDiscount = method_exists($cart, 'getReduction') ? (float) $cart->getReduction($promotionService) : 0.0;
+        $promoCode = method_exists($cart, 'getPromoCode') ? $cart->getPromoCode() : null;
+
+        $categories = $categoryAccessoryRepository->findAll();
         $allPromotions = $promoRepo->findAll();
-        $discount = $panier->getDiscountTTC($promotionService, $allPromotions);
-        $totalTTC = array_reduce($articlesPanier, fn($carry, $item) =>
-            $carry + $item['product']->getPrice() * (1 + ($item['product']->getTva()?->getValue()/100 ?? 0)) * $item['quantity'],
-            0
-        );
 
-        $grandTotal = $totalTTC + $prixLivraison - $discount;
+        // 🔹 Plus de redirect : le formulaire POST gère directement la soumission vers order_recap
+        // if ($formOrder->isSubmitted() && $formOrder->isValid()) {
+        //     return $this->redirectToRoute('order_recap', [
+        //         'addressId' => $formOrder->get('addresses')->getData()->getId()
+        //     ]);
+        // }
 
         return $this->render('cart/index.html.twig', [
             'cart' => $articlesPanier,
-            'cartObject' => $panier,
-            'poid' => $poids,
+            'cartObject' => $cart,
             'price' => $prixLivraison,
-            'quantity_product' => $quantite_produits,
-            'totalLivraison' => $prixLivraison,
-            'discount' => $discount,
-            'grandTotal' => $grandTotal,
-            'formregister' => $formregister->createView(),
-            'promoService' => $promotionService,
+            'promoDiscount' => $promoDiscount,
+            'promoCode' => $promoCode,
+            'form_order' => $formOrder->createView(),
+            'categories' => $categories,
             'allPromotions' => $allPromotions,
+            'promoService' => $promotionService
         ]);
     }
 

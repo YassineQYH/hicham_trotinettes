@@ -1,163 +1,126 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Valider ma commande : Hich-Trott{% endblock %}
+{% block javascript %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block title %}Valider ma commande - Hich-Trott{% endblock %}
 
 {% block menu %}
     {{ include('partials/menu.html.twig') }}
 {% endblock %}
 
-{% block content %}<br><br><br><br><br><br><br>
+{% block content %}
+<div class="container my-5 py-5">
+    {% set promoDiscount = promoDiscount|default(0) %}
+    {% set promoCode = promoCode|default('') %}
 
-<div class="container">
-    <h2>Je passe ma commande</h2>
-    <p>Choisissez vos préférences avant de passer votre commande sur La Boutique Hich-Trott.</p>
+    <h2>Mon récapitulatif</h2>
+    <p>Vérifiez vos informations avant de payer votre commande.</p>
     <hr>
 
     <div class="row">
-
-        {# ------------------- FORMULAIRE ------------------- #}
         <div class="col-md-6">
-            {% set formHtml %}
-                {{ form_start(form, {action:path('order_recap')}) }}
-                    {{ form_widget(form.addresses) }}
-                    {{ form_widget(form.submit) }}
-                    <a href="{{ path('account_address_add') }}">Ajouter une nouvelle adresse</a>
-                {{ form_end(form) }}
-            {% endset %}
+            <strong>Mon adresse de livraison :</strong><br>
 
-            {{ formHtml|replace({'[br]' : '</br>'})|raw }}
+            {% if delivery is defined and delivery is not empty %}
+                <div class="form-check mt-4">
+                    {{ delivery|raw }}
+                </div>
+            {% else %}
+                <div class="alert alert-warning mt-3">
+                    Vous devez <a href="{{ path('account_address_add') }}">ajouter une adresse</a> avant de valider votre commande.
+                </div>
+            {% endif %}
+            <hr>
         </div>
 
-        {# ------------------- RÉCAP PANIER ------------------- #}
         <div class="col-md-6">
-
             <div class="text-center">
-                <b>Récap de ma commande</b></br>
-                <p>Retrouvez le récapitulatif de vos produits.</p>
+                <b>Ma commande</b><br>
             </div>
 
-            {# === Récupération baisse promo (auto + code) === #}
-            {% set promoDiscount = cartObject.getDiscountTTC(promoService, allPromotions) %}
-            {% set promoCode = cartObject.getPromoCode() %}
-
-            {# === Calcul du total TTC AVANT remise === #}
-            {% set totalTTC = 0 %}
-
-            {% for item in cart %}
-                {% set tvaRate = item.product.tva ? (item.product.tva.value / 100) : 0 %}
-                {% set priceTTC = item.product.price * (1 + tvaRate) %}
-                {% set totalItemTTC = priceTTC * item.quantity %}
-                {% set totalTTC = totalTTC + totalItemTTC %}
-            {% endfor %}
-
-            {# ------------------- LISTE PRODUITS ------------------- #}
             <div class="order-summary">
+                {# 1️⃣ Calcul total HT #}
+                {% set totalHT = 0 %}
+                {% for item in cart %}
+                    {% set totalHT = totalHT + (item.product.price * item.quantity) %}
+                {% endfor %}
 
-                {% for key, item in cart %}
-
+                {# 2️⃣ Affichage produits avec remise sur HT puis calcul TTC #}
+                {% set totalTTC = 0 %}
+                {% for item in cart %}
                     {% set tvaRate = item.product.tva ? (item.product.tva.value / 100) : 0 %}
-                    {% set priceTTC = item.product.price * (1 + tvaRate) %}
+                    {% set priceHT = item.product.price %}
+
+                    {# remise proportionnelle sur HT #}
+                    {% set priceHTRemise = promoDiscount > 0
+                        ? priceHT - (priceHT / totalHT * promoDiscount)
+                        : priceHT
+                    %}
+
+                    {# TTC après remise #}
+                    {% set priceTTC = priceHTRemise * (1 + tvaRate) %}
                     {% set totalItemTTC = priceTTC * item.quantity %}
+                    {% set totalTTC = totalTTC + totalItemTTC %}
 
-                    {# ----- REMISE PAR PROPORTION ----- #}
-                    {% set totalItemRemise = totalItemTTC %}
-
-                    {% if promoDiscount > 0 %}
-                        {% set proportion = totalItemTTC / totalTTC %}
-                        {% set totalItemRemise = totalItemTTC - (promoDiscount * proportion) %}
-                    {% endif %}
-
-                    <div class="row {% if key > 0 %}mt-2{% endif %}">
-
+                    <div class="row {% if loop.index0 > 0 %}mt-2{% endif %}">
                         <div class="col-4">
                             {% set illustration = item.product.illustrations|first %}
                             {% if illustration %}
-                                <img src="/uploads/{{ item.product.uploadDirectory }}/{{ illustration.image }}"
-                                    alt="{{ item.product.name }}" height="75px">
+                                <img src="/uploads/{{ item.product.uploadDirectory }}/{{ illustration.image }}" height="75px">
                             {% else %}
-                                <img src="/uploads/{{ item.product.uploadDirectory }}/default.jpg"
-                                    alt="image par défaut" height="75px">
+                                <img src="/uploads/{{ item.product.uploadDirectory }}/default.jpg" height="75px">
                             {% endif %}
                         </div>
-
                         <div class="col-6 my-auto">
                             {{ item.product.name }}<br>
-
+                            <small>{{ item.product.description }}</small><br>
+                            <small>x {{ item.quantity }}</small>
+                        </div>
+                        <div class="col-2 my-auto text-end">
                             {% if promoDiscount > 0 %}
-                                <span style="text-decoration: line-through; color:#999;">
-                                    {{ totalItemTTC|number_format(2, ',', '.') }} €
+                                <span style="text-decoration:line-through;color:#888;">
+                                    {{ (priceHT * (1 + tvaRate) * item.quantity)|number_format(2, ',', '.') }} €
                                 </span><br>
-
-                                <span style="color:green; font-weight:bold;">
-                                    {{ totalItemRemise|number_format(2, ',', '.') }} € TTC
+                                <span style="color:green;font-weight:bold;">
+                                    {{ totalItemTTC|number_format(2, ',', '.') }} €
                                 </span>
                             {% else %}
-                                {{ totalItemTTC|number_format(2, ',', '.') }} € TTC
+                                {{ totalItemTTC|number_format(2, ',', '.') }} €
                             {% endif %}
-
-                            <br>
-                            <small>{{ item.product.description }}</small>
                         </div>
-
-                        <div class="col-2 my-auto">
-                            x {{ item.quantity }}
-                        </div>
-
-                    </div></br>
-
+                    </div>
                 {% endfor %}
-
             </div>
 
             <hr>
 
-            {# ------------------- TOTAUX ------------------- #}
+            {% if promoDiscount > 0 %}
+                <strong style="color:green;">Réduction ({{ promoCode }}):</strong>
+                <span style="color:red;">-{{ promoDiscount|number_format(2, ',', '.') }} €</span><br>
+                <strong>Sous-total remisé :</strong> {{ totalTTC|number_format(2, ',', '.') }} €<br>
+            {% else %}
+                <strong>Sous-total :</strong> {{ totalTTC|number_format(2, ',', '.') }} €<br>
+            {% endif %}
 
-            <div class="text-right">
+            <strong>Livraison :</strong> {{ price|number_format(2, ',', '.') }} €<br>
 
-                <b>Panier :</b>
-                {% if promoDiscount > 0 %}
-                    <span style="text-decoration: line-through;">
-                        {{ totalTTC|number_format(2, ',', '.') }} €
-                    </span><br>
-                    <b>Après remise :</b>
-                    <span style="color:green;">
-                        {{ (totalTTC - promoDiscount)|number_format(2, ',', '.') }} €
-                    </span><br>
-                {% else %}
-                    {{ totalTTC|number_format(2, ',', '.') }} €<br>
-                {% endif %}
+            <strong>Total à payer :</strong>
+            <span style="font-weight:bold; color:black;">
+                {{ (totalTTC + price)|number_format(2, ',', '.') }} €
+            </span><br>
 
-                <b>Livraison :</b> {{ price|number_format(2, ',', '.') }} €<br>
+            <small class="text-muted">TVA incluse</small>
 
-                {% set totalWithShipping = totalTTC + price %}
-                {% set totalFinal = totalWithShipping - promoDiscount %}
-
-                <b>Total TTC :</b>
-                <span style="font-size:18px; font-weight:bold;">
-                    {{ totalFinal|number_format(2, ',', '.') }} €
-                </span>
-
-                {% if promoDiscount > 0 %}
-                    <div style="margin-top: 10px; padding: 8px; border: 1px solid #28a745; border-radius: 5px; background: #ebffef;">
-                        {% if promoCode %}
-                            <b>Code promo :</b> {{ promoCode }}<br>
-                        {% else %}
-                            <b>Promotion automatique</b><br>
-                        {% endif %}
-
-                        <b>Remise :</b>
-                        <span style="color:red;">
-                            -{{ promoDiscount|number_format(2, ',', '.') }} €
-                        </span>
-                    </div>
-                {% endif %}
-
-            </div>
-
+            {% if delivery is defined and delivery is not empty %}
+                {# 🔗 Lien direct vers Stripe : le controller gère la session et la redirection #}
+                <a href="{{ path('stripe_create_session', {'reference': reference}) }}"
+                   class="btn btn-success btn-block mt-3">
+                    Payer | {{ (totalTTC + price)|number_format(2, ',', '.') }} €
+                </a>
+            {% endif %}
         </div>
-
     </div>
 </div>
-
 {% endblock %}

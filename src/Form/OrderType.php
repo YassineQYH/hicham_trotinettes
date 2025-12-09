@@ -25,9 +25,14 @@ class OrderType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'choice_label' => function (Address $address) {
-                    return $address->getAddress() . ' - ' . $address->getCity();
-                },
-                'choice_value' => 'id', // <-- transforme l'objet en son ID pour le formulaire
+                            return $address->getFirstname().' '.$address->getLastname()."\n"
+                                .$address->getPhone()."\n"
+                                .$address->getAddress()."\n"
+                                .$address->getPostal().' '.$address->getCity()."\n"
+                                .$address->getCountry();
+                                        },
+                                        'choice_value' => 'id', // <-- transforme l'objet en son ID pour le formulaire
+                                        'data' => count($user->getAddresses()) > 0 ? $user->getAddresses()[0] : null, // <-- adresse par défaut
             ]);
         }
 
@@ -42,7 +47,10 @@ class OrderType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'user' => array()
+            'user' => array(),
+            'csrf_protection' => true,  // <-- assure-toi que CSRF est activé
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'order_item', // n'importe quel identifiant unique
         ]);
     }
 }

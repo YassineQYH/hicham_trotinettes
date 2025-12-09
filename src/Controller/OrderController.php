@@ -27,81 +27,15 @@ class OrderController extends AbstractController
         private readonly PdfService $pdfService
     ) {}
 
-    #[Route('/commande', name: 'order', methods: ['GET','POST'])]
+    #[Route('/recapitulatif-commande', name: 'order_recap', methods: ['GET', 'POST'])]
     public function index(
         Cart $cart,
         Request $request,
-        CategoryAccessoryRepository $categoryAccessoryRepository,
         WeightRepository $weightRepository,
+        CategoryAccessoryRepository $categoryAccessoryRepository,
         PromotionService $promotionService,
-        PromotionRepository $promotionRepository
+        PromotionRepository $promoRepo
     ): Response {
-        $categories = $categoryAccessoryRepository->findAll();
-        $allPromotions = $promotionRepository->findAll();
-
-        /** @var User|null $user */
-        $user = $this->getUser();
-
-        if (!$user) {
-            $this->addFlash('info-alert', 'Vous devez être connecté pour valider votre panier.');
-            return $this->redirectToRoute('cart');
-        }
-
-        if ($user->getAddresses()->isEmpty()) {
-            $this->addFlash('info-alert', 'Veuillez ajouter une adresse avant de passer commande.');
-            return $this->redirectToRoute('account_address_add');
-        }
-
-        $form = $this->createForm(OrderType::class, null, [
-            'user' => $user,
-        ]);
-
-        // Calcul du poids total
-        $poidsTotal = 0.0;
-        foreach ($cart->getFull() as $element) {
-            $produit = $element['product'];
-            $quantite = (int) $element['quantity'];
-            $poids = $produit->getWeight() ? (float) $produit->getWeight()->getKg() : 0.0;
-            $poidsTotal += $poids * $quantite;
-        }
-
-        $poidsTarif = $weightRepository->findByKgPrice($poidsTotal);
-        $prixLivraison = $poidsTarif ? $poidsTarif->getPrice() : 0.0;
-
-        // Récupération réduction & code promo depuis l'objet Cart (si disponible)
-        $promoDiscount = 0.0;
-        $promoCode = null;
-
-        if (method_exists($cart, 'getReduction')) {
-            $promoDiscount = (float) $cart->getReduction($promotionService); // <-- correction
-        }
-
-        if (method_exists($cart, 'getPromoCode')) {
-            $promoCode = $cart->getPromoCode();
-        }
-
-        return $this->render('order/index.html.twig', [
-            'form' => $form->createView(),
-            'cart' => $cart->getFull(),
-            'categories' => $categories,
-            'price' => $prixLivraison,
-            'cartObject' => $cart,
-            'promoDiscount' => $promoDiscount,
-            'promoCode' => $promoCode,
-            'promoService' => $promotionService,
-            'allPromotions' => $allPromotions,
-        ]);
-    }
-
-    #[Route('/commande/recapitulatif', name: 'order_recap', methods: ['POST'])]
-    public function add(
-        Cart $cart,
-        Request $request,
-        WeightRepository $weightRepository,
-        CategoryAccessoryRepository $categoryAccessoryRepository,
-        PromotionService $promotionService
-    ): Response {
-        $categories = $categoryAccessoryRepository->findAll();
         $user = $this->getUser();
 
         if (!$user) {
@@ -109,13 +43,34 @@ class OrderController extends AbstractController
             return $this->redirectToRoute('cart');
         }
 
-        $form = $this->createForm(OrderType::class, null, [
-            'user' => $user,
-        ]);
+        // récupération de toutes les promos
+        $allPromotions = $promoRepo->findAll();
 
+        $form = $this->createForm(OrderType::class, null, ['user' => $user]);
         $form->handleRequest($request);
 
-        // Calcul poids total + quantité
+        // 🔹 DUMP pour debug
+        /* dump($request->request->all()); // toutes les données POST
+        dump($form->get('addresses')->getData()); // l'adresse sélectionnée
+        die('DEBUG'); */
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Le formulaire est invalide.');
+            return $this->redirectToRoute('cart');
+        }
+
+        // récupération de l'adresse sélectionnée
+        $delivery = $form->get('addresses')->getData();
+
+        if (!$delivery) {
+            $this->addFlash('error', 'Veuillez sélectionner une adresse de livraison.');
+            return $this->redirectToRoute('cart');
+        }
+
+        // ✅ TOUT EST OK => ON PASSE AU RECAP
+        /* return $this->redirectToRoute('order_recap'); */
+
+        // Calcul du poids total et du prix de livraison
         $poidsTotal = 0.0;
         $quantiteTotale = 0;
         foreach ($cart->getFull() as $element) {
@@ -130,83 +85,80 @@ class OrderController extends AbstractController
         $poidsTarif = $weightRepository->findByKgPrice($poidsTotal);
         $prixLivraison = $poidsTarif ? $poidsTarif->getPrice() : 0;
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $date = new \DateTime();
-            $delivery = $form->get('addresses')->getData();
+        // Contenu de l'adresse de livraison
+        $deliveryContent = sprintf(
+            '%s %s<br>%s<br>%s%s%s<br>%s',
+            $delivery->getFirstname(),
+            $delivery->getLastname(),
+            $delivery->getPhone(),
+            $delivery->getCompany() ? $delivery->getCompany() . '<br>' : '',
+            $delivery->getAddress(),
+            '<br>' . $delivery->getPostal() . ' ' . $delivery->getCity(),
+            $delivery->getCountry()
+        );
 
-            $deliveryContent = sprintf(
-                '%s %s<br>%s<br>%s%s%s<br>%s',
-                $delivery->getFirstname(),
-                $delivery->getLastname(),
-                $delivery->getPhone(),
-                $delivery->getCompany() ? $delivery->getCompany() . '<br>' : '',
-                $delivery->getAddress(),
-                '<br>' . $delivery->getPostal() . ' ' . $delivery->getCity(),
-                $delivery->getCountry()
-            );
+        // Création de la commande
+        $order = new Order();
+        $order->setCarrier('bpost');
+        $order->setReference((new \DateTime())->format('dmY') . '-' . uniqid());
+        $order->setUser($user);
+        $order->setCreatedAt(new \DateTime());
+        $order->setCarrierPrice($prixLivraison);
+        $order->setDelivery($deliveryContent);
+        $order->setPaymentState(0);
+        $order->setDeliveryState(0);
 
-            // Création de la commande
-            $order = new Order();
-            $order->setCarrier('bpost');
-            $order->setReference($date->format('dmY') . '-' . uniqid());
-            $order->setUser($user);
-            $order->setCreatedAt($date);
-            $order->setCarrierPrice($prixLivraison);
-            $order->setDelivery($deliveryContent);
-            $order->setPaymentState(0);
-            $order->setDeliveryState(0);
+        // Code promo
+        if (method_exists($cart, 'getPromoCode')) {
+            $order->setPromoCode($cart->getPromoCode());
+        }
+        $order->setPromoReduction(
+            $cart->getDiscountTTC($promotionService, $allPromotions)
+        );
 
-            // --- Enregistrement du code promo et de la réduction le cas échéant ---
-            if (method_exists($cart, 'getPromoCode')) {
-                $order->setPromoCode($cart->getPromoCode());
-            }
-            if (method_exists($cart, 'getReduction')) {
-                $order->setPromoReduction($cart->getReduction($promotionService)); // <-- correction
-            }
 
-            // On sauvegarde la commande
-            $this->entityManager->persist($order);
+        $this->entityManager->persist($order);
 
-            foreach ($cart->getFull() as $element) {
-                $produit = $element['product'];
-                $quantite = (int) $element['quantity'];
+        // Détails des produits
+        foreach ($cart->getFull() as $element) {
+            $produit = $element['product'];
+            $quantite = (int) $element['quantity'];
 
-                $orderDetails = new OrderDetails();
-                $orderDetails->setMyOrder($order);
-                $orderDetails->setProduct($produit->getName());
-                $orderDetails->setProductEntity($produit);
-                $orderDetails->setWeight($produit->getWeight() ? (string) $produit->getWeight()->getKg() : '0');
-                $orderDetails->setQuantity($quantite);
-                $orderDetails->setPrice($produit->getPrice());
-                $orderDetails->setTotal($produit->getPrice() * $quantite);
+            $orderDetails = new OrderDetails();
+            $orderDetails->setMyOrder($order);
+            $orderDetails->setProduct($produit->getName());
+            $orderDetails->setProductEntity($produit);
+            $orderDetails->setWeight($produit->getWeight() ? (string) $produit->getWeight()->getKg() : '0');
+            $orderDetails->setQuantity($quantite);
+            $orderDetails->setPrice($produit->getPrice());
+            $orderDetails->setTotal($produit->getPrice() * $quantite);
 
-                $tvaValue = $produit->getTva() ? $produit->getTva()->getValue() : 0;
-                $orderDetails->setTva($tvaValue);
+            $tvaValue = $produit->getTva() ? $produit->getTva()->getValue() : 0;
+            $orderDetails->setTva($tvaValue);
 
-                $priceTTC = $produit->getPrice() * (1 + ($tvaValue / 100));
-                $orderDetails->setPriceTTC($priceTTC);
+            $priceTTC = $produit->getPrice() * (1 + ($tvaValue / 100));
+            $orderDetails->setPriceTTC($priceTTC);
 
-                $this->entityManager->persist($orderDetails);
-            }
-
-            $this->entityManager->flush();
-
-            return $this->render('order/add.html.twig', [
-                'cart' => $cart->getFull(),
-                'cartObject' => $cart,
-                'delivery' => $deliveryContent,
-                'reference' => $order->getReference(),
-                'price' => $prixLivraison,
-                'totalLivraison' => null,
-                'categories' => $categories,
-                'promoDiscount' => $cart->getReduction($promotionService), // <-- correction
-                'promoCode' => $cart->getPromoCode(),
-                'promoService' => $promotionService,
-            ]);
+            $this->entityManager->persist($orderDetails);
         }
 
-        return $this->redirectToRoute('cart');
+        $this->entityManager->flush();
+
+        return $this->render('order/index.html.twig', [
+            'cart' => $cart->getFull(),
+            'cartObject' => $cart,
+            'delivery' => $deliveryContent,
+            'reference' => $order->getReference(),
+            'price' => $prixLivraison,
+            'totalLivraison' => null,
+            'categories' => $categoryAccessoryRepository->findAll(),
+            'promoDiscount' => $cart->getReduction($promotionService),
+            'promoCode' => $cart->getPromoCode(),
+            'promoService' => $promotionService,
+            'allPromotions' => $allPromotions,
+        ]);
     }
+
 
     #[Route('/account/order/{reference}/facture', name: 'account_order_invoice', methods: ['GET'])]
     public function generateInvoice(string $reference, Request $request): Response
