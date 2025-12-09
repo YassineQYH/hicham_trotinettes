@@ -31,53 +31,6 @@ class StripeController extends AbstractController
         $YOUR_DOMAIN = 'http://127.0.0.1:8000';
         $product_for_stripe = [];
 
-        // Produits
-        foreach ($order->getOrderDetails() as $item) {
-            $product_for_stripe[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => round($item->getPriceTTC() * 100),
-                    'product_data' => [
-                        'name' => $item->getProduct(),
-                        'images' => [$YOUR_DOMAIN . '/img/default.png'],
-                    ],
-                ],
-                'quantity' => $item->getQuantity(),
-            ];
-        }
-
-        // Livraison
-        if ($order->getCarrierPrice() > 0) {
-            $product_for_stripe[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => round($order->getCarrierPrice() * 100),
-                    'product_data' => [
-                        'name' => 'Livraison',
-                        'images' => [$YOUR_DOMAIN . '/img/delivery.jpg'],
-                    ],
-                ],
-                'quantity' => 1,
-            ];
-        }
-
-        // Remise globale (ligne négative)
-        $remise = $panier->getReduction($promotionService, $promo); // ou ton calcul exact
-        if ($remise > 0) {
-            $product_for_stripe[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => round(-$remise * 100), // valeur négative
-                    'product_data' => [
-                        'name' => 'Remise promotionnelle',
-                    ],
-                ],
-                'quantity' => 1,
-            ];
-        }
-
-
-
         /** @var User|null $user */
         $user = $this->getUser();
         if (!$user) {
