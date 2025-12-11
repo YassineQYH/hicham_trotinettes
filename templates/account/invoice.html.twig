@@ -16,28 +16,17 @@
             border: 1px solid #000;
             box-sizing: border-box;
         }
-        .facture div {
-            margin-bottom: 8px; /* ajoute de l'espace entre chaque bloc d'infos */
-        }
+        .facture div { margin-bottom: 8px; }
         h1 { font-size: 14px; margin-bottom: 5px; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 5px; }
-        th, td {
-            border: 1px solid #000;
-            padding: 5px;
-            text-align: left;
-        }
-        /* colonnes montant avec € aligné, mais autorise le texte à revenir à la ligne si nécessaire */
+        th, td { border: 1px solid #000; padding: 5px; text-align: left; }
         th:nth-child(4), td:nth-child(4),
         th:nth-child(5), td:nth-child(5),
         th:nth-child(6), td:nth-child(6),
-        th:nth-child(7), td:nth-child(7) {
-            min-width: 60px;
-            white-space: nowrap; /* uniquement sur le montant pour garder € à côté */
-        }
+        th:nth-child(7), td:nth-child(7) { min-width: 60px; white-space: nowrap; }
         .totals td { border: none; padding: 5px; }
         .footer { font-size: 10px; margin-top: 5px; color: gray; }
     </style>
-
 </head>
 <body>
 <div class="facture">
@@ -90,10 +79,10 @@
         </tbody>
     </table>
 
-    {% set totalTTCProduits = totalHT + totalTVA %}
-    {% set totalTTCFinal = totalTTCProduits + order.carrierPrice %}
+    {% set totalProduitsTTC = totalHT + totalTVA %}
+    {% set promo = order.promoReduction ?? 0 %}
+    {% set totalCommande = totalProduitsTTC - promo + order.carrierPrice %}
 
-    <!-- Totaux dans tableau comme version web -->
     <table style="width:100%; border-collapse:collapse; font-size:11px; margin-top:5px;">
         <tbody>
             <tr>
@@ -106,15 +95,21 @@
             </tr>
             <tr>
                 <td><strong>Total TTC produits :</strong></td>
-                <td>{{ totalTTCProduits|number_format(2, ',', '.') }} €</td>
+                <td>{{ totalProduitsTTC|number_format(2, ',', '.') }} €</td>
             </tr>
+            {% if promo > 0 %}
+            <tr>
+                <td><strong>Réduction ({{ order.promoTitre ?? order.promoCode }}):</strong></td>
+                <td>-{{ promo|number_format(2, ',', '.') }} €</td>
+            </tr>
+            {% endif %}
             <tr>
                 <td>Frais de livraison :</td>
                 <td>{{ order.carrierPrice|number_format(2, ',', '.') }} €</td>
             </tr>
             <tr>
                 <td><strong>Total TTC :</strong></td>
-                <td><strong>{{ totalTTCFinal|number_format(2, ',', '.') }} €</strong></td>
+                <td><strong>{{ totalCommande|number_format(2, ',', '.') }} €</strong></td>
             </tr>
         </tbody>
     </table>
