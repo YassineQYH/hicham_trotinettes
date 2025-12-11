@@ -226,11 +226,60 @@ class OrderCrudController extends AbstractCrudController
                 ->onlyOnDetail(),
         ];
 
+        // ---------------------- Promo ----------------------
+        $promo = [
+            FormField::addPanel('Promotion')->collapsible(),
+
+            // Champ promo affiché dans la liste et détail
+            TextField::new('promoInfo', 'Promo')
+                ->onlyOnIndex() // affiché sur la liste
+                ->formatValue(function ($value, $entity) {
+                    // Affiche le code promo s'il existe, sinon le titre promo s'il existe, sinon '-'
+                    return $entity->getPromoCode() ?: ($entity->getPromoTitre() ?: '-');
+                }),
+
+            TextField::new('promoCode', 'Code promo')->onlyOnDetail(),
+            MoneyField::new('promoReduction', 'Réduction promo')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false)
+                ->onlyOnDetail(),
+        ];
+
         // ---------------------- Paiement & Livraison ----------------------
         $paymentDelivery = [
             FormField::addPanel('Paiement & Livraison')->collapsible(),
-            MoneyField::new('total', 'Total produit')->setCurrency('EUR')->setStoredAsCents(false),
-            MoneyField::new('carrierPrice', 'Frais de livraison')->setCurrency('EUR')->setStoredAsCents(false),
+
+            // Affiche le promo avant les frais de livraison
+            TextField::new('promoInfo', 'Promo')
+                ->onlyOnDetail()
+                ->formatValue(function ($value, $entity) {
+                    return $entity->getPromoCode() ?: ($entity->getPromoTitre() ?: '-');
+                }),
+
+            MoneyField::new('carrierPrice', 'Frais de livraison')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
+            MoneyField::new('total', 'Total produit HT')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
+            MoneyField::new('totalAfterReduction', 'Total produit HT (après réduction)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
+            MoneyField::new('totalTtc', 'Total produit TTC')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
+            MoneyField::new('totalTtcAfterReduction', 'Total produit TTC (après réduction)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
+            MoneyField::new('cartTotalTtc', 'Total panier TTC (avec livraison)')
+                ->setCurrency('EUR')
+                ->setStoredAsCents(false),
+
             ChoiceField::new('paymentState', 'Paiement')->setChoices([
                 'Non payée' => 0,
                 'Payée' => 1,
@@ -238,6 +287,7 @@ class OrderCrudController extends AbstractCrudController
                 0 => 'danger',
                 1 => 'success',
             ]),
+
             ChoiceField::new('deliveryState', 'Traitement')->setChoices([
                 'Commande en attente' => 0,
                 'Préparation en cours' => 1,
@@ -249,6 +299,7 @@ class OrderCrudController extends AbstractCrudController
                 2 => 'info',
                 3 => 'success',
             ]),
+
             TextField::new('carrier', 'Transporteur')->onlyOnDetail(),
             TextField::new('trackingNumber', 'Numéro de suivi')->onlyOnDetail(),
         ];
@@ -260,15 +311,8 @@ class OrderCrudController extends AbstractCrudController
             TextField::new('secondaryCarrierTrackingNumber', 'N° suivi secondaire')->onlyOnDetail(),
         ];
 
-        // ---------------------- Promo ----------------------
-        $promo = [
-            FormField::addPanel('Promotion')->collapsible(),
-            TextField::new('promoCode', 'Code promo')->onlyOnDetail(),
-            MoneyField::new('promoReduction', 'Réduction promo')->setCurrency('EUR')->setStoredAsCents(false)->onlyOnDetail(),
-        ];
-
         // ---------------------- Fusion ----------------------
-        return array_merge($general, $paymentDelivery, $secondaryTransport, $promo);
+        return array_merge($general, $promo, $paymentDelivery, $secondaryTransport);
     }
 
 }

@@ -27,7 +27,7 @@ class OrderController extends AbstractController
         private readonly PdfService $pdfService
     ) {}
 
-    #[Route('/recapitulatif-commande', name: 'order_recap', methods: ['GET', 'POST'])]
+#[Route('/recapitulatif-commande', name: 'order_recap', methods: ['GET', 'POST'])]
     public function index(
         Cart $cart,
         Request $request,
@@ -107,7 +107,7 @@ class OrderController extends AbstractController
         $order->setDelivery($deliveryContent);
         $order->setPaymentState(0);
         $order->setDeliveryState(0);
-        
+
         // Code promo
         if (method_exists($cart, 'getPromoCode')) {
             $order->setPromoCode($cart->getPromoCode());
@@ -123,14 +123,26 @@ class OrderController extends AbstractController
             $cart->getDiscountTTC($promotionService, $allPromotions)
         );
 
-
-
         $this->entityManager->persist($order);
+
+        // 🔹 Calcul pour la répartition de la réduction sur les produits
+        $reductionTTC = $cart->getDiscountTTC($promotionService, $allPromotions);
+        $totalTTCPanier = array_reduce($cart->getFull(), fn($carry, $item) =>
+            $carry + $item['product']->getPrice() * (1 + ($item['product']->getTva()?->getValue() / 100 ?? 0)) * $item['quantity'],
+        0);
 
         // Détails des produits
         foreach ($cart->getFull() as $element) {
             $produit = $element['product'];
             $quantite = (int) $element['quantity'];
+
+            $tvaValue = $produit->getTva() ? $produit->getTva()->getValue() : 0;
+            $priceTTC = $produit->getPrice() * (1 + ($tvaValue / 100));
+
+            // 🔹 proportion de réduction pour ce produit
+            $productTTC = $priceTTC * $quantite;
+            $reductionProportion = $totalTTCPanier > 0 ? $productTTC / $totalTTCPanier : 0;
+            $reductionProduitTTC = $reductionTTC * $reductionProportion;
 
             $orderDetails = new OrderDetails();
             $orderDetails->setMyOrder($order);
@@ -140,12 +152,17 @@ class OrderController extends AbstractController
             $orderDetails->setQuantity($quantite);
             $orderDetails->setPrice($produit->getPrice());
             $orderDetails->setTotal($produit->getPrice() * $quantite);
-
-            $tvaValue = $produit->getTva() ? $produit->getTva()->getValue() : 0;
             $orderDetails->setTva($tvaValue);
-
-            $priceTTC = $produit->getPrice() * (1 + ($tvaValue / 100));
             $orderDetails->setPriceTTC($priceTTC);
+
+            // 🔹 NOUVELLES COLONNES
+            $priceAfterReducHT = $produit->getPrice() - ($reductionProduitTTC / (1 + ($tvaValue / 100)) / $quantite);
+            $priceAfterReducTTC = $priceTTC - ($reductionProduitTTC / $quantite);
+            $totalAfterReduc = $priceAfterReducHT * $quantite;
+
+            $orderDetails->setPriceAfterReduc($priceAfterReducHT);
+            $orderDetails->setPriceTTCAfterReduc($priceAfterReducTTC);
+            $orderDetails->setTotalAfterReduc($totalAfterReduc);
 
             $this->entityManager->persist($orderDetails);
         }
@@ -166,6 +183,7 @@ class OrderController extends AbstractController
             'allPromotions' => $allPromotions,
         ]);
     }
+
 
 
     #[Route('/account/order/{reference}/facture', name: 'account_order_invoice', methods: ['GET'])]

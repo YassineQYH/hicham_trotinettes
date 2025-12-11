@@ -1,22 +1,62 @@
-{# templates/admin/fields/order_details.html.twig #}
+{# Détection d'une vraie réduction sur au moins un produit #}
+{% set hasReduc = false %}
+{% for d in field.value %}
+    {% if d.priceAfterReduc is not null and (0 + d.priceAfterReduc) != (0 + d.price) %}
+        {% set hasReduc = true %}
+    {% endif %}
+{% endfor %}
+
 <table class="table table-sm">
     <thead>
         <tr>
             <th>Produit</th>
             <th>Quantité</th>
             <th>Poids</th>
-            <th>Prix unitaire</th>
-            <th>Total</th>
+            <th>Prix/u HT</th>
+            <th>Total HT</th>
+
+            {% if hasReduc %}
+                <th>Prix/u HT après promo</th>
+                <th>Total HT après promo</th>
+            {% endif %}
+
+            <th>Prix TTC</th>
+
+            {% if hasReduc %}
+                <th>Prix TTC après promo</th>
+            {% endif %}
         </tr>
     </thead>
+
     <tbody>
         {% for detail in field.value %}
             <tr>
                 <td>{{ detail.product }}</td>
                 <td>{{ detail.quantity }}</td>
                 <td>{{ detail.weight }} kg</td>
+
                 <td>{{ detail.price|number_format(2, ',', ' ') }} €</td>
                 <td>{{ detail.total|number_format(2, ',', ' ') }} €</td>
+
+                {% if hasReduc %}
+                    {% if detail.priceAfterReduc is not null and (0 + detail.priceAfterReduc) != (0 + detail.price) %}
+                        <td>{{ detail.priceAfterReduc|number_format(2, ',', ' ') }} €</td>
+                        <td>{{ detail.totalAfterReduc|number_format(2, ',', ' ') }} €</td>
+                    {% else %}
+                        <td>-</td>
+                        <td>-</td>
+                    {% endif %}
+                {% endif %}
+
+                <td>{{ detail.priceTtc|number_format(2, ',', ' ') }} €</td>
+
+                {% if hasReduc %}
+                    {% if detail.priceTtcAfterReduc is not null and (0 + detail.priceTtcAfterReduc) != (0 + detail.priceTtc) %}
+                        <td>{{ detail.priceTtcAfterReduc|number_format(2, ',', ' ') }} €</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>

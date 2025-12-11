@@ -46,6 +46,11 @@ public function configureFields(string $pageName): iterable
         MoneyField::new('price', 'Prix HT')
             ->setCurrency('EUR'),
 
+        // 💶 Prix HT après réduction
+        MoneyField::new('priceAfterReduc', 'Prix HT après réduc')
+            ->setCurrency('EUR')
+            ->onlyOnDetail(),
+
         // 💶 TVA appliquée
         MoneyField::new('tva', 'TVA')
             ->setCurrency('EUR')
@@ -56,8 +61,18 @@ public function configureFields(string $pageName): iterable
             ->setCurrency('EUR')
             ->onlyOnDetail(),
 
+        // 💶 Prix TTC après réduction
+        MoneyField::new('priceTTCAfterReduc', 'Prix TTC après réduc')
+            ->setCurrency('EUR')
+            ->onlyOnDetail(),
+
         // 🧮 Total TTC
         MoneyField::new('total', 'Total TTC')
+            ->setCurrency('EUR')
+            ->onlyOnDetail(),
+
+        // 🧮 Total TTC après réduction
+        MoneyField::new('totalAfterReduc', 'Total TTC après réduc')
             ->setCurrency('EUR')
             ->onlyOnDetail(),
     ];

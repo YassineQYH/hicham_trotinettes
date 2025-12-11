@@ -31,8 +31,14 @@ class OrderDetails
     #[ORM\Column(type: 'float')]
     private ?float $price = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $priceAfterReduc = null;
+
     #[ORM\Column(type: 'float')]
     private ?float $total = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $totalAfterReduc = null;
 
     #[ORM\Column(type: 'string', length: 64)]
     private ?string $weight = null;
@@ -42,6 +48,10 @@ class OrderDetails
 
     #[ORM\Column(type: 'float')]
     private ?float $priceTTC = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $priceTtcAfterReduc = null;
+
 
 
     public function __toString(): string
@@ -66,8 +76,14 @@ class OrderDetails
     public function getPrice(): ?float { return $this->price; }
     public function setPrice(float $price): self { $this->price = $price; return $this; }
 
+    public function getPriceAfterReduc(): ?float{return $this->priceAfterReduc;}
+    public function setPriceAfterReduc(?float $priceAfterReduc): self{$this->priceAfterReduc = $priceAfterReduc; return $this;}
+
     public function getTotal(): ?float { return $this->total; }
     public function setTotal(float $total): self { $this->total = $total; return $this; }
+
+    public function getTotalAfterReduc(): ?float{return $this->totalAfterReduc;}
+    public function setTotalAfterReduc(?float $totalAfterReduc): self{$this->totalAfterReduc = $totalAfterReduc; return $this;}
 
     public function getWeight(): ?string { return $this->weight; }
     public function setWeight(string $weight): self { $this->weight = $weight; return $this; }
@@ -77,5 +93,8 @@ class OrderDetails
 
     public function getPriceTTC(): ?float{return $this->priceTTC;}
     public function setPriceTTC(float $priceTTC): self{$this->priceTTC = $priceTTC;return $this;}
+
+    public function getPriceTtcAfterReduc(): ?float{return $this->priceTtcAfterReduc;}
+    public function setPriceTtcAfterReduc(?float $priceTTCAfterReduc): self{$this->priceTtcAfterReduc = $priceTTCAfterReduc; return $this;}
 
 }

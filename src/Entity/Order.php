@@ -38,6 +38,15 @@ class Order
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $stripeSessionId = null;
 
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $promoCode = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $promoReduction = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $promoTitre = null;
+
     #[ORM\Column(type: 'integer')]
     private ?int $paymentState = 0;
 
@@ -56,16 +65,6 @@ class Order
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $secondaryCarrier = null;
-
-    #[ORM\Column(type: 'string', length: 50, nullable: true)]
-    private ?string $promoCode = null;
-
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $promoReduction = null;
-
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $promoTitre = null;
-
 
     public function __construct()
     {
@@ -161,5 +160,65 @@ class Order
 
     public function getPromoTitre(): ?string{return $this->promoTitre;}
     public function setPromoTitre(?string $promoTitre): self{$this->promoTitre = $promoTitre;return $this;}
+
+    public function getTotalAfterReduction(): float{$total = $this->getTotal();if ($this->getPromoReduction()) {return $total - $this->getPromoReduction();}return $total;}
+
+    public function getTotalTtc(): float
+    {
+        $totalTtc = 0;
+
+        foreach ($this->getOrderDetails() as $detail) {
+            if (method_exists($detail, 'getPriceTtc')) {
+                $totalTtc += $detail->getPriceTtc() * $detail->getQuantity();
+            }
+        }
+
+        return $totalTtc;
+    }
+
+    public function getCartTotalTtc(): float
+    {
+        $total = $this->getTotalTtc();
+
+        if ($this->getPromoReduction()) {
+            $total -= $this->getPromoReduction();
+        }
+
+        $total += $this->getCarrierPrice();
+
+        return $total;
+    }
+
+    public function getTotalTtcAfterReduction(): float
+    {
+        $totalTtc = 0;
+
+        foreach ($this->orderDetails as $detail) {
+            $product = $detail->getProductEntity();
+            if ($product instanceof \App\Entity\Product) {
+                // prix après réduction du produit
+                $priceAfterReduc = $detail->getPriceAfterReduc() ?? $product->getPrice();
+
+                // récupérer la TVA du produit
+                $tvaValue = $product->getTva() ? $product->getTva()->getValue() : 0;
+
+                // calcul TTC pour cette ligne : prix * (1 + TVA/100) * quantité
+                $totalTtc += $priceAfterReduc * (1 + $tvaValue / 100) * $detail->getQuantity();
+            } else {
+                // fallback si pas de productEntity
+                $priceAfterReduc = $detail->getPriceAfterReduc() ?? $detail->getPrice() ?? 0;
+                $tvaValue = $detail->getTva() ?? 0;
+                $totalTtc += $priceAfterReduc * (1 + $tvaValue / 100) * $detail->getQuantity();
+            }
+        }
+
+        return $totalTtc;
+    }
+
+    public function getPromoInfo(): ?string
+    {
+        return $this->promoCode ?: $this->promoTitre ?: '-';
+    }
+
 
 }
