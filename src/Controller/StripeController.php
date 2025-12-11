@@ -20,149 +20,160 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class StripeController extends AbstractController
 {
     #[Route('/commande/create-session/{reference}', name: 'stripe_create_session')]
-    public function index(
-        EntityManagerInterface $entityManager,
-        Cart $panier,
-        RequestStack $requestStack,
-        PromotionService $promotionService,
-        string $reference
-    ): RedirectResponse {
+        public function index(
+            EntityManagerInterface $entityManager,
+            Cart $panier,
+            RequestStack $requestStack,
+            PromotionService $promotionService,
+            string $reference
+        ): RedirectResponse {
+            $YOUR_DOMAIN = 'http://127.0.0.1:8000';
+            $product_for_stripe = [];
 
-        $YOUR_DOMAIN = 'http://127.0.0.1:8000';
-        $product_for_stripe = [];
+            /** @var User|null $user */
+            $user = $this->getUser();
+            if (!$user) {
+                $this->addFlash('login_required', 'Vous devez être connecté pour procéder au paiement.');
+                return $this->redirectToRoute('cart');
+            }
 
-        /** @var User|null $user */
-        $user = $this->getUser();
-        if (!$user) {
-            $this->addFlash('login_required', 'Vous devez être connecté pour procéder au paiement.');
-            return $this->redirectToRoute('cart');
-        }
+            // Récupération de la commande
+            $order = $entityManager->getRepository(Order::class)->findOneBy(['reference' => $reference]);
+            if (!$order) {
+                $this->addFlash('error', 'Commande introuvable.');
+                return $this->redirectToRoute('cart');
+            }
 
-        // 🔍 Récupération de la commande
-        $order = $entityManager->getRepository(Order::class)->findOneBy(['reference' => $reference]);
-        if (!$order) {
-            $this->addFlash('error', 'Commande introuvable.');
-            return $this->redirectToRoute('cart');
-        }
+            // Récupération des promos (même méthode que dans OrderController)
+            $allPromotions = $entityManager->getRepository(Promotion::class)->findAll();
 
-        // 🔑 Lecture du code promo en session
-        $session = $requestStack->getSession();
-        $promoCode = $session->get('promo_code');
-        $promo = $promoCode ? $entityManager->getRepository(Promotion::class)->findOneBy(['code' => $promoCode]) : null;
+            // Calcul total panier TTC (base pour la répartition)
+            $totalPanier = 0.0;
+            foreach ($order->getOrderDetails() as $item) {
+                // getPriceTTC() doit déjà renvoyer le prix TTC unitaire selon ta logique dans OrderDetails
+                $totalPanier += $item->getPriceTTC() * $item->getQuantity();
+            }
 
-        // 1️⃣ Calcul total panier TTC avant remise
-        $totalPanier = 0.0;
-        foreach ($order->getOrderDetails() as $item) {
-            $totalPanier += $item->getPriceTTC() * $item->getQuantity();
-        }
+            // ✅ Calcul de la réduction totale en TTC (même méthode que sur le récap)
+            $reductionTotale = $panier->getDiscountTTC($promotionService, $allPromotions);
 
-        // 2️⃣ Calcul de la réduction totale
-        $reductionTotale = $panier->getReduction($promotionService, $promo);
+            // Construction des lignes Stripe : on répartit la réduction proportionnellement sur les lignes TTC
+            $sumCents = 0;
+            $lines = []; // stock temporaire des lignes pour pouvoir ajuster ensuite
 
-        // 3️⃣ Construction des lignes Stripe
-        $product_for_stripe = [];
-        $totalPanier = 0.0;
+            foreach ($order->getOrderDetails()->getValues() as $item) {
+                // Essayer de récupérer l'entité produit pour l'image (optionnel)
+                $product_object = $entityManager->getRepository(\App\Entity\Trottinette::class)
+                    ->findOneBy(['name' => $item->getProduct()])
+                    ?? $entityManager->getRepository(\App\Entity\Accessory::class)
+                        ->findOneBy(['name' => $item->getProduct()]);
 
-        // 🔹 Calcul du total panier TTC avant remise
-        foreach ($order->getOrderDetails() as $item) {
-            $totalPanier += $item->getPriceTTC() * $item->getQuantity();
-        }
-
-        // 🔹 Calcul de la réduction totale
-        $reductionTotale = $panier->getReduction($promotionService, $promo);
-
-        // 🔹 Distribution proportionnelle de la remise sur chaque ligne
-        $distributedDiscount = 0; // pour ajuster l'arrondi final
-        $orderDetailsArray = $order->getOrderDetails()->getValues();
-        $lastIndex = count($orderDetailsArray) - 1;
-
-        foreach ($orderDetailsArray as $index => $item) {
-            // Récupération du produit
-            $product_object = $entityManager->getRepository(Trottinette::class)
-                ->findOneBy(['name' => $item->getProduct()])
-                ?? $entityManager->getRepository(Accessory::class)
-                    ->findOneBy(['name' => $item->getProduct()]);
-
-            // Image produit
-            $productImage = $YOUR_DOMAIN . '/img/default.png';
-            if ($product_object) {
-                $illustration = method_exists($product_object, 'getIllustrations')
-                    ? $product_object->getIllustrations()->first()
-                    : null;
-                if ($illustration) {
-                    $productImage = $YOUR_DOMAIN . '/uploads/' . $product_object->getUploadDirectory() . '/' . $illustration->getImage();
+                $productImage = $YOUR_DOMAIN . '/img/default.png';
+                if ($product_object) {
+                    $illustration = method_exists($product_object, 'getIllustrations')
+                        ? $product_object->getIllustrations()->first()
+                        : null;
+                    if ($illustration) {
+                        $productImage = $YOUR_DOMAIN . '/uploads/' . $product_object->getUploadDirectory() . '/' . $illustration->getImage();
+                    }
                 }
+
+                $lineTTC = $item->getPriceTTC() * $item->getQuantity(); // TTC total ligne avant répartition
+                $lineDiscount = 0.0;
+
+                if ($totalPanier > 0 && $reductionTotale > 0) {
+                    // part proportionnelle de la réduction sur cette ligne (en euros)
+                    $lineDiscount = ($lineTTC / $totalPanier) * $reductionTotale;
+                }
+
+                $lineTotalAfterDiscount = $lineTTC - $lineDiscount; // TTC total ligne après remise
+
+                // convertir en centimes et arrondir
+                $lineTotalCents = (int) round($lineTotalAfterDiscount * 100);
+
+                $lines[] = [
+                    'product_name' => $item->getProduct(),
+                    'image' => $productImage,
+                    'quantity' => $item->getQuantity(),
+                    'line_total_cents' => $lineTotalCents,
+                    'unit_price_cents' => $item->getQuantity() > 0 ? (int) round(($lineTotalAfterDiscount / $item->getQuantity()) * 100) : $lineTotalCents,
+                    // on garde lineTotalCents pour somme et ajustement ultérieur
+                ];
+
+                $sumCents += $lineTotalCents;
             }
 
-            $quantity = $item->getQuantity();
-            $unitPrice = $item->getPriceTTC();
+            // Ajouter la livraison (en centimes) — jamais remisée
+            $shippingCents = (int) round($order->getCarrierPrice() * 100);
+            // Somme attendue (produits remisés + livraison), calculée en centimes
+            $expectedTotalCents = (int) round((($totalPanier - $reductionTotale) + $order->getCarrierPrice()) * 100);
 
-            // 🔹 Remise proportionnelle par unité
-            $unitDiscount = ($totalPanier > 0 && $reductionTotale > 0)
-                ? ($unitPrice / $totalPanier) * $reductionTotale
-                : 0;
+            // Somme actuelle (produits répartis) + livraison
+            $currentSumCents = $sumCents + $shippingCents;
 
-            $unitPriceAfterDiscount = $unitPrice - $unitDiscount;
+            // Différence d'arrondi à corriger (peut être négative ou positive)
+            $diff = $expectedTotalCents - $currentSumCents;
 
-            // ⚠️ Arrondi pour Stripe (en centimes)
-            $unitPriceCents = round($unitPriceAfterDiscount * 100);
-
-            // 🔹 On cumule la remise déjà appliquée pour ajustement
-            $distributedDiscount += ($unitPrice - $unitPriceAfterDiscount) * $quantity;
-
-            // 🔹 Dernier produit : on ajuste pour que la somme exacte corresponde au total réel
-            if ($index === $lastIndex) {
-                $adjustment = round(($reductionTotale - $distributedDiscount) * 100);
-                $unitPriceCents -= $adjustment / $quantity; // répartit l’ajustement sur les unités
+            // Si besoin, on applique la différence sur la première ligne unit_amount
+            if ($diff !== 0 && count($lines) > 0) {
+                // ajouter la différence aux centimes de la première ligne
+                $lines[0]['line_total_cents'] += $diff;
+                // recalculer aussi son unit_price_cents
+                $qty0 = max(1, $lines[0]['quantity']);
+                $lines[0]['unit_price_cents'] = (int) round($lines[0]['line_total_cents'] / $qty0);
+                $currentSumCents += $diff; // maintenant égal à expectedTotalCents
             }
 
-            $product_for_stripe[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => $unitPriceCents,
-                    'product_data' => [
-                        'name' => $item->getProduct(),
-                        'images' => [$productImage],
+            // Construire enfin $product_for_stripe
+            foreach ($lines as $l) {
+                $product_for_stripe[] = [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'unit_amount' => $l['unit_price_cents'],
+                        'product_data' => [
+                            'name' => $l['product_name'],
+                            'images' => [$l['image']],
+                        ],
                     ],
-                ],
-                'quantity' => $quantity,
-            ];
-        }
+                    'quantity' => $l['quantity'],
+                ];
+            }
 
-        // 🔹 Livraison (jamais remisée)
-        if ($order->getCarrierPrice() > 0) {
-            $product_for_stripe[] = [
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => round($order->getCarrierPrice() * 100),
-                    'product_data' => [
-                        'name' => 'Livraison',
-                        'images' => [$YOUR_DOMAIN . '/img/delivery.jpg'],
+            // Ajout livraison
+            if ($shippingCents > 0) {
+                $product_for_stripe[] = [
+                    'price_data' => [
+                        'currency' => 'eur',
+                        'unit_amount' => $shippingCents,
+                        'product_data' => [
+                            'name' => 'Livraison',
+                            'images' => [$YOUR_DOMAIN . '/img/delivery.jpg'],
+                        ],
                     ],
-                ],
-                'quantity' => 1,
-            ];
+                    'quantity' => 1,
+                ];
+            }
+
+            // --- DEBUG : décommenter si tu veux voir ce qu'on envoie à Stripe ---
+            // dump($totalPanier, $reductionTotale, $expectedTotalCents, $sumCents, $shippingCents, $diff, $product_for_stripe);
+            // dd('STOP debug');
+
+            // Stripe key (remplace par ta clé prod/test)
+            Stripe::setApiKey('sk_test_51KNdRaBMBArCOnoiBGyovclE3rWKPO9X8dngKjHXezHj9SXaWeC3HrqOz7LCZAtXpVrJQzbx3PBPucDocAP8anBu00ZjyOIrSx');
+
+            $checkout_session = Session::create([
+                'customer_email' => $user->getEmail(),
+                'payment_method_types' => ['card'],
+                'line_items' => $product_for_stripe,
+                'mode' => 'payment',
+                'success_url' => $YOUR_DOMAIN . '/commande/merci/{CHECKOUT_SESSION_ID}',
+                'cancel_url'  => $YOUR_DOMAIN . '/commande/erreur/{CHECKOUT_SESSION_ID}',
+            ]);
+
+            // Sauvegarde de la session Stripe dans la commande
+            $order->setStripeSessionId($checkout_session->id);
+            $entityManager->flush();
+
+            return $this->redirect($checkout_session->url);
         }
-
-
-        // 🔑 Stripe API key
-        Stripe::setApiKey('sk_test_51KNdRaBMBArCOnoiBGyovclE3rWKPO9X8dngKjHXezHj9SXaWeC3HrqOz7LCZAtXpVrJQzbx3PBPucDocAP8anBu00ZjyOIrSx');
-
-        // 🧾 Création de la session Checkout
-        $checkout_session = Session::create([
-            'customer_email' => $user->getEmail(),
-            'payment_method_types' => ['card'],
-            'line_items' => $product_for_stripe,
-            'mode' => 'payment',
-            'success_url' => $YOUR_DOMAIN . '/commande/merci/{CHECKOUT_SESSION_ID}',
-            'cancel_url'  => $YOUR_DOMAIN . '/commande/erreur/{CHECKOUT_SESSION_ID}',
-        ]);
-
-        // 🔹 Sauvegarde de la session Stripe dans la commande
-        $order->setStripeSessionId($checkout_session->id);
-        $entityManager->flush();
-
-        // 🔹 Redirection vers Stripe
-        return $this->redirect($checkout_session->url);
-    }
 }
