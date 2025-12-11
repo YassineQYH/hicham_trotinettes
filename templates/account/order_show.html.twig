@@ -121,7 +121,7 @@
             </tr>
             {% if promo > 0 %}
             <tr>
-                <td><strong>Réduction ({{ order.promoCode }}):</strong></td>
+                <td><strong>Réduction ({{ order.promoTitre ?? order.promoCode }}):</strong></td>
                 <td class="text-end">-{{ promo|number_format(2, ',', '.') }} €</td>
             </tr>
             {% endif %}

@@ -261,4 +261,12 @@ class Cart
         return $promoService->getAutomaticPromotion($cartFull, $allPromotions);
     }
 
+    // ------------------- Nom de la promotion -------------------
+    public function getDiscountName(PromotionService $promoService, array $allPromotions): ?string
+    {
+        $promo = $this->getBestPromotion($promoService, $allPromotions);
+        return $promo ? $promo->getTitre() : null;
+    }
+
+
 }

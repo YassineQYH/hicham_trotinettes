@@ -107,14 +107,22 @@ class OrderController extends AbstractController
         $order->setDelivery($deliveryContent);
         $order->setPaymentState(0);
         $order->setDeliveryState(0);
-
+        
         // Code promo
         if (method_exists($cart, 'getPromoCode')) {
             $order->setPromoCode($cart->getPromoCode());
         }
+
+        // 🎁 AJOUT - hydratation du titre de la promo (corrige la colonne vide en BDD)
+        if (method_exists($cart, 'getDiscountName')) {
+            $order->setPromoTitre($cart->getDiscountName($promotionService, $allPromotions));
+        }
+
+        // Réduction TTC
         $order->setPromoReduction(
             $cart->getDiscountTTC($promotionService, $allPromotions)
         );
+
 
 
         $this->entityManager->persist($order);

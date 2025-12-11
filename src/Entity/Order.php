@@ -63,6 +63,10 @@ class Order
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $promoReduction = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $promoTitre = null;
+
+
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
@@ -154,4 +158,8 @@ class Order
 
     public function getPromoReduction(): ?float { return $this->promoReduction; }
     public function setPromoReduction(?float $promoReduction): self { $this->promoReduction = $promoReduction; return $this; }
+
+    public function getPromoTitre(): ?string{return $this->promoTitre;}
+    public function setPromoTitre(?string $promoTitre): self{$this->promoTitre = $promoTitre;return $this;}
+
 }
