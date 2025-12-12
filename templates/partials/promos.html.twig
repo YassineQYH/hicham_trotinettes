@@ -1,26 +1,10 @@
+{% if homepagePromo %}
 <section class="top-space">
-
-    {# homepagePromo peut être null si aucune promo active #}
-    {% if homepagePromo %}
-        <div class="promo-home-banner" data-aos="fade-down" data-aos-duration="1200">
-            <div class="promo-title">
-                🔥 {{ homepagePromo.titre }}
-            </div>
-
-            <div class="promo-details">
-                {# Montant ou pourcentage #}
-                {% if homepagePromo.discountAmount is not null %}
-                    -{{ homepagePromo.discountAmount|number_format(0, '.', ' ') }} €
-                {% elseif homepagePromo.discountPercent is not null %}
-                    -{{ homepagePromo.discountPercent }}%
-                {% endif %}
-
-                {# Code uniquement si ce n'est pas autoApply et qu'il existe #}
-                {% if homepagePromo.code and not homepagePromo.isAutoApply %}
-                    / Code : {{ homepagePromo.code }}
-                {% endif %}
-            </div>
+    <div class="promo-banner" data-aos="fade-down" data-aos-duration="1200">
+        <div class="promo-title">
+            🔥 {{ homepagePromo.titre }}
         </div>
-    {% endif %}
-
+        {# On supprime la partie promo-details, donc plus de -15% ou montant #}
+    </div>
 </section>
+{% endif %}

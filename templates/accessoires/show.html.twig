@@ -9,7 +9,13 @@
 {% endblock %}
 
 {% block content %}
-{# {% include 'partials/promos.html.twig' %} #}
+    {% if homepagePromo %}
+        <section class="top-space">
+            <div class="promo-banner">
+                🔥 {{ homepagePromo.titre }}
+            </div>
+        </section>
+    {% endif %}
 
     <!-- Cart Slide -->
     <section class="cart__slide" id="slider-show">
