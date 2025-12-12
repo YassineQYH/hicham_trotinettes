@@ -20,32 +20,41 @@
 
     {# CSS spécifiques à cette page #}
     <link rel="stylesheet" href="{{ asset('assets/css/products.css') }}">
+
+    <style>
+        /* Remonte uniquement la section accessoires */
+        .accessoires-wrapper {
+            margin-top: -180px; /* Ajuste la valeur selon ce que tu veux */
+        }
+    </style>
+
 {% endblock %}
 
 {% block content %}
-{% include 'partials/promos.html.twig' %}
-    <section class="section-pergo-list" id="pergo-list">
-        <div class="title">
-            <h1>Accessoires pour {{ trottinette.name }}</h1>
-            <p>Découvrez tous les accessoires compatibles</p>
-        </div>
+    {% include 'partials/promos.html.twig' %}
 
-        <div class="container-pergo-list pergo-list-center">
-            {% if accessoires is not empty %}
-                {% for item in accessoires %}
-                    <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
-                        <a href="{{ path('accessory_show', { 'slug' : item.slug }) }}">
-                            {% set image = item.illustrations|first %}
-                            <img src="/uploads/accessoires/{{ image ? image.image : 'default.jpg' }}" alt="{{ item.name }}">
-                        </a>
-                        <p>{{ item.name }}</p>
-                    </div>
-                {% endfor %}
+    <div class="accessoires-wrapper">
+        <section class="section-pergo-list" id="pergo-list">
+            <div class="title">
+                <h1>Accessoires pour {{ trottinette.name }}</h1>
+                <p>Découvrez tous les accessoires compatibles</p>
+            </div>
 
-
-            {% else %}
-                <p style="text-align:center;">Aucun accessoire disponible pour cette trottinette.</p>
-            {% endif %}
-        </div>
-    </section>
+            <div class="container-pergo-list pergo-list-center">
+                {% if accessoires is not empty %}
+                    {% for item in accessoires %}
+                        <div class="pergo-list-box" data-aos="fade" data-aos-duration="2000">
+                            <a href="{{ path('accessory_show', { 'slug' : item.slug }) }}">
+                                {% set image = item.illustrations|first %}
+                                <img src="/uploads/accessoires/{{ image ? image.image : 'default.jpg' }}" alt="{{ item.name }}">
+                            </a>
+                            <p>{{ item.name }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="text-align:center;">Aucun accessoire disponible pour cette trottinette.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
 {% endblock %}

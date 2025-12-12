@@ -51,15 +51,17 @@ class PromotionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Retourne toutes les promotions disponibles (non expirées et non utilisées)
+     * Retourne toutes les promotions disponibles (actives, non expirées, et non utilisées)
      */
     public function findAllAvailable(): array
     {
+        $now = new \DateTimeImmutable();
+
         return $this->createQueryBuilder('p')
-            ->where('p.startDate <= :now')
+            ->andWhere('p.startDate <= :now')
             ->andWhere('(p.endDate IS NULL OR p.endDate >= :now)')
             ->andWhere('p.used < p.quantity')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', $now)
             ->getQuery()
             ->getResult();
     }

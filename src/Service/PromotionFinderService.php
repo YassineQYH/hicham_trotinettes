@@ -147,29 +147,36 @@ class PromotionFinderService
         return $valids[0]['promo'];
     }
 
+    /**
+     * Trouve la promo à afficher sur la homepage
+     * Affiche uniquement si au moins une promo est active
+     */
     public function findHomepagePromo(): ?Promotion
     {
-        // Récupère toutes les promos actives
+        // On récupère toutes les promos
         $promos = $this->em->getRepository(Promotion::class)->findAll();
 
-        $activePromos = array_filter($promos, fn($promo) => $promo->isActive());
+        // On ne garde que les promos :
+        // - actives (dates OK)
+        // - valides (montant ou pourcentage OK)
+        // - autoApply (OBLIGATOIRE pour être affichée)
+        $activePromos = array_filter(
+            $promos,
+            fn(Promotion $p) => $p->isActive() && $p->isDiscountValid() && $p->isAutoApply()
+        );
 
+        // Si AUCUNE promo n’est active + autoApply → rien n’affiche
         if (empty($activePromos)) {
             return null;
         }
 
-        // Ici tu peux choisir la logique pour laquelle afficher :
-        // exemple : priorité à autoApply, sinon la plus récente
-        usort($activePromos, function($a, $b) {
-            // d'abord autoApply
-            if ($a->isAutoApply() && !$b->isAutoApply()) return -1;
-            if (!$a->isAutoApply() && $b->isAutoApply()) return 1;
-            // ensuite date de début (plus récente en premier)
+        // Tri : priorité aux autoApply (déjà toutes auto) puis date de début la plus récente
+        usort($activePromos, function(Promotion $a, Promotion $b) {
             return $b->getStartDate() <=> $a->getStartDate();
         });
 
         return $activePromos[0];
-    }
+}
 
 
 }
