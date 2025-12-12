@@ -43,8 +43,15 @@ class ProductCrudController extends AbstractCrudController
             // ----------- PRIX / STOCK -----------
             FormField::addPanel('Prix & Stock'),
 
-            MoneyField::new('price', 'Prix HT')
-                ->setCurrency('EUR'),
+            // Prix brut avec € dans la liste
+            IntegerField::new('price', 'Prix HT')
+                ->formatValue(function ($value) {
+                    return $value . ' €'; // affiché uniquement sur l'index
+                }),
+
+            // Le même champ dans le formulaire, mais sans formatage
+            IntegerField::new('price', 'Prix HT')
+                ->hideOnIndex(),
 
             IntegerField::new('stock', 'Stock'),
 

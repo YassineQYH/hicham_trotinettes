@@ -4,11 +4,16 @@ namespace App\Controller\Admin;
 
 use App\Entity\OrderDetails;
 use App\Controller\Admin\ProductCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Field\{
+    IntegerField,
+    TextField,
+    AssociationField,
+    NumberField
+};
 
 class OrderDetailsCrudController extends AbstractCrudController
 {
@@ -17,65 +22,123 @@ class OrderDetailsCrudController extends AbstractCrudController
         return OrderDetails::class;
     }
 
-public function configureFields(string $pageName): iterable
-{
-    return [
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setDefaultSort(['id' => 'DESC'])
+            ->setEntityLabelInSingular('Order Detail')
+            ->setEntityLabelInPlural('Order Details')
+            ->showEntityActionsInlined();
+    }
 
-        // 🔗 Commande associée
-        AssociationField::new('myOrder', 'Commande')
-            ->setCrudController(OrderCrudController::class)
-            ->setSortable(true)
-            ->formatValue(fn($value, $entity) => $entity->getMyOrder()?->getReference()),
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->disable(Action::EDIT, Action::DELETE) // pas d'édition ni suppression
+            ->add(Crud::PAGE_INDEX, Action::DETAIL); // juste "Afficher"
+    }
 
-        // 📦 Nom du produit enregistré le jour de la commande (texte figé, non relié)
-        TextField::new('product', 'Produit'),
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            // 🆔 ID
+            IntegerField::new('id', 'ID')
+                ->onlyOnIndex(),
 
-        // 🎯 Produit réel (relation vers Product) → utile en back-office uniquement
-        AssociationField::new('productEntity', 'Produit lié')
-            ->setCrudController(ProductCrudController::class)
-            ->hideOnIndex() // évite le doublon sur la vue liste
-            ->hideOnDetail(), // garde la version texte sur la vue détail
+            // 🔗 Commande
+            AssociationField::new('myOrder', 'Commande')
+                ->setCrudController(OrderCrudController::class)
+                ->setSortable(true)
+                ->formatValue(fn($value, $entity) => $entity->getMyOrder()?->getReference()),
 
-        // ⚖️ Poids choisi
-        TextField::new('weight', 'Poids'),
+            // 📦 Nom du produit
+            TextField::new('product', 'Produit'),
 
-        // 🔢 Quantité
-        IntegerField::new('quantity', 'Quantité'),
+            // 🎯 Produit réel lié — pas affiché
+            AssociationField::new('productEntity', 'Produit lié')
+                ->setCrudController(ProductCrudController::class)
+                ->hideOnIndex()
+                ->hideOnDetail(),
 
-        // 💶 Prix unitaire HT
-        MoneyField::new('price', 'Prix HT')
-            ->setCurrency('EUR'),
+            // ⚖️ Poids
+            TextField::new('weight', 'Poids'),
 
-        // 💶 Prix HT après réduction
-        MoneyField::new('priceAfterReduc', 'Prix HT après réduc')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
+            // 🔢 Quantité
+            IntegerField::new('quantity', 'Quantité'),
 
-        // 💶 TVA appliquée
-        MoneyField::new('tva', 'TVA')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
+            // 💶 Prix HT
+            IntegerField::new('price', 'Prix HT')
+                ->formatValue(fn($value) => $value . ' €'),
 
-        // 💶 Prix TTC calculé
-        MoneyField::new('priceTTC', 'Prix TTC')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
+            // 💶 Prix HT après réduction — affiché dans liste si différent
+            IntegerField::new('priceAfterReduc', 'Prix HT après promo')
+                ->formatValue(fn($value, $entity) =>
+                    $entity->getPriceAfterReduc() !== $entity->getPrice() ? $value . ' €' : '-'
+                )
+                ->onlyOnIndex(),
 
-        // 💶 Prix TTC après réduction
-        MoneyField::new('priceTTCAfterReduc', 'Prix TTC après réduc')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
+            // 💶 TVA (%)
+            NumberField::new('tva', 'TVA')
+                ->formatValue(fn($value) => $value . ' %')
+                ->onlyOnIndex(),
 
-        // 🧮 Total TTC
-        MoneyField::new('total', 'Total TTC')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
+            // 💶 Prix TTC
+            IntegerField::new('priceTTC', 'Prix TTC')
+                ->formatValue(fn($value) => $value . ' €')
+                ->onlyOnIndex(),
 
-        // 🧮 Total TTC après réduction
-        MoneyField::new('totalAfterReduc', 'Total TTC après réduc')
-            ->setCurrency('EUR')
-            ->onlyOnDetail(),
-    ];
-}
+            // 💶 Prix TTC après réduction
+            IntegerField::new('priceTTCAfterReduc', 'Prix TTC après promo')
+                ->formatValue(fn($value, $entity) =>
+                    $entity->getPriceTTCAfterReduc() !== $entity->getPriceTTC()
+                        ? number_format($entity->getPriceTTCAfterReduc(), 2, ',', ' ') . ' €'
+                        : '-'
+                )
+                ->onlyOnIndex(),
 
+            // 🏷️ Promo
+            TextField::new('promoInfo', 'Promo')
+                ->formatValue(fn($value, $entity) => $entity->getMyOrder()?->getPromoInfo() ?: '-')
+                ->onlyOnIndex(),
+
+            // Champs pour le détail uniquement
+            IntegerField::new('priceAfterReduc', 'Prix HT après réduc')
+                ->formatValue(fn($value, $entity) => $value !== $entity->getPrice() ? $value . ' €' : '')
+                ->onlyOnDetail(),
+
+            NumberField::new('tva', 'TVA')
+                ->formatValue(fn($value) => $value . ' %')
+                ->onlyOnDetail(),
+
+            IntegerField::new('priceTTC', 'Prix TTC')
+                ->formatValue(fn($value) => $value . ' €')
+                ->onlyOnDetail(),
+
+            IntegerField::new('priceTTCAfterReduc', 'Prix TTC après réduc')
+                ->formatValue(fn($value, $entity) =>
+                    $value !== $entity->getPriceTTC()
+                        ? number_format($value, 2, ',', ' ') . ' €'
+                        : ''
+                )
+                ->onlyOnDetail(),
+
+            IntegerField::new('total', 'Total TTC')
+                ->formatValue(fn($value, $entity) =>
+                    number_format($entity->getPriceTTC() * $entity->getQuantity(), 2, ',', ' ') . ' €'
+                )
+                ->onlyOnDetail(),
+
+            IntegerField::new('totalAfterReduc', 'Total TTC après réduc')
+                ->formatValue(fn($value, $entity) =>
+                    $entity->getPriceTTCAfterReduc() !== null && $entity->getPriceTTCAfterReduc() != $entity->getPriceTTC()
+                        ? number_format($entity->getPriceTTCAfterReduc() * $entity->getQuantity(), 2, ',', ' ') . ' €'
+                        : ''
+                )
+                ->onlyOnDetail(),
+
+            TextField::new('promoInfo', 'Promo')
+                ->formatValue(fn($value, $entity) => $entity->getMyOrder()?->getPromoInfo() ?: '-')
+                ->onlyOnDetail(),
+        ];
+    }
 }

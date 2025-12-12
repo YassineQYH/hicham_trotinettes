@@ -97,4 +97,6 @@ class OrderDetails
     public function getPriceTtcAfterReduc(): ?float{return $this->priceTtcAfterReduc;}
     public function setPriceTtcAfterReduc(?float $priceTTCAfterReduc): self{$this->priceTtcAfterReduc = $priceTTCAfterReduc; return $this;}
 
+    public function getPromoInfo(): string{$order = $this->getMyOrder();return $order ? ($order->getPromoCode() ?: $order->getPromoTitre() ?: '-') : '-';}
+
 }

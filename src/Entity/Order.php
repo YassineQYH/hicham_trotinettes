@@ -215,10 +215,7 @@ class Order
         return $totalTtc;
     }
 
-    public function getPromoInfo(): ?string
-    {
-        return $this->promoCode ?: $this->promoTitre ?: '-';
-    }
+    public function getPromoInfo(): ?string{return $this->promoCode ?: $this->promoTitre ?: '-';}
 
 
 }
