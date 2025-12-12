@@ -38,6 +38,10 @@ class OrderCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        $cancelOrder = Action::new('cancelOrder', 'Annuler', 'fas fa-ban')
+        ->linkToCrudAction('cancelOrder')
+        ->displayIf(fn($order) => $order->getDeliveryState() < 3); // uniquement si pas déjà livrée
+
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')
             ->linkToCrudAction('updatePreparation')
             ->displayIf(fn($order) => $order->getDeliveryState() === 0);
@@ -64,6 +68,7 @@ class OrderCrudController extends AbstractCrudController
 
         return $actions
             ->disable(Action::NEW, Action::EDIT, Action::DELETE)
+            ->add(Crud::PAGE_DETAIL, $cancelOrder)
             ->add(Crud::PAGE_DETAIL, $updatePreparation)
             ->add(Crud::PAGE_DETAIL, $updateDelivery)
             ->add(Crud::PAGE_DETAIL, $internalLabelWeb)
@@ -320,11 +325,13 @@ class OrderCrudController extends AbstractCrudController
                 'Préparation en cours' => 1,
                 'Livraison en cours' => 2,
                 'Livraison terminée' => 3,
+                'Annulé' => 4,
             ])->renderAsBadges([
                 0 => 'secondary',
                 1 => 'warning',
                 2 => 'info',
                 3 => 'success',
+                4 => 'danger',
             ]),
 
             TextField::new('carrier', 'Transporteur')->onlyOnDetail(),
@@ -342,5 +349,33 @@ class OrderCrudController extends AbstractCrudController
         return array_merge($general, $promo, $paymentDelivery, $secondaryTransport);
     }
 
+    public function cancelOrder(AdminContext $context): Response
+    {
+        $order = $this->getOrderFromContext($context);
+        if (!$order) return $this->redirectToOrderIndex();
+
+        // 🔹 Annuler la commande
+        $order->setDeliveryState(4); // 4 = Annulé
+
+        // 🔹 Remettre les produits en stock
+        foreach ($order->getOrderDetails() as $item) {
+            $product = $item->getProductEntity(); // ton produit réel
+            if ($product) {
+                $product->setStock($product->getStock() + $item->getQuantity());
+            }
+        }
+
+        $this->entityManager->flush();
+
+        // 🔹 Mail au client
+        $mail = new Mail();
+        $content = "Bonjour {$order->getUser()->getFirstName()},<br>
+        Votre commande n°<strong>{$order->getReference()}</strong> a été annulée.";
+        $mail->send($order->getUser()->getEmail(), $order->getUser()->getFirstName(), 'Commande annulée', $content);
+
+        $this->addFlash('notice', "Commande {$order->getReference()} annulée et produits remis en stock.");
+
+        return $this->redirectToOrderDetail($order);
+    }
 
 }
