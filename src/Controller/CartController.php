@@ -68,7 +68,7 @@ class CartController extends BaseController
             dump($formOrder->getData());
             dump($formOrder->get('addresses')->getData());
         }
-        
+
         $articlesPanier = $cart->getFull();
 
         // Calcul poids total
@@ -128,11 +128,46 @@ class CartController extends BaseController
 
         $promo = $promotionRepository->findOneBy(['code' => $code]);
 
-        if (!$promo || !$promo->canBeUsed()) {
-            // Supprime le code promo stocké si invalide
+        // ❌ Code inexistant
+        if (!$promo) {
             $cart->clearPromos();
-            return new JsonResponse(['error' => 'Code promo invalide ou expiré.']);
+            return new JsonResponse([
+                'error' => 'Ce code promo est invalide.'
+            ]);
         }
+
+        // ❌ Code expiré
+        if ($promo->isExpired()) {
+            $cart->clearPromos();
+            return new JsonResponse([
+                'error' => 'Ce code promo est expiré.'
+            ]);
+        }
+
+        // ❌ Code épuisé (quantity atteinte) ← TON CAS
+        if (!$promo->isAvailable()) {
+            $cart->clearPromos();
+            return new JsonResponse([
+                'error' => 'Ce code promo n’est plus disponible.'
+            ]);
+        }
+
+        // ❌ Pas encore actif
+        if (!$promo->isActive()) {
+            $cart->clearPromos();
+            return new JsonResponse([
+                'error' => 'Ce code promo n’est pas encore actif.'
+            ]);
+        }
+
+        // ❌ Mal configuré
+        if (!$promo->isDiscountValid()) {
+            $cart->clearPromos();
+            return new JsonResponse([
+                'error' => 'Ce code promo est invalide.'
+            ]);
+        }
+
 
         // ✅ Comparaison entre promo automatique et code promo : la plus avantageuse gagne
 

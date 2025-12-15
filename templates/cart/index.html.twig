@@ -129,21 +129,26 @@
             id="promoForm"
             action="{{ path('cart_apply_promo') }}"
             method="POST"
-            class="d-flex mt-2 mb-4"
+            class="mt-2 mb-4"
             style="max-width:300px;margin-left:auto;"
         >
-            <input
-                type="text"
-                name="promo_code"
-                id="promoCode"
-                class="form-control me-2"
-                placeholder="Code promo"
-                value="{{ promoCode ?? '' }}"
-            >
-            <button class="btn btn-primary" type="submit">Appliquer</button>
-        </form>
+            <div class="d-flex">
+                <input
+                    type="text"
+                    name="promo_code"
+                    id="promoCode"
+                    class="form-control me-2"
+                    placeholder="Code promo"
+                    value="{{ promoCode ?? '' }}"
+                >
+                <button class="btn btn-primary" type="submit">Appliquer</button>
+            </div>
 
-        <small id="promoMessage" class="text-danger"></small>
+            <small
+                id="promoMessage"
+                class="text-danger d-block text-end mt-1"
+            ></small>
+        </form>
 
         {# =======================
            FORMULAIRE COMMANDE

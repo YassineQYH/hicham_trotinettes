@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // ERROR
             //------------------------------------------------
             if (data.error) {
-                promoMessage.textContent = data.error;
-                resetPromoUI();
+                resetPromoUI(); // on nettoie l’UI AVANT
+                promoMessage.textContent = data.error; // puis on affiche le message
                 return;
             }
 
@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // SUCCESS
             //------------------------------------------------
             // 🔥 Si le backend demande un reload, on recharge la page
-            if (data.reload === true) {
+            // Reload uniquement s'il n'y a PAS d'erreur
+            if (data.reload === true && !data.error) {
                 window.location.reload();
                 return;
             }
