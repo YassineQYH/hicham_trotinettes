@@ -12,7 +12,7 @@
         }
         .bordereau {
             width: 105mm; /* A6 portrait */
-            height: 148mm;
+            height: 108mm;
             padding: 5mm;
             border: 1px solid #000;
             box-sizing: border-box;
@@ -66,12 +66,14 @@
 
         <div class="client-qr">
             <div class="client-info">
+            <p>Date de la commande : {{ order.createdAt|date('d/m/Y H:i') }}</p>
                 <h2>Client</h2>
                 <p>
-                    {{ order.user.firstName }} {{ order.user.lastName }}<br>
+                    {# {{ order.user.firstName }} {{ order.user.lastName }}<br> #}
                     {% if order.user.phoneNumber is defined %}{{ order.user.phoneNumber }}<br>{% endif %}
                     {{ order.delivery|raw }}
                 </p>
+                <p>Poids total : {{ order.getWeightTotal()|number_format(2, ',', '.') }} Kg</p>
             </div>
             <div class="qr">
                 {% if order.trackingNumber %}
@@ -80,33 +82,17 @@
             </div>
         </div>
 
-        <h2>Produits</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Qté</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for detail in order.orderDetails %}
-                    <tr>
-                        <td>{{ detail.product }}</td>
-                        <td>{{ detail.quantity }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
         <h2>Transport</h2>
         <p>
             Transporteur : {{ order.carrier }}<br>
-            Numéro de suivi : <strong>{{ order.trackingNumber }}</strong>
+            Numéro de suivi : <strong>{{ order.trackingNumber }}</strong><br>
+            Service : {{ order.shippingMethod|default('Standard') }}
         </p>
 
         <div class="footer">
             Ce bordereau doit être scanné par le transporteur lors de la prise en charge et à la livraison.
         </div>
+
     </div>
 </body>
 </html>
