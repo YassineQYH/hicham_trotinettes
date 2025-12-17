@@ -4,16 +4,9 @@
 
 
 {% block content %}
+    {% include 'partials/promos.html.twig' %}
+
     <main class="page-show-product">
-        {# Affiche le code promo si présent #}
-        {# 🔥 Inclusion du partial promo #}
-        {% if homepagePromo %}
-            <section class="top-space">
-                <div class="promo-banner">
-                    🔥 {{ homepagePromo.titre }}
-                </div>
-            </section>
-        {% endif %}
 
         <!-- SECTION 1 : SLIDER PRINCIPAL -->
         <section class="cart__slide" id="slider-show">
@@ -138,7 +131,23 @@
         </div>
         </section>
 
-        <!-- SECTION 2 : CARACTÉRISTIQUES -->
+        <!-- SECTION 2 : DESCRIPTIONS DÉTAILLÉES -->
+        <section class="trottinette-descriptions container">
+        <h2>Description complète</h2>
+
+        {% if sections is not empty %}
+            {% for section in sections|sort((a,b) => a.sectionOrder <=> b.sectionOrder) %}
+                <div class="description-section">
+                    <h3>{{ section.title }}</h3>
+                    <p>{{ section.content|raw }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune section de description disponible.</p>
+        {% endif %}
+        </section>
+
+        <!-- SECTION 3 : CARACTÉRISTIQUES -->
         <section class="trottinette-caracteristiques container">
         <h2>Caractéristiques techniques</h2>
 
@@ -168,22 +177,6 @@
             {% endfor %}
         {% else %}
             <p>Aucune caractéristique enregistrée pour cette trottinette.</p>
-        {% endif %}
-        </section>
-
-        <!-- SECTION 3 : DESCRIPTIONS DÉTAILLÉES -->
-        <section class="trottinette-descriptions container">
-        <h2>Description complète</h2>
-
-        {% if sections is not empty %}
-            {% for section in sections|sort((a,b) => a.sectionOrder <=> b.sectionOrder) %}
-                <div class="description-section">
-                    <h3>{{ section.title }}</h3>
-                    <p>{{ section.content|raw }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>Aucune section de description disponible.</p>
         {% endif %}
         </section>
 
