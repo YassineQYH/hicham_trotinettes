@@ -110,13 +110,17 @@
 }
 
 .image__holder {
-    width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: flex-start; /* aligne en haut */
+    height: 25rem; /* même que l'image */
+    margin-left: 25rem; /* décale l'image vers la droite */
 }
 
 .image__holder img {
-    width: 55rem;
-    height: 45rem;
+    width: 35rem;
+    height: 25rem;
+    object-fit: contain; /* garde toute l'image */
 }
 .cart__details {
     text-align: center; /* centre tout le contenu du bloc (h1 et p) */
@@ -201,10 +205,10 @@
 }
 
 .glide__bullets {
-    bottom: -10%;
-    left: 50;
+    bottom: -25%;
+    left: 50%;
     /* remet bien à gauche */
-    right: 0;
+    transform: translateX(-50%);
     /* occupe toute la largeur */
     display: flex;
     justify-content: center;
@@ -213,12 +217,14 @@
     /* espace entre elles */
     max-width: 100%;
     overflow: visible;
+    margin-left: 10rem;
+
 }
 
 .glide__bullet {
-    width: 20rem;
-    height: 10rem;
-    border-radius: 0;
+    width: 13rem;
+    height: 9rem;
+    border-radius: 5%;
     border: 1px solid var(--grey-color-alt);
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0);
     background-color: rgba(0, 0, 0, 0.05);
