@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 11 déc. 2025 à 14:21
+-- Généré le : ven. 19 déc. 2025 à 16:13
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -255,7 +255,10 @@ INSERT INTO `illustration` (`id`, `product_id`, `image`) VALUES
 (66, 15, 'guidon-multicolor.jpg'),
 (67, 16, 'guidon-titanium.jpg'),
 (68, 16, 'guidon-titanium.jpg'),
-(69, 16, 'guidon-titanium.jpg');
+(69, 16, 'guidon-titanium.jpg'),
+(70, 1, 'trottbleue-01.png'),
+(71, 1, 'trottbleue-02.png'),
+(72, 1, 'trottbleue-03.png');
 
 -- --------------------------------------------------------
 
@@ -438,7 +441,9 @@ INSERT INTO `order` (`id`, `user_id`, `created_at`, `carrier_price`, `delivery`,
 (135, 1, '2025-12-11 12:46:56', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue du Hueco Mundo<br>63200 clermont ferrand<br>France', '11122025-693aaf307f501', 'cs_test_b1LpXilrS1P9qg3ZWiUkLH9zD9bqEMv4VekugMBrQBygo2yxeotw8xtCTG', 1, 0, NULL, 'bpost', NULL, NULL, 'family-25', 194.81, NULL),
 (136, 1, '2025-12-11 13:03:55', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue du Hueco Mundo<br>63200 clermont ferrand<br>France', '11122025-693ab32b03bd4', 'cs_test_b136SiSBeUKH6ZAHtBkUXsltDqZc58Za7Yo0llOQ6YM2HfRdSQOynbvXii', 1, 0, NULL, 'bpost', NULL, NULL, NULL, 116.886, 'Black Friday 15%'),
 (138, 1, '2025-12-11 14:15:03', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '11122025-693ac3d7c3d45', 'cs_test_b16Vf0KeYxbCduGE8RVv9yqneyn2m6UeqK4JOiephwzlAQ7xmye9r7uCju', 1, 0, NULL, 'bpost', NULL, NULL, NULL, 116.886, 'Black Friday 15%'),
-(139, 1, '2025-12-11 14:16:32', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '11122025-693ac430f350c', 'cs_test_b1akeV83mtncJRUDijN2McomhVYQmrWTArMUUk8EneI8D4e30b7TIXON9g', 1, 0, NULL, 'bpost', NULL, NULL, 'family-25', 194.81, 'Famille 25%');
+(139, 1, '2025-12-11 14:16:32', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '11122025-693ac430f350c', 'cs_test_b1akeV83mtncJRUDijN2McomhVYQmrWTArMUUk8EneI8D4e30b7TIXON9g', 1, 0, 'TEST-624895410', 'bpost', NULL, NULL, 'family-25', 194.81, 'Famille 25%'),
+(140, 1, '2025-12-11 15:35:40', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '11122025-693ad6bc16610', 'cs_test_b1nu7oXIO6RcLhbLP7yGhWOGvVKyaVfFoZP0YRZBB7d3PaDT2LoBtkLFpW', 1, 0, NULL, 'bpost', NULL, NULL, NULL, 0, NULL),
+(141, 1, '2025-12-12 16:43:32', 22.35, 'Yass Qay<br>06.11.55.22.51<br>51 Rue de Konoha<br>63200 angleur<br>France', '12122025-693c38246b0a1', 'cs_test_b1tbaMFjVPHxZn7ouQNoXuiSO439AeNJzug7b2s7dowWho3EuN3YRQiO3D', 1, 4, NULL, 'bpost', NULL, NULL, 'family-25', 194.81, 'Famille -25%');
 
 -- --------------------------------------------------------
 
@@ -755,7 +760,11 @@ INSERT INTO `order_details` (`id`, `my_order_id`, `product_entity_id`, `product`
 (288, 138, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79, 509.15, 509.15, 616.0715),
 (289, 138, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45, 38.25, 38.25, 46.2825),
 (290, 139, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79, 449.25, 449.25, 543.5925),
-(291, 139, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45, 33.75, 33.75, 40.8375);
+(291, 139, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45, 33.75, 33.75, 40.8375),
+(292, 140, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79, 599, 599, 724.79),
+(293, 140, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45, 45, 45, 54.45),
+(294, 141, 1, 'Trottinette électrique honey whale m5 max avec siège', 1, 599, 599, '14', 21, 724.79, 449.25, 449.25, 543.5925),
+(295, 141, 5, 'roues etoiles', 1, 45, 45, '4', 21, 54.45, 33.75, 33.75, 40.8375);
 
 -- --------------------------------------------------------
 
@@ -783,11 +792,11 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `weight_id`, `tva_id`, `name`, `slug`, `description`, `price`, `stock`, `is_best`, `created_at`, `updated_at`, `type`) VALUES
-(1, 25, 1, 'Trottinette électrique honey whale m5 max avec siège', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '【Performance puissante】...', 599, 1, 1, '2025-11-18 16:19:20', '2025-12-11 14:16:47', 'trottinette'),
+(1, 25, 1, 'Trottinette électrique honey whale m5 max avec siège', 'Trottinette-électrique-honey-whale-m5-max-avec-siège', '<div>【Performance puissante】...</div>', 599, 7, 1, '2025-11-18 16:19:20', '2025-12-12 16:46:54', 'trottinette'),
 (2, 22, 1, 'KUGOO Kukirin C1 Pro', 'KUGOO-Kukirin-C1-Pro', 'Aperçu du produit : Vitesse maximale 45 km/h Charge max. 120 kg Autonomie 100 km Puissance continue 500 W Siège', 1299, 4, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'trottinette'),
 (3, 28, 1, 'Bogist M5 Pro', 'Bogist-M5-Pro', 'Moteur puissant de 500 W pour des vitesses élevées...', 754, 2, 1, '2025-11-18 16:19:20', '2025-11-19 11:30:29', 'trottinette'),
 (4, 3, 1, 'Xtreme Siege', 'Xtreme-Siege', 'Siege pour trott', 15, 2, 1, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
-(5, 8, 1, 'roues etoiles', 'roues-etoiles', 'Roue pour trott', 45, 1, 1, '2025-11-18 16:19:20', '2025-12-11 14:16:47', 'accessoire'),
+(5, 8, 1, 'roues etoiles', 'roues-etoiles', '<div>Roue pour trott</div>', 45, 7, 1, '2025-11-18 16:19:20', '2025-12-12 16:46:54', 'accessoire'),
 (6, 2, 1, 'guidon blunt black v3', 'guidon-blunt-black-v3', 'Guidon pour trott', 49, 1, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
 (7, 1, 1, 'Frein Jaune', 'freinfreins-jaune', 'Frein pour trott', 19, 0, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
 (8, 5, 1, 'etrier de frein', 'etrier-de-frein', 'etrier-de-frein', 56, 2, 0, '2025-11-18 16:19:20', '2025-11-18 16:19:20', 'accessoire'),
@@ -845,15 +854,15 @@ CREATE TABLE `promotion` (
 --
 
 INSERT INTO `promotion` (`id`, `category_access_id`, `product_id`, `code`, `target_type`, `discount_amount`, `discount_percent`, `start_date`, `end_date`, `quantity`, `used`, `titre`, `auto_apply`) VALUES
-(5, NULL, NULL, 'family-25', 'all', NULL, 25, '2025-11-20 16:09:00', NULL, 7, 7, 'Famille 25%', 0),
-(6, 4, NULL, 'promo-roues', 'category_access', 5, NULL, '2025-11-26 14:25:00', NULL, 3, 0, 'Roues 5$', 0),
-(7, NULL, 2, 'promo-kugoo', 'product', 200, NULL, '2025-11-26 16:16:00', NULL, 3, 0, 'Kugoo 200$', 0),
-(8, NULL, NULL, 'promo-rouge', 'product_list', 10, NULL, '2025-11-17 16:34:00', '2025-12-29 23:59:00', 3, 0, 'Rouge 10$', 0),
-(9, NULL, NULL, 'family-25-', 'all', 25, NULL, '2025-11-26 16:59:00', NULL, 4, 0, 'Famille 25$', 0),
-(10, 4, NULL, 'promo-roues-', 'category_access', NULL, 10, '2025-11-26 17:00:00', NULL, 2, 0, 'Roues 10%', 0),
-(11, NULL, 2, 'promo-kugoo-', 'product', NULL, 10, '2025-11-26 17:11:00', '2025-11-28 12:00:00', 2, 0, 'Kugoo 10%', 0),
-(12, NULL, NULL, 'promo-rouge-', 'product_list', NULL, 10, '2025-11-26 17:13:00', NULL, 1, 0, 'Rouge 10%', 0),
-(13, NULL, NULL, NULL, 'all', NULL, 15, '2025-11-28 10:06:00', '2025-12-21 23:59:00', 50, 0, 'Black Friday 15%', 1),
+(5, NULL, NULL, 'family-25', 'all', NULL, 25, '2025-11-20 16:09:00', NULL, 8, 8, 'Famille -25%', 0),
+(6, 4, NULL, 'promo-roues', 'category_access', 5, NULL, '2025-11-26 14:25:00', NULL, 3, 0, 'Roues -5€', 0),
+(7, NULL, 2, 'promo-kugoo', 'product', 200, NULL, '2025-11-26 16:16:00', NULL, 3, 0, 'Kugoo -200€', 0),
+(8, NULL, NULL, 'promo-rouge', 'product_list', 10, NULL, '2025-11-17 16:34:00', '2025-12-29 23:59:00', 3, 0, 'Rouge -10€', 0),
+(9, NULL, NULL, 'family-25-', 'all', 25, NULL, '2025-11-26 16:59:00', NULL, 4, 0, 'Famille -25€', 0),
+(10, 4, NULL, 'promo-roues-', 'category_access', NULL, 10, '2025-11-26 17:00:00', NULL, 2, 0, 'Roues -10%', 0),
+(11, NULL, 2, 'promo-kugoo-', 'product', NULL, 10, '2025-11-26 17:11:00', '2025-11-28 12:00:00', 2, 0, 'Kugoo -10%', 0),
+(12, NULL, NULL, 'promo-rouge-', 'product_list', NULL, 10, '2025-11-26 17:13:00', NULL, 1, 0, 'Rouge -10%', 0),
+(13, NULL, NULL, NULL, 'all', NULL, 15, '2025-11-28 10:06:00', '2025-12-26 23:59:00', 50, 0, 'Black Friday -15%', 1),
 (14, 2, NULL, NULL, 'category_access', 100, NULL, '2025-11-28 10:40:00', '2025-12-07 23:59:00', 20, 0, 'Noël -100€', 0);
 
 -- --------------------------------------------------------
@@ -1326,7 +1335,7 @@ ALTER TABLE `category_accessory`
 -- AUTO_INCREMENT pour la table `illustration`
 --
 ALTER TABLE `illustration`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT pour la table `messenger_messages`
@@ -1338,13 +1347,13 @@ ALTER TABLE `messenger_messages`
 -- AUTO_INCREMENT pour la table `order`
 --
 ALTER TABLE `order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
 
 --
 -- AUTO_INCREMENT pour la table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=292;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=296;
 
 --
 -- AUTO_INCREMENT pour la table `product`

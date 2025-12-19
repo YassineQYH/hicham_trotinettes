@@ -89,7 +89,7 @@ class AdminDashboardController extends AbstractDashboardController
 
         //-- Illustrations --//
         yield MenuItem::section('Illustrations');
-        yield MenuItem::linkToCrud('Illustrations Trottinettes', 'fas fa-image', Illustration::class);
+        yield MenuItem::linkToCrud('Illustrations Produits', 'fas fa-image', Illustration::class);
 
         // --- Statistiques / Graphiques ---
         yield MenuItem::section('Stats');
