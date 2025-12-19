@@ -31,8 +31,8 @@ class AccessoryCrudController extends AbstractCrudController
             NumberField::new('stock', 'Stock'),
 
             ImageField::new('image', 'Image')
-                ->setUploadDir('public/uploads/accessories')
-                ->setBasePath('/uploads/accessories')
+                ->setUploadDir('public/uploads/accessoires')
+                ->setBasePath('/uploads/accessoires')
                 ->setRequired(false),
 
             BooleanField::new('isBest', 'Meilleur'),
