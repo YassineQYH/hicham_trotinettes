@@ -86,7 +86,7 @@
 /* ======== IMAGE PRINCIPALE ======== */
 .image__holder {
     width: 100%;
-    max-width: 36rem;
+    max-width: 25rem;
     aspect-ratio: 4/3; /* hauteur automatique selon la largeur */
     margin: 0 auto;
     display: flex;
@@ -110,7 +110,7 @@
 
 /* ======== SLIDER MINIATURES ======== */
 .glide__bullets {
-    bottom: -25%;
+    bottom: -50%;
     /* left: 50%;
     transform: translateX(-50%); */
     display: flex;
@@ -119,8 +119,8 @@
 }
 
 .glide__bullet {
-    width: 13rem;
-    height: 9rem;
+    width: 9rem;
+    height: 8rem;
     border-radius: 6px;
     border: 1px solid var(--grey-color-alt);
     background-color: rgba(0,0,0,0.05);
@@ -185,7 +185,7 @@
         gap: 0.8rem;
         justify-content: flex-start;
         position: relative;
-        margin-top: -5rem;
+        margin-top: 0rem;
         left: 30rem;
     }
     .glide__bullet { width: 10rem; height: 6.5rem; flex: 0 1 auto; aspect-ratio: 16/9; }
