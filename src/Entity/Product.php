@@ -44,6 +44,9 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     protected ?Weight $weight = null;
 
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $manualWeight = null;
+
     #[ORM\ManyToOne(targetEntity: Tva::class)]
     #[ORM\JoinColumn(nullable: false)]
     protected ?Tva $tva = null;
@@ -101,6 +104,11 @@ class Product
 
     public function getWeight(): ?Weight { return $this->weight; }
     public function setWeight(Weight $weight): self { $this->weight = $weight; return $this; }
+
+    public function getManualWeight(): ?float{return $this->manualWeight;}
+    public function setManualWeight(?float $manualWeight): self{$this->manualWeight = $manualWeight;return $this;}
+
+    public function getEffectiveWeight(): float{return $this->manualWeight ?? $this->weight->getKg();}
 
     public function getTva(): ?Tva { return $this->tva; }
     public function setTva(Tva $tva): self { $this->tva = $tva; return $this; }

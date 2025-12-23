@@ -52,9 +52,24 @@ class AccessoryCrudController extends AbstractCrudController
             TextEditorField::new('description', 'Description'),
 
             NumberField::new('price', 'Prix (€)')->setNumDecimals(2),
-            AssociationField::new('tva', 'TVA'),
+            AssociationField::new('tva', 'TVA')
+                ->formatValue(function ($value, $entity) {
+                    if (!$value) return '';
+                    return $value->getName() . ' - ' . $value->getValue() . ' %';
+                }),
 
-            AssociationField::new('weight', 'Poids'),
+            NumberField::new('manualWeight', 'Poids (kg)')
+                ->setHelp('Entrez le poids exact du produit')
+                ->formatValue(function ($value, $entity) {
+                    // On vérifie si c'est un entier
+                    if (floor($value) == $value) {
+                        return $value . 'kg';
+                    }
+                    // Sinon on affiche avec 2 décimales
+                    return number_format($value, 2, ',', '') . 'kg';
+                }),
+
+
             NumberField::new('stock', 'Stock'),
 
             BooleanField::new('isBest', 'Accueil'),
