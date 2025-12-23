@@ -1,0 +1,62 @@
+.ea-illustrations {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ea-main-image {
+    text-align: center;
+}
+
+.ea-image {
+    max-width: 320px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.ea-thumbnails {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ea-thumb {
+    width: 70px;
+    height: auto;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.75;
+    transition: 0.2s;
+}
+
+.ea-thumb:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.ea-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+}
+
+.ea-modal-content {
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    margin: auto;
+    margin-top: 5%;
+    border-radius: 8px;
+}
+
+.ea-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+}

@@ -45,7 +45,8 @@ class ProductCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Produit')
             ->setEntityLabelInPlural('Produits')
-            ->setDefaultSort(['id' => 'DESC']);
+            ->setDefaultSort(['id' => 'DESC'])
+            ->showEntityActionsInlined(true); //
     }
 
     public function configureFields(string $pageName): iterable
@@ -113,7 +114,7 @@ class ProductCrudController extends AbstractCrudController
                     /** @var \App\Entity\Product $entity */
                     return ucfirst($entity->getType()); // Trottinette / Accessoire / Product
                 }),
-                
+
             // ----------- ILLUSTRATIONS : affichées mais non modifiées ici -----------
             FormField::addPanel('Illustrations'),
 
