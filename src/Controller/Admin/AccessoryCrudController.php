@@ -36,6 +36,10 @@ class AccessoryCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            CollectionField::new('illustrations', 'Images')
+                ->onlyOnDetail()
+                ->setTemplatePath('admin/fields/illustrations.html.twig'),
+
             IdField::new('id')->hideOnForm(),
 
             ImageField::new('firstIllustration', 'Image')
@@ -44,6 +48,7 @@ class AccessoryCrudController extends AbstractCrudController
 
             TextField::new('name', 'Nom'),
             TextField::new('slug')->setFormTypeOption('disabled', true)->hideOnIndex(),
+
             TextEditorField::new('description', 'Description'),
 
             NumberField::new('price', 'Prix (€)')->setNumDecimals(2),

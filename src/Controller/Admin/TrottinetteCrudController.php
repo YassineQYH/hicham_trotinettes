@@ -46,6 +46,11 @@ class TrottinetteCrudController extends AbstractCrudController
             // ======================
             // IDENTITÉ
             // ======================
+
+            CollectionField::new('illustrations', 'Images')
+                ->onlyOnDetail()
+                ->setTemplatePath('admin/fields/illustrations.html.twig'),
+                
             IdField::new('id')->hideOnForm(),
 
             ImageField::new('firstIllustration', 'Image')
@@ -78,8 +83,6 @@ class TrottinetteCrudController extends AbstractCrudController
 
             NumberField::new('stock', 'Stock'),
             BooleanField::new('isBest', 'Accueil'),
-
-
 
             // ======================
             // INDEX — SYNTHÈSE
