@@ -7,20 +7,11 @@
 
     <div class="ea-illustrations">
 
-        <!-- Image principale -->
+        <!-- Image principale (VISUELLE) -->
         <div class="ea-main-image">
             <img
+                id="ea-main-image"
                 src="
-                    {% if entity.instance.type == 'trottinette' %}
-                        /uploads/trottinettes/{{ mainImage.image }}
-                    {% elseif entity.instance.type == 'accessoire' %}
-                        /uploads/accessoires/{{ mainImage.image }}
-                    {% else %}
-                        /uploads/produits/{{ mainImage.image }}
-                    {% endif %}
-                "
-                class="ea-image"
-                data-full="
                     {% if entity.instance.type == 'trottinette' %}
                         /uploads/trottinettes/{{ mainImage.image }}
                     {% elseif entity.instance.type == 'accessoire' %}
@@ -46,7 +37,7 @@
                                 /uploads/produits/{{ illustration.image }}
                             {% endif %}
                         "
-                        class="ea-thumb"
+                        class="ea-thumbnail"
                         data-full="
                             {% if entity.instance.type == 'trottinette' %}
                                 /uploads/trottinettes/{{ illustration.image }}
@@ -62,5 +53,4 @@
         {% endif %}
 
     </div>
-    
 {% endif %}
