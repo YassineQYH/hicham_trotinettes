@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Form\AddressType;
-use App\Form\Type\HoneyPotType;
+use App\Form\HoneyPotType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Email;
