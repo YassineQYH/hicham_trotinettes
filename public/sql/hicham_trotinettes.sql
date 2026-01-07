@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 23 déc. 2025 à 15:44
+-- Généré le : mer. 07 jan. 2026 à 18:23
 -- Version du serveur : 8.4.3
--- Version de PHP : 8.3.28
+-- Version de PHP : 8.2.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -60,15 +60,15 @@ INSERT INTO `accessory` (`id`, `category_id`) VALUES
 CREATE TABLE `address` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `firstname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lastname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `company` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `postal` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `city` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `firstname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lastname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `company` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `postal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -89,7 +89,7 @@ INSERT INTO `address` (`id`, `user_id`, `name`, `firstname`, `lastname`, `compan
 
 CREATE TABLE `caracteristique` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -113,7 +113,7 @@ INSERT INTO `caracteristique` (`id`, `name`) VALUES
 
 CREATE TABLE `categorie_caracteristique` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -137,9 +137,9 @@ INSERT INTO `categorie_caracteristique` (`id`, `name`) VALUES
 
 CREATE TABLE `category_accessory` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `illustration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `illustration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -159,7 +159,7 @@ INSERT INTO `category_accessory` (`id`, `name`, `illustration`, `description`) V
 --
 
 CREATE TABLE `doctrine_migration_versions` (
-  `version` varchar(191) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `version` varchar(191) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `executed_at` datetime DEFAULT NULL,
   `execution_time` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -169,17 +169,33 @@ CREATE TABLE `doctrine_migration_versions` (
 --
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20251119155034', '2025-11-19 16:50:37', 1708),
-('DoctrineMigrations\\Version20251120155512', '2025-11-20 16:55:21', 238),
-('DoctrineMigrations\\Version20251121142003', '2025-11-21 15:20:19', 255),
-('DoctrineMigrations\\Version20251124092951', '2025-11-24 10:30:24', 11),
-('DoctrineMigrations\\Version20251127140006', '2025-11-27 15:03:04', 119),
-('DoctrineMigrations\\Version20251128084141', '2025-11-28 10:05:24', 171),
-('DoctrineMigrations\\Version20251211102913', '2025-12-11 11:29:36', 250),
-('DoctrineMigrations\\Version20251211131114', '2025-12-11 14:11:29', 156),
-('DoctrineMigrations\\Version20251211132030', '2025-12-11 14:20:35', 25),
-('DoctrineMigrations\\Version20251223102626', '2025-12-23 11:26:45', 270),
-('DoctrineMigrations\\Version20251223133302', '2025-12-23 14:33:09', 270);
+('DoctrineMigrations\\Version20260107143346', '2026-01-07 15:37:01', 168);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `home_video`
+--
+
+CREATE TABLE `home_video` (
+  `id` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `video_file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `video_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `headline` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subtitle` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL,
+  `position` int DEFAULT NULL,
+  `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  `updated_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `home_video`
+--
+
+INSERT INTO `home_video` (`id`, `title`, `video_file`, `video_url`, `headline`, `subtitle`, `is_active`, `position`, `created_at`, `updated_at`) VALUES
+(1, 'super trott', 'led-pergola-695e7b137a576.mp4', NULL, 'Avengers Trottinette', 'Trottinette de superHero Marvel', 1, 1, '2026-01-07 16:02:19', '2026-01-07 18:00:57');
 
 -- --------------------------------------------------------
 
@@ -190,7 +206,7 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 CREATE TABLE `illustration` (
   `id` int NOT NULL,
   `product_id` int NOT NULL,
-  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -270,9 +286,9 @@ INSERT INTO `illustration` (`id`, `product_id`, `image`) VALUES
 
 CREATE TABLE `messenger_messages` (
   `id` bigint NOT NULL,
-  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `headers` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue_name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `body` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `headers` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue_name` varchar(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `available_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
   `delivered_at` datetime DEFAULT NULL COMMENT '(DC2Type:datetime_immutable)'
@@ -289,18 +305,18 @@ CREATE TABLE `order` (
   `user_id` int NOT NULL,
   `created_at` datetime NOT NULL,
   `carrier_price` double NOT NULL,
-  `delivery` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `reference` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `stripe_session_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delivery` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `stripe_session_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payment_state` int NOT NULL,
   `delivery_state` int NOT NULL,
-  `tracking_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `carrier` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `secondary_carrier_tracking_number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `secondary_carrier` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `promo_code` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tracking_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `carrier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `secondary_carrier_tracking_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `secondary_carrier` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `promo_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `promo_reduction` double DEFAULT NULL,
-  `promo_titre` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `promo_titre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -460,11 +476,11 @@ CREATE TABLE `order_details` (
   `id` int NOT NULL,
   `my_order_id` int NOT NULL,
   `product_entity_id` int DEFAULT NULL,
-  `product` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `quantity` int NOT NULL,
   `price` double NOT NULL,
   `total` double NOT NULL,
-  `weight` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `weight` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tva` double DEFAULT NULL,
   `price_ttc` double NOT NULL,
   `price_after_reduc` double DEFAULT NULL,
@@ -786,15 +802,15 @@ INSERT INTO `order_details` (`id`, `my_order_id`, `product_entity_id`, `product`
 CREATE TABLE `product` (
   `id` int NOT NULL,
   `tva_id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `price` double NOT NULL,
   `stock` int NOT NULL,
   `is_best` tinyint(1) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `weight` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -829,12 +845,12 @@ INSERT INTO `product` (`id`, `tva_id`, `name`, `slug`, `description`, `price`, `
 CREATE TABLE `product_history` (
   `id` int NOT NULL,
   `product_id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `stock` int NOT NULL,
   `price` double DEFAULT NULL,
-  `main_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `main_image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `modified_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -848,15 +864,15 @@ CREATE TABLE `promotion` (
   `id` int NOT NULL,
   `category_access_id` int DEFAULT NULL,
   `product_id` int DEFAULT NULL,
-  `code` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `target_type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `discount_amount` double DEFAULT NULL,
   `discount_percent` double DEFAULT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime DEFAULT NULL,
   `quantity` int NOT NULL,
   `used` int NOT NULL,
-  `titre` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `titre` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `auto_apply` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -906,7 +922,7 @@ INSERT INTO `promotion_product` (`promotion_id`, `product_id`) VALUES
 CREATE TABLE `reset_password` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -918,21 +934,18 @@ CREATE TABLE `reset_password` (
 
 CREATE TABLE `trottinette` (
   `id` int NOT NULL,
-  `name_short` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description_short` longtext COLLATE utf8mb4_unicode_ci,
-  `is_header` tinyint(1) NOT NULL,
-  `header_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `header_btn_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `name_short` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description_short` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `trottinette`
 --
 
-INSERT INTO `trottinette` (`id`, `name_short`, `description_short`, `is_header`, `header_image`, `header_btn_title`) VALUES
-(1, 'Honey Whale M5 Max', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km', 1, 'foot-soccer.jpg', 'test'),
-(2, 'KUGOO C1 Pro', 'Vitesse 45 km/h, autonomie 100 km, charge max 120 kg', 0, 'foot-hiver.jpg', 'test'),
-(3, 'Bogist M5 Pro', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km', 1, 'foot-ete.jpg', 'test');
+INSERT INTO `trottinette` (`id`, `name_short`, `description_short`) VALUES
+(1, 'Honey Whale M5 Max', 'Moteur 1000 W, pneus 14 pouces, autonomie 40 km'),
+(2, 'KUGOO C1 Pro', 'Vitesse 45 km/h, autonomie 100 km, charge max 120 kg'),
+(3, 'Bogist M5 Pro', 'Moteur 500 W, pneus 12 pouces, autonomie 35 km');
 
 -- --------------------------------------------------------
 
@@ -982,8 +995,8 @@ CREATE TABLE `trottinette_caracteristique` (
   `trottinette_id` int DEFAULT NULL,
   `caracteristique_id` int DEFAULT NULL,
   `categorie_id` int DEFAULT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1026,8 +1039,8 @@ INSERT INTO `trottinette_caracteristique` (`id`, `trottinette_id`, `caracteristi
 CREATE TABLE `trottinette_description_section` (
   `id` int NOT NULL,
   `trottinette_id` int NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `section_order` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1060,7 +1073,7 @@ INSERT INTO `trottinette_description_section` (`id`, `trottinette_id`, `title`, 
 
 CREATE TABLE `tva` (
   `id` int NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1082,13 +1095,13 @@ INSERT INTO `tva` (`id`, `name`, `value`) VALUES
 
 CREATE TABLE `user` (
   `id` int NOT NULL,
-  `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(180) NOT NULL,
   `roles` json NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tel` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL
-) ;
+  `password` varchar(255) NOT NULL,
+  `first_name` varchar(64) NOT NULL,
+  `last_name` varchar(64) NOT NULL,
+  `tel` varchar(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `user`
@@ -1194,6 +1207,12 @@ ALTER TABLE `category_accessory`
 --
 ALTER TABLE `doctrine_migration_versions`
   ADD PRIMARY KEY (`version`);
+
+--
+-- Index pour la table `home_video`
+--
+ALTER TABLE `home_video`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `illustration`
@@ -1342,6 +1361,12 @@ ALTER TABLE `category_accessory`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT pour la table `home_video`
+--
+ALTER TABLE `home_video`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `illustration`
 --
 ALTER TABLE `illustration`
@@ -1417,7 +1442,7 @@ ALTER TABLE `tva`
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT pour la table `weight`
