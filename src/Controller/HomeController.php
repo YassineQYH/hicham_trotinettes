@@ -131,8 +131,12 @@ class HomeController extends AbstractController
         }
 
         // --- DONNÉES POUR LE CARROUSEL ---
-        $headers = $this->entityManager->getRepository(Trottinette::class)
-            ->findBy(['isHeader' => true]);
+        /* $headers = $this->entityManager->getRepository(Trottinette::class)
+            ->findBy(['isHeader' => true]); */
+
+        $video_header = $this->entityManager->getRepository(\App\Entity\HomeVideo::class)
+                     ->findBy(['isActive' => true], ['position' => 'ASC']);
+
 
         // --- MENU PRINCIPAL : TROTTINETTES ---
         $trottinettesMenu = $this->entityManager->getRepository(Trottinette::class)->findAll();
@@ -152,7 +156,8 @@ class HomeController extends AbstractController
         $homepagePromo = $promoFinder->findHomepagePromo();
 
         return $this->render('home/index.html.twig', [
-            'headers' => $headers,
+            /* 'headers' => $headers, */
+            'video_header' => $video_header,
             'trottinettes' => $trottinettes,
             'accessories' => $accessories,
             'cart' => $cart,

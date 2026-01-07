@@ -19,14 +19,14 @@ class Trottinette extends Product
     #[ORM\Column(type:"text", nullable:true)]
     private ?string $descriptionShort = null;
 
-    #[ORM\Column(type:"boolean")]
+/*     #[ORM\Column(type:"boolean")]
     private bool $isHeader = false;
 
     #[ORM\Column(type:"string", length:255, nullable:true)]
     private ?string $headerImage = null;
 
     #[ORM\Column(type:"string", length:255, nullable:true)]
-    private ?string $headerBtnTitle = null;
+    private ?string $headerBtnTitle = null; */
 
     // ------------------- Relations -------------------
 
@@ -63,14 +63,14 @@ class Trottinette extends Product
     public function getDescriptionShort(): ?string { return $this->descriptionShort; }
     public function setDescriptionShort(?string $descriptionShort): self { $this->descriptionShort = $descriptionShort; return $this; }
 
-    public function getIsHeader(): bool { return $this->isHeader; }
+/*     public function getIsHeader(): bool { return $this->isHeader; }
     public function setIsHeader(bool $isHeader): self { $this->isHeader = $isHeader; return $this; }
 
     public function getHeaderImage(): ?string { return $this->headerImage; }
     public function setHeaderImage(?string $headerImage): self { $this->headerImage = $headerImage; return $this; }
 
     public function getHeaderBtnTitle(): ?string { return $this->headerBtnTitle; }
-    public function setHeaderBtnTitle(?string $headerBtnTitle): self { $this->headerBtnTitle = $headerBtnTitle; return $this; }
+    public function setHeaderBtnTitle(?string $headerBtnTitle): self { $this->headerBtnTitle = $headerBtnTitle; return $this; } */
 
     /** @return Collection<int, TrottinetteCaracteristique> */
     public function getTrottinetteCaracteristiques(): Collection { return $this->trottinetteCaracteristiques; }

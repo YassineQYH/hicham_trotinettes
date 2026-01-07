@@ -2,9 +2,14 @@
 
 {% block title %}Trott{% endblock %}
 
-{% block carrousel %}
+{# {% block carrousel %}
     {{ include('partials/carrousel.html.twig', { headers: headers }) }}
+{% endblock %} #}
+
+{% block carrousel %}
+    {{ include('partials/home-video.html.twig', { video_header: video_header }) }}
 {% endblock %}
+
 
 {% block content %}
     {% include 'partials/promos.html.twig' %}

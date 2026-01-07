@@ -1,0 +1,79 @@
+{% block home_video %}
+    {# On récupère la vidéo active #}
+    {% set activeVideo = video_header|first %}
+
+    {% if activeVideo %}
+    <div id="homeVideo" class="home-video-container">
+        <video
+            class="home-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            poster="{{ asset('/img/video-poster.jpg') }}"
+        >
+            {% if activeVideo.videoFile %}
+                <source src="{{ asset('/uploads/home_videos/' ~ activeVideo.videoFile) }}" type="video/mp4">
+            {% elseif activeVideo.videoUrl %}
+                {# Si tu veux intégrer un iframe YouTube / Vimeo #}
+                {# Pour un iframe tu devras adapter un peu le code, car <video> ne fonctionne pas avec une URL externe #}
+            {% endif %}
+            Votre navigateur ne supporte pas la lecture vidéo.
+        </video>
+
+        {% if activeVideo.headline or activeVideo.subtitle %}
+        <div class="home-video-caption">
+            {% if activeVideo.headline %}
+                <h1>{{ activeVideo.headline }}</h1>
+            {% endif %}
+            {% if activeVideo.subtitle %}
+                <p>{{ activeVideo.subtitle }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Styles spécifiques #}
+    <style>
+        .home-video-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .home-video {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .home-video-caption {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0,0,0,0.7);
+        }
+
+        .home-video-caption h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .home-video-caption p {
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .home-video-caption h1 {
+                font-size: 2rem;
+            }
+            .home-video-caption p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+{% endblock %}

@@ -99,6 +99,10 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::section('Illustrations');
         yield MenuItem::linkToCrud('Illustrations Produits', 'fas fa-image', Illustration::class);
 
+        // --- CRUD Home Video ---
+        yield MenuItem::section('Page d’accueil');
+        yield MenuItem::linkToCrud('Home Video', 'fas fa-video', \App\Entity\HomeVideo::class);
+
         // --- Statistiques / Graphiques ---
         yield MenuItem::section('Stats');
         yield MenuItem::linkToRoute('Répartition Accessoires', 'fa fa-chart-pie', 'admin_graph_accessories');
