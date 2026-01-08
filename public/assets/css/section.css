@@ -120,24 +120,27 @@ img {
 
 /* ===== HOME ABOUT SECTIONS CARD STYLE ===== */
 
-/* .section.bg-image .container-home.about {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 1.6rem;
-    padding: 4rem 3rem;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-} */
+ /* Option 1 : Apparission fixe */
 .section.bg-image .container-home.about {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.section.bg-image .container-home.about:hover {
     transform: translateY(-6px);
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
     border-radius: 0.5rem;
 }
 
+/* Option 2 : Apparait au survole de la souris */
+/* .section.bg-image .container-home.about {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-/* Section Liste Produits*/
+}
+.section.bg-image .container-home.about:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+    border-radius: 0.5rem;
+} */
+
+
+/* ===== Section Liste Produits ===== */
 
 .container-product-list {
     max-width: 180rem;
