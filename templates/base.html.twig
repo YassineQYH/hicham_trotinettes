@@ -44,6 +44,15 @@
 
     <body>
 
+
+        {# 🔔 Messages flash au-dessus de la nav #}
+        <style>
+            .flash.login_success {
+                color: orange;
+                font-weight: bold;
+            }
+        </style>
+
         {# 🔔 Messages flash au-dessus de la nav #}
         <div class="flash-container">
             {% for label, messages in app.flashes %}
@@ -201,7 +210,7 @@
                         if(wrapper) wrapper.classList.add('active-popup');
                     {% endif %}
                 });
-                
+
                 // 🔔 Ouvrir automatiquement le modal d'inscription si erreur
                 document.addEventListener('DOMContentLoaded', function() {
                     {% if app.flashes('register_error') is not empty %}

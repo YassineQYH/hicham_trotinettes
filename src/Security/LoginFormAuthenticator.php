@@ -29,7 +29,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    
+
 
     private $entityManager;
     private $csrfTokenManager;
@@ -40,7 +40,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $this->urlGenerator = $urlGenerator;
     }
 
-    
+
     public function authenticate(Request $request): Passport
     {
         $email = $request->request->get('email', '');
@@ -67,9 +67,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
          * @var SessionInterface
          */
         $session = $request->getSession();
-        $session->getFlashBag()->add('success', 'Heureux de vous revoir');
+        $session->getFlashBag()->add('login_success', 'Heureux de vous revoir');
 
-        return new RedirectResponse($request->server->get('HTTP_REFERER'));
+        return new RedirectResponse($request->headers->get('referer') ?? '/');
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
@@ -80,9 +80,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $session = $request->getSession();
         $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
 
-        return new RedirectResponse($request->server->get('HTTP_REFERER'));
+        return new RedirectResponse($request->headers->get('referer') ?? '/');
     }
-    
+
     protected function getLoginUrl(Request $request): string
     {
         if(isset($_POST["type"]) && $_POST["type"] =="login")
@@ -92,7 +92,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         else
         //var_dump($_POST);
         //dd("if register");
-        return new RedirectResponse('targetPath'); // REGISTER : OK 
+        return new RedirectResponse('targetPath'); // REGISTER : OK
     }
 
 }
