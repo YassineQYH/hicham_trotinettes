@@ -6,10 +6,13 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -23,7 +26,6 @@ use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
-use Symfony\Component\Routing\Attribute\Route;
 
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -57,31 +59,56 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
+    public function onAuthenticationSuccess(
+        Request $request,
+        TokenInterface $token,
+        string $firewallName
+    ): ?Response {
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
-        /**
-         * @var SessionInterface
-         */
+        // ⚡ Ici on récupère la session et on “force” le typage pour l'IDE
+        /** @var SessionInterface $session */
         $session = $request->getSession();
-        $session->getFlashBag()->add('login_success', 'Heureux de vous revoir');
+        if (!$session instanceof SessionInterface) {
+            throw new \LogicException('La session est requise pour les flashs');
+        }
 
-        return new RedirectResponse($request->headers->get('referer') ?? '/');
+        // ✅ Ajout du flash pour l'utilisateur connecté
+        $session->getFlashBag()->add(
+            'info-alert',
+            'Heureux de vous revoir 👋'
+        );
+
+        return new RedirectResponse(
+            $this->urlGenerator->generate('app_home')
+        );
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
-    {
-        /**
-         * @var SessionInterface
-         */
-        $session = $request->getSession();
-        $session->getFlashBag()->add('error', strtr($exception->getMessageKey(), $exception->getMessageData()));
 
-        return new RedirectResponse($request->headers->get('referer') ?? '/');
+    public function onAuthenticationFailure(
+        Request $request,
+        AuthenticationException $exception
+    ): Response {
+
+        /** @var SessionInterface $session */
+        $session = $request->getSession();
+        if (!$session instanceof SessionInterface) {
+            throw new \LogicException('La session est requise pour les flashs');
+        }
+
+        $session->getFlashBag()->add(
+            'error',
+            'Identifiants incorrects. Veuillez réessayer.'
+        );
+
+        return new RedirectResponse(
+            $this->urlGenerator->generate('app_home')
+        );
     }
+
 
     protected function getLoginUrl(Request $request): string
     {
