@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmez votre inscription</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #1e90ff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+        .content {
+            padding: 20px 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        a.button {
+            display: inline-block;
+            padding: 14px 24px;
+            margin: 20px 0;
+            background-color: #1e90ff;
+            color: #fff !important;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .footer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 480px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .content {
+                font-size: 15px;
+            }
+            a.button {
+                display: block;
+                width: 100%;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmez votre inscription</h1>
+        </div>
+        <div class="content">
+            <p>Bonjour {{ firstName }},</p>
+            <p>Merci de confirmer votre adresse email pour activer votre compte sur <strong>HichTrott</strong>.</p>
+            <p>Cliquez sur le bouton ci-dessous pour activer votre compte :</p>
+            <p style="text-align: center;">
+                <a href="{{ verificationUrl }}" class="button">Activer mon compte</a>
+            </p>
+            <p>Ou copiez-collez ce lien dans votre navigateur :</p>
+            <p><a href="{{ verificationUrl }}">{{ verificationUrl }}</a></p>
+            <p>Ce lien est valable 24 heures.</p>
+        </div>
+        <div class="footer">
+            Si vous n'avez pas créé de compte, ignorez simplement ce message.<br>
+            &copy; {{ "now"|date("Y") }} HichTrott. Tous droits réservés.
+        </div>
+    </div>
+</body>
+</html>

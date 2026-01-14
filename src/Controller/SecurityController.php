@@ -3,14 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegisterType;
+use App\Entity\UserRegistrationToken;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityController extends AbstractController
 {
@@ -21,99 +18,48 @@ class SecurityController extends AbstractController
     /**
      * 🔒 Déconnexion utilisateur
      */
-    #[Route(path: '/logout', name: 'app_logout')]
+    #[Route('/logout', name: 'app_logout')]
     public function logout(): void
     {
-        throw new \LogicException('Cette méthode est interceptée par le firewall de sécurité.');
+        throw new \LogicException('Intercepté par le firewall.');
     }
 
     /**
-     * 🧍‍♂️ Inscription utilisateur
+     * ✅ Validation du compte
      */
-    /*     #[Route(path: '/inscription', name: 'app_register')]
-    public function register(
-        Request $request,
-        UserPasswordHasherInterface $passwordHasher,
-        AuthenticationUtils $authenticationUtils
-    ): Response {
-        // Login
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
+    #[Route('/verify-account/{token}', name: 'verify_account')]
+    public function verify(string $token): Response
+    {
+        $registration = $this->entityManager
+            ->getRepository(UserRegistrationToken::class)
+            ->findOneBy(['token' => $token]);
 
-        // Inscription
-        $user = new User();
-        $form = $this->createForm(RegisterType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            $existingUser = $this->entityManager
-                ->getRepository(User::class)
-                ->findOneByEmail($user->getEmail());
-
-            if ($form->isValid() && !$existingUser) {
-                // ✅ Inscription réussie
-                $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
-                $user->setPassword($hashedPassword);
-
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-
-                $this->addFlash('info-alert', "✅ Votre inscription s'est bien déroulée. Vous pouvez maintenant vous connecter.");
-
-                // 🔄 Redirection pour afficher le flash
-                return $this->redirectToRoute('app_register');
-
-            } elseif ($existingUser) {
-                // ⚠️ Email déjà utilisé
-                $this->addFlash('info-alert', "⚠️ L'adresse e-mail est déjà utilisée.");
-
-                return $this->redirectToRoute('app_register');
-
-            } else {
-                // ⚠️ Formulaire invalide
-                $this->addFlash('info-alert', "⚠️ L’inscription n’a pas pu aboutir. Veuillez vérifier vos informations.");
-
-                return $this->redirectToRoute('app_register');
-            }
+        if (
+            !$registration ||
+            $registration->getExpiresAt() < new \DateTimeImmutable()
+        ) {
+            $this->addFlash('error', 'Lien invalide ou expiré.');
+            return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('register/index.html.twig', [
-            'formregister' => $form->createView(),
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
-    }*/
+        // 👤 Création du vrai User
+        $user = new User();
+        $user->setEmail($registration->getEmail());
+        $user->setPassword($registration->getPasswordHash());
+        $user->setFirstName($registration->getFirstName());
+        $user->setLastName($registration->getLastName());
+        $user->setTel($registration->getTel());
+        $user->setRoles(['ROLE_USER']);
 
-    /**
-     * 🔑 Connexion API
-     */
-    #[Route(path: '/api/login', name: 'api_login')]
-    public function apiLogin(): Response
-    {
-        /** @var \App\Entity\User|null $user */
-        $user = $this->getUser();
+        $this->entityManager->persist($user);
+        $this->entityManager->remove($registration);
+        $this->entityManager->flush();
 
-        return $this->json([
-            'email' => $user?->getEmail(),
-            'password' => $user?->getPassword(),
-        ]);
-    }
+        $this->addFlash(
+            'info-alert',
+            'Compte activé avec succès 🎉 Vous pouvez maintenant vous connecter.'
+        );
 
-    /**
-     * 🧾 Enregistrement API (exemple d’API d’inscription)
-     */
-    #[Route(path: '/api/register', name: 'api_register')]
-    public function apiRegister(): Response
-    {
-        /** @var \App\Entity\User|null $user */
-        $user = $this->getUser();
-
-        return $this->json([
-            'email' => $user?->getEmail(),
-            'lastname' => $user?->getLastname(),
-            'firstname' => $user?->getFirstname(),
-            'phone' => $user?->getTel(),
-            'password' => $user?->getPassword(),
-        ]);
+        return $this->redirectToRoute('app_home');
     }
 }

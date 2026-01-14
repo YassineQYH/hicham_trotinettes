@@ -5,35 +5,32 @@ namespace App\Controller;
 use App\Classe\Cart;
 use App\Classe\Mail;
 use App\Entity\User;
-use App\Entity\Address;
 use App\Entity\Accessory;
 use App\Form\ContactType;
 use App\Form\RegisterType;
 use App\Entity\Trottinette;
 use App\Service\PromotionService;
-use App\Repository\PromotionRepository;
+use App\Entity\UserRegistrationToken;
 use App\Service\PromotionFinderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class HomeController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {}
 
     #[Route('/', name: 'app_home')]
     public function index(
         Request $request,
-        UserPasswordHasherInterface $encoder,
+        UserPasswordHasherInterface $passwordHasher,
         Cart $cart,
         AuthenticationUtils $authenticationUtils,
         PromotionFinderService $promoFinder,
@@ -42,143 +39,147 @@ class HomeController extends AbstractController
     {
         $cart = $cart->getFull();
 
-        // --- FORMULAIRE DE CONTACT ---
+        /* =====================================================
+         * 📩 FORMULAIRE DE CONTACT
+         * ===================================================== */
         $formcontact = $this->createForm(ContactType::class);
         $formcontact->handleRequest($request);
 
         if ($formcontact->isSubmitted() && $formcontact->isValid()) {
 
             // 🕵️‍♂️ Honeypot anti-bot
-            $honeypot = $formcontact->get('honeypot')->getData();
-            if (!empty($honeypot)) {
+            if (!empty($formcontact->get('honeypot')->getData())) {
                 $this->addFlash('error', "Spam détecté, message non envoyé.");
                 return $this->redirectToRoute('app_home');
             }
 
-            // 📬 Message flash utilisateur
-            $this->addFlash('info-alert', "Merci de m'avoir contacté. Je vous répondrai dans les meilleurs délais.");
+            $this->addFlash(
+                'info-alert',
+                "Merci de m'avoir contacté. Je vous répondrai dans les meilleurs délais."
+            );
 
             $data = $formcontact->getData();
             $mail = new Mail();
 
-            // --- Mail à l'admin ---
-            $adminContent = $this->renderView('emails/contact_admin.html.twig', [
-                'name' => $data['name'],
-                'company' => $data['company'],
-                'tel' => $data['tel'],
-                'email' => $data['email'],
-                'message' => $data['message'],
-            ]);
-
+            // --- Mail admin ---
             $mail->send(
-                'yassine.qyh@gmail.com', // admin
+                'yassine.qyh@gmail.com',
                 'HichTrott',
                 'Vous avez reçu une nouvelle demande de contact',
-                $adminContent
+                $this->renderView('emails/contact_admin.html.twig', $data)
             );
 
-            // --- Mail de confirmation à l'utilisateur ---
-            $userContent = $this->renderView('emails/contact_user.html.twig', [
-                'name' => $data['name'],
-                'company' => $data['company'],
-                'tel' => $data['tel'],
-                'email' => $data['email'],
-                'message' => $data['message'],
-            ]);
-
+            // --- Mail utilisateur ---
             $mail->send(
-                $data['email'], // utilisateur
+                $data['email'],
                 'HichTrott',
                 'Confirmation de votre message à HichTrott',
-                $userContent
+                $this->renderView('emails/contact_user.html.twig', $data)
             );
 
-            // 🔄 Redirection OBLIGATOIRE pour afficher le message flash
             return $this->redirectToRoute('app_home');
         }
 
-        if ($formcontact->isSubmitted() && !$formcontact->isValid()) {
-            $this->addFlash(
-                'error',
-                "Une erreur est survenue. Veuillez vérifier les informations du formulaire de contact."
-            );
-        }
-
-        // --- LOGIN ---
+        /* =====================================================
+         * 🔐 LOGIN
+         * ===================================================== */
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // --- INSCRIPTION ---
-        $notification = null;
+        /* =====================================================
+         * 🧍‍♂️ INSCRIPTION (TOKEN UNIQUEMENT)
+         * ===================================================== */
         $user = new User();
-
-        $formregister = $this->createForm(RegisterType::class, $user, [
-            'by_reference' => false
-        ]);
+        $formregister = $this->createForm(RegisterType::class, $user);
         $formregister->handleRequest($request);
 
         if ($formregister->isSubmitted() && $formregister->isValid()) {
-            $user = $formregister->getData();
 
-            $search_email = $this->entityManager->getRepository(User::class)
+            // 🔍 Vérification email déjà existant
+            $existingUser = $this->entityManager
+                ->getRepository(User::class)
                 ->findOneByEmail($user->getEmail());
 
-            if (!$search_email) {
-                $password = $encoder->hashPassword($user, $user->getPassword());
-                $user->setPassword($password);
-
-                // 🔹 AJOUT DU ROLE PAR DÉFAUT
-                $user->setRoles(['ROLE_USER']);
-
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
-
-                // ✅ FLASH SUCCÈS
-                $this->addFlash(
-                    'info-alert',
-                    "Votre inscription s'est correctement déroulée. Vous pouvez dès à présent vous connecter à votre compte."
-                );
-
-            } else {
-                // ❌ FLASH ERREUR
+            if ($existingUser) {
                 $this->addFlash(
                     'info-alert',
                     "L'email que vous avez renseigné existe déjà."
                 );
+
+                return $this->redirectToRoute('app_home');
             }
 
-            // 🔄 IMPORTANT : redirection pour afficher le flash
+            // 🔐 Hash du mot de passe (UNE SEULE FOIS)
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $user->getPassword()
+            );
+
+            // 🔑 Génération du token
+            $token = bin2hex(random_bytes(32));
+
+            // 1 - créer le lien de confirmation
+            $verificationUrl = $this->generateUrl(
+                'verify_account',   // nom de la route
+                ['token' => $token], // paramètre token
+                UrlGeneratorInterface::ABSOLUTE_URL // lien absolu
+            );
+
+            // 🧾 Création de l'entité temporaire
+            $registration = new UserRegistrationToken();
+            $registration->setEmail($user->getEmail());
+            $registration->setPasswordHash($hashedPassword);
+            $registration->setFirstName($user->getFirstName());
+            $registration->setLastName($user->getLastName());
+            $registration->setTel($user->getTel());
+            $registration->setToken($token);
+            $registration->setExpiresAt(new \DateTimeImmutable('+24 hours'));
+
+            $this->entityManager->persist($registration);
+            $this->entityManager->flush();
+
+            // 2 - envoyer le mail avec ta classe Mail
+            $mail = new Mail();
+            $mail->send(
+                $user->getEmail(),         // email du destinataire
+                $user->getFirstName(),     // nom du destinataire
+                "Confirmation de votre inscription", // sujet
+                $this->renderView('emails/confirm_registration.html.twig', [
+                    'firstName' => $user->getFirstName(),
+                    'verificationUrl' => $verificationUrl
+                ])
+            );
+
+            $this->addFlash(
+                'info-alert',
+                "Un email de confirmation vient de vous être envoyé. Veuillez valider votre compte."
+            );
+
             return $this->redirectToRoute('app_home');
         }
 
+        /* =====================================================
+         * 🏠 DONNÉES PAGE D’ACCUEIL
+         * ===================================================== */
+        $video_header = $this->entityManager
+            ->getRepository(\App\Entity\HomeVideo::class)
+            ->findBy(['isActive' => true], ['position' => 'ASC']);
 
-        // --- DONNÉES POUR LE CARROUSEL ---
-        /* $headers = $this->entityManager->getRepository(Trottinette::class)
-            ->findBy(['isHeader' => true]); */
+        $trottinettesMenu = $this->entityManager
+            ->getRepository(Trottinette::class)
+            ->findAll();
 
-        $video_header = $this->entityManager->getRepository(\App\Entity\HomeVideo::class)
-                     ->findBy(['isActive' => true], ['position' => 'ASC']);
-
-
-        // --- MENU PRINCIPAL : TROTTINETTES ---
-        $trottinettesMenu = $this->entityManager->getRepository(Trottinette::class)->findAll();
-        $uniqueTrottinettesMenu = [];
-        foreach ($trottinettesMenu as $t) {
-            $uniqueTrottinettesMenu[$t->getId()] = $t;
-        }
-        $trottinettesMenu = array_values($uniqueTrottinettesMenu);
-
-        // --- SLIDERS BEST ---
-        $trottinettes = $this->entityManager->getRepository(Trottinette::class)
-            ->findBy(['isBest' => 1]);
-        $accessories = $this->entityManager->getRepository(Accessory::class)
+        $trottinettes = $this->entityManager
+            ->getRepository(Trottinette::class)
             ->findBy(['isBest' => 1]);
 
-        // Trouver la promo à afficher sur la home (auto ou non)
+        $accessories = $this->entityManager
+            ->getRepository(Accessory::class)
+            ->findBy(['isBest' => 1]);
+
         $homepagePromo = $promoFinder->findHomepagePromo();
 
         return $this->render('home/index.html.twig', [
-            /* 'headers' => $headers, */
             'video_header' => $video_header,
             'trottinettes' => $trottinettes,
             'accessories' => $accessories,
@@ -187,10 +188,9 @@ class HomeController extends AbstractController
             'formregister' => $formregister->createView(),
             'last_username' => $lastUsername,
             'error' => $error,
-            'notification' => $notification,
-            'trottinettes_menu' => $trottinettesMenu,
             'homepagePromo' => $homepagePromo,
             'promoService' => $promotionService,
+            'trottinettes_menu' => $trottinettesMenu,
         ]);
     }
 }
