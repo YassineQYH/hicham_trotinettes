@@ -136,7 +136,7 @@ class Order
     public function getPaymentState(): ?int { return $this->paymentState; }
     public function setPaymentState(int $paymentState): self { $this->paymentState = $paymentState; return $this; }
 
-    // ✅ Livraison (0 = Préparation en cours, 1 = Livraison en cours)
+    // ✅ Livraison
     public function getDeliveryState(): ?int { return $this->deliveryState; }
     public function setDeliveryState(int $deliveryState): self { $this->deliveryState = $deliveryState; return $this; }
 
@@ -226,5 +226,41 @@ class Order
             0
         );
     }
+
+    public function getDeliveryStateLabel(): string
+    {
+        return self::DELIVERY_STATES[$this->deliveryState] ?? 'Statut inconnu';
+    }
+
+    public function getOrderStatusLabel(): string
+    {
+        if ($this->paymentState === 0) {
+            return 'Non payée';
+        }
+
+        return 'Payée - ' . ($this->getDeliveryStateLabel());
+    }
+
+    public function isInPreparation(): bool
+    {
+        return $this->deliveryState === self::STATE_PREPARATION;
+    }
+
+    public const PAYMENT_UNPAID = 0;
+    public const PAYMENT_PAID = 1;
+
+    public const STATE_WAITING = 0;
+    public const STATE_PREPARATION = 1;
+    public const STATE_SHIPPING = 2;
+    public const STATE_DELIVERED = 3;
+    public const STATE_CANCELED = 4;
+
+    public const DELIVERY_STATES = [
+        self::STATE_WAITING      => 'Commande en attente',
+        self::STATE_PREPARATION  => 'Préparation en cours',
+        self::STATE_SHIPPING     => 'Livraison en cours',
+        self::STATE_DELIVERED    => 'Livraison terminée',
+        self::STATE_CANCELED     => 'Annulée',
+    ];
 
 }

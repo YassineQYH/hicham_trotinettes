@@ -168,12 +168,14 @@ class AdminDashboardController extends AbstractDashboardController
     private function getOrderStatusStats(): array
     {
         $conn = $this->em->getConnection();
+
         $sql = "
             SELECT
-                CONCAT(o.payment_state, '-', o.delivery_state) AS combined_status,
+                o.payment_state,
+                o.delivery_state,
                 COUNT(o.id) AS total
             FROM `order` o
-            GROUP BY combined_status
+            GROUP BY o.payment_state, o.delivery_state
         ";
 
         $results = $conn->executeQuery($sql)->fetchAllAssociative();
@@ -182,20 +184,28 @@ class AdminDashboardController extends AbstractDashboardController
         $values = [];
 
         foreach ($results as $row) {
-            [$payment, $delivery] = explode('-', $row['combined_status']);
-            $statusLabel = '';
+            $payment = (int) $row['payment_state'];
+            $delivery = (int) $row['delivery_state'];
 
-            if ($payment == 0) $statusLabel = 'Non payée';
-            elseif ($payment == 1 && $delivery == 0) $statusLabel = 'Payée - Préparation';
-            elseif ($payment == 1 && $delivery == 1) $statusLabel = 'Payée - En livraison';
-            else $statusLabel = 'Inconnu';
+            if ($payment === 0) {
+                $label = 'Non payée';
+            } elseif ($payment === 1 && isset(Order::DELIVERY_STATES[$delivery])) {
+                $label = 'Payée - ' . Order::DELIVERY_STATES[$delivery];
+            } else {
+                $label = 'Statut incohérent';
+            }
 
-            $labels[] = $statusLabel;
-            $values[] = $row['total'];
+            $labels[] = $label;
+            $values[] = (int) $row['total'];
         }
 
-        return ['labels' => $labels, 'values' => $values];
+        return [
+            'labels' => $labels,
+            'values' => $values,
+        ];
     }
+
+
 
     private function getRevenueByMonth(): array
     {

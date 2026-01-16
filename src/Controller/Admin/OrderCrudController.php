@@ -37,15 +37,15 @@ class OrderCrudController extends AbstractCrudController
     {
         $cancelOrder = Action::new('cancelOrder', 'Annuler', 'fas fa-ban')
         ->linkToCrudAction('cancelOrder')
-        ->displayIf(fn($order) => $order->getDeliveryState() < 3); // uniquement si pas déjà livrée
+        ->displayIf(fn(Order $order) => $order->getDeliveryState() < Order::STATE_DELIVERED); // uniquement si pas déjà livrée
 
         $updatePreparation = Action::new('updatePreparation', 'Préparation en cours', 'fas fa-box-open')
             ->linkToCrudAction('updatePreparation')
-            ->displayIf(fn($order) => $order->getDeliveryState() === 0);
+            ->displayIf(fn(Order $order) => $order->getDeliveryState() === Order::STATE_WAITING);
 
         $updateDelivery = Action::new('updateDelivery', 'Livraison en cours', 'fas fa-truck')
             ->linkToCrudAction('updateDelivery')
-            ->displayIf(fn($order) => $order->getDeliveryState() === 1);
+            ->displayIf(fn(Order $order) => $order->getDeliveryState() === Order::STATE_PREPARATION);
 
         $internalLabelWeb = Action::new('internalLabelWeb', 'Voir Étiquette Web', 'fas fa-eye')
             ->linkToCrudAction('internalLabelWeb')
@@ -202,7 +202,12 @@ class OrderCrudController extends AbstractCrudController
         $order = $this->getOrderFromContext($context);
         if (!$order) return $this->redirectToOrderIndex();
 
-        $this->updateOrderState($order, 1, 'en cours de préparation');
+        $this->updateOrderState(
+            $order,
+            Order::STATE_PREPARATION,
+            'en cours de préparation'
+        );
+
         return $this->redirectToOrderDetail($order);
     }
 
@@ -211,7 +216,12 @@ class OrderCrudController extends AbstractCrudController
         $order = $this->getOrderFromContext($context);
         if (!$order) return $this->redirectToOrderIndex();
 
-        $this->updateOrderState($order, 2, 'en cours de livraison');
+        $this->updateOrderState(
+            $order,
+            Order::STATE_SHIPPING,
+            'en cours de livraison'
+        );
+
         return $this->redirectToOrderDetail($order);
     }
 
@@ -351,27 +361,26 @@ class OrderCrudController extends AbstractCrudController
                 ->setStoredAsCents(false)
                 ->formatValue(fn($value) => $value . ' €'),
 
-            ChoiceField::new('paymentState', 'Paiement')->setChoices([
-                'Non payée' => 0,
-                'Payée' => 1,
-            ])->renderAsBadges([
-                0 => 'danger',
-                1 => 'success',
-            ]),
+            ChoiceField::new('paymentState', 'Paiement')
+                ->setChoices([
+                    'Non payée' => Order::PAYMENT_UNPAID,
+                    'Payée'     => Order::PAYMENT_PAID,
+                ])
+                ->renderAsBadges([
+                    Order::PAYMENT_UNPAID => 'danger',
+                    Order::PAYMENT_PAID   => 'success',
+                ]),
 
-            ChoiceField::new('deliveryState', 'Traitement')->setChoices([
-                'Commande en attente' => 0,
-                'Préparation en cours' => 1,
-                'Livraison en cours' => 2,
-                'Livraison terminée' => 3,
-                'Annulé' => 4,
-            ])->renderAsBadges([
-                0 => 'secondary',
-                1 => 'warning',
-                2 => 'info',
-                3 => 'success',
-                4 => 'danger',
-            ]),
+            ChoiceField::new('deliveryState', 'Traitement')
+                ->setChoices(array_flip(Order::DELIVERY_STATES))
+                ->renderAsBadges([
+                    Order::STATE_WAITING     => 'secondary',
+                    Order::STATE_PREPARATION => 'warning',
+                    Order::STATE_SHIPPING    => 'info',
+                    Order::STATE_DELIVERED   => 'success',
+                    Order::STATE_CANCELED    => 'danger',
+                ]),
+
 
             TextField::new('carrier', 'Transporteur')->onlyOnDetail(),
             TextField::new('trackingNumber', 'Numéro de suivi')->onlyOnDetail(),
@@ -394,7 +403,7 @@ class OrderCrudController extends AbstractCrudController
         if (!$order) return $this->redirectToOrderIndex();
 
         // 🔹 Annuler la commande
-        $order->setDeliveryState(4); // 4 = Annulé
+        $order->setDeliveryState(Order::STATE_CANCELED); // 4 = Annulé
 
         // 🔹 Remettre les produits en stock
         foreach ($order->getOrderDetails() as $item) {
