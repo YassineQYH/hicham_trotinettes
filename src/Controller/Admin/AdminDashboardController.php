@@ -48,9 +48,21 @@ class AdminDashboardController extends AbstractDashboardController
 
     public function index(): Response
     {
-        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
 
         $ordersByMonthData = $this->getOrdersByMonth($request);
+
+        if ($request && $request->isXmlHttpRequest()) {
+            return $this->json([
+                'ordersByMonth'  => $ordersByMonthData['ordersByMonth'],
+                'yearToDisplay'  => $ordersByMonthData['yearToDisplay'],
+                'prevYear'       => $ordersByMonthData['prevYear'],
+                'nextYear'       => $ordersByMonthData['nextYear'],
+                'revenueByMonth' => $this->getRevenueByMonthByYear(
+                    $ordersByMonthData['yearToDisplay']
+                ),
+            ]);
+        }
 
         return $this->render('admin/dashboard.html.twig', [
             'orderStatusStats' => $this->getOrderStatusStats(),
@@ -58,9 +70,13 @@ class AdminDashboardController extends AbstractDashboardController
             'yearToDisplay'    => $ordersByMonthData['yearToDisplay'],
             'prevYear'         => $ordersByMonthData['prevYear'],
             'nextYear'         => $ordersByMonthData['nextYear'],
-            'revenueByMonth'   => $this->getRevenueByMonth(),
+            'revenueByMonth'   => $this->getRevenueByMonthByYear(
+                $ordersByMonthData['yearToDisplay']
+            ),
         ]);
     }
+
+
 
 
 
@@ -282,5 +298,40 @@ class AdminDashboardController extends AbstractDashboardController
         return ['labels' => $labels, 'values' => $values];
     }
 
+    private function getRevenueByMonthByYear(int $year): array
+    {
+        $conn = $this->em->getConnection();
+
+        $sql = "
+            SELECT
+                MONTH(o.created_at) AS month,
+                SUM(od.price * od.quantity) AS revenue
+            FROM `order` o
+            JOIN order_details od ON od.my_order_id = o.id
+            WHERE o.payment_state = 1
+            AND YEAR(o.created_at) = :year
+            GROUP BY month
+            ORDER BY month ASC
+        ";
+
+        $results = $conn->executeQuery($sql, ['year' => $year])->fetchAllAssociative();
+
+        $labels = [];
+        $values = [];
+
+        for ($m = 1; $m <= 12; $m++) {
+            $labels[] = strftime('%B', mktime(0, 0, 0, $m, 1));
+            $values[] = 0;
+        }
+
+        foreach ($results as $row) {
+            $values[(int)$row['month'] - 1] = round($row['revenue'], 2);
+        }
+
+        return [
+            'labels' => $labels,
+            'values' => $values,
+        ];
+    }
 
 }
