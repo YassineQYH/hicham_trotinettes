@@ -72,8 +72,13 @@ class AddressType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Address::class,
-        ]);
-    }
+            $resolver->setDefaults([
+                'data_class' => Address::class,
+
+                // ⚠️ IMPORTANT POUR EASYADMIN
+                // Les formulaires imbriqués (CollectionField)
+                // ne doivent PAS avoir leur propre CSRF
+                'csrf_protection' => false,
+            ]);
+            }
 }

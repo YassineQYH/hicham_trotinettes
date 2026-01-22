@@ -8,6 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Repository\UserRepository;
+
 
 class SecurityController extends AbstractController
 {
@@ -62,4 +67,44 @@ class SecurityController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
+
+    #[Route('/set-password/{token}', name: 'app_set_password')]
+    public function setPassword(
+        Request $request,
+        string $token,
+        UserRepository $userRepository,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response
+    {
+        $user = $userRepository->findOneBy(['passwordResetToken' => $token]);
+
+        if (!$user || $user->getPasswordResetTokenExpiresAt() < new \DateTime()) {
+            $this->addFlash('error', 'Lien invalide ou expiré.');
+            return $this->redirectToRoute('app_home');
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('password', PasswordType::class, ['label' => 'Mot de passe'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword(
+                $passwordHasher->hashPassword($user, $form->get('password')->getData())
+            );
+            $user->setPasswordResetToken(null);
+            $user->setPasswordResetTokenExpiresAt(null);
+
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'Mot de passe créé avec succès !');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('security/set_password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

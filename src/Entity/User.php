@@ -37,6 +37,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 16)]
     private ?string $tel = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $passwordResetToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $passwordResetTokenExpiresAt = null;
+
+
     // ------------------- RELATION ADDRESSES -------------------
     #[ORM\OneToMany(mappedBy: "user", targetEntity: Address::class, cascade: ["persist"], orphanRemoval: true)]
     private Collection $addresses;
@@ -77,7 +84,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getTel(): ?string { return $this->tel; }
     public function setTel(string $tel): static { $this->tel = $tel; return $this; }
 
-    // ------------------- ADDRESSES -------------------
+    public function getPasswordResetToken(): ?string { return $this->passwordResetToken; }
+    public function setPasswordResetToken(?string $token): static { $this->passwordResetToken = $token; return $this; }
+
+    public function getPasswordResetTokenExpiresAt(): ?\DateTimeInterface { return $this->passwordResetTokenExpiresAt; }
+    public function setPasswordResetTokenExpiresAt(?\DateTimeInterface $expiresAt): static { $this->passwordResetTokenExpiresAt = $expiresAt; return $this; }
+
+// ------------------- ADDRESSES -------------------
     /**
      * @return Collection<int, Address>
      */
