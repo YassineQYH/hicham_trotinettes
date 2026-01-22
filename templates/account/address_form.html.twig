@@ -1,34 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une adresse : Zone-Frais{% endblock %}
+{% block title %}Gérer mes adresses - HichTrott{% endblock %}
 
-{% block content %} <br><br><br><br><br><br><br>
-<div class="container">
-    <h1>Gérer mes adresses</h1>
-    <a href="{{ path('account') }}" style="color: blue;">Retour</a>
-    <hr>
+{% block content %}
+<div class="container py-5" style="max-width: 900px;"> {# un peu plus large pour 2 colonnes #}
+    <h1 class="mb-4 text-center">Gérer mes adresses</h1>
+
+    <div class="mb-3 text-center">
+        <a href="{{ path('account') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Retourner à mon compte
+        </a>
+    </div>
 
     {{ form_start(form) }}
-    <div class="row">
-        <h4 class="col-md-12">Infos personnelles</h4></br>
-        <div class="col-md-12">{{ form_row(form.name) }}</div>
-        <div class="col-md-6">{{ form_row(form.firstname) }}</div>
-        <div class="col-md-6">{{ form_row(form.lastname) }}</div>
-        <div class="col-md-6">{{ form_row(form.phone) }}</div>
-        <div class="col-md-6">{{ form_row(form.company) }}</div>
-    </div>
-    <div class="row">
-        <h4 class="col-md-12">Adresse de livraison</h4></br>
-        <div class="col-md-6">{{ form_row(form.country) }}</div>
-        <div class="col-md-6">{{ form_row(form.city) }}</div>
-        <div class="col-md-6">{{ form_row(form.address) }}</div>
-        <div class="col-md-6">{{ form_row(form.postal) }}</div>
-    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row">
+                <!-- COLONNE GAUCHE : Infos personnelles -->
+                <div class="col-md-6">
+                    <h4 class="mb-3">Infos personnelles</h4>
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.firstname) }}
+                    {{ form_row(form.lastname) }}
+                    {{ form_row(form.phone) }}
+                    {{ form_row(form.company) }}
+                </div>
 
-    <div class="form-group mt-3">
-        <button type="submit" class="btn btn-primary">Enregistrer l’adresse</button>
-    </div>
+                <!-- COLONNE DROITE : Adresse de livraison -->
+                <div class="col-md-6">
+                    <h4 class="mb-3">Adresse de livraison</h4>
+                    {{ form_row(form.country) }}
+                    {{ form_row(form.city) }}
+                    {{ form_row(form.address) }}
+                    {{ form_row(form.postal) }}
+                </div>
+            </div>
 
-    {{ form_end(form) }}
-</div><br><br><br><br><br>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">
+                    Enregistrer l’adresse
+                </button>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form, { render_rest: false }) }}
+</div>
 {% endblock %}

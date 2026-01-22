@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes informations - HichTrott{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 600px;">
+    <h1 class="mb-4 text-center">Mes informations personnelles</h1>
+
+    <div class="mb-3 text-center">
+        <a href="{{ path('account') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left"></i> Retourner à mon compte
+        </a>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success text-center">{{ message }}</div>
+    {% endfor %}
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ form_start(form) }}
+
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.tel) }}
+
+                {{ form_row(form.email) }}
+                <small class="text-muted d-block mb-3">
+                    Pour modifier votre adresse email, merci de
+                    <a href="/#contact" class="text-primary">contacter le support</a>.
+                </small>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+
+            {{ form_end(form, { render_rest: false }) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
