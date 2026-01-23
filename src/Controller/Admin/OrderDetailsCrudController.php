@@ -26,15 +26,15 @@ class OrderDetailsCrudController extends AbstractCrudController
     {
         return $crud
             ->setDefaultSort(['id' => 'DESC'])
-            ->setEntityLabelInSingular('Order Detail')
-            ->setEntityLabelInPlural('Order Details')
+            ->setEntityLabelInSingular('Détail de commande')
+            ->setEntityLabelInPlural('Détails des commandes')
             ->showEntityActionsInlined();
     }
 
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disable(Action::EDIT, Action::DELETE) // pas d'édition ni suppression
+            ->disable(Action::NEW, Action::EDIT, Action::DELETE) // pas d'édition ni suppression
             ->add(Crud::PAGE_INDEX, Action::DETAIL); // juste "Afficher"
     }
 

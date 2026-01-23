@@ -105,7 +105,13 @@ class Trottinette extends Product
     }
 
     /** @return Collection<int, TrottinetteDescriptionSection> */
-    public function getDescriptionSections(): Collection { return $this->descriptionSections; }
+    public function getDescriptionSections(): Collection
+    {
+        $sections = $this->descriptionSections->toArray();
+        usort($sections, fn($a, $b) => $a->getSectionOrder() <=> $b->getSectionOrder());
+        return new \Doctrine\Common\Collections\ArrayCollection($sections);
+    }
+
     public function addDescriptionSection(TrottinetteDescriptionSection $section): self {
         if (!$this->descriptionSections->contains($section)) {
             $this->descriptionSections->add($section);
@@ -113,10 +119,47 @@ class Trottinette extends Product
         }
         return $this;
     }
+
+    public function addDescriptionSectionWithOrder(TrottinetteDescriptionSection $newSection, int $order, \Doctrine\ORM\EntityManagerInterface $em): self
+    {
+        // Décale toutes les sections à partir de cet ordre
+        foreach ($this->descriptionSections as $section) {
+            if ($section->getSectionOrder() >= $order) {
+                $section->setSectionOrder($section->getSectionOrder() + 1);
+                $em->persist($section); // <-- Important
+            }
+        }
+
+        // Définit l'ordre de la nouvelle section et l'ajoute
+        $newSection->setSectionOrder($order);
+        $this->addDescriptionSection($newSection);
+        $em->persist($newSection);
+
+        return $this;
+    }
+
+
     public function removeDescriptionSection(TrottinetteDescriptionSection $section): self {
         if ($this->descriptionSections->removeElement($section)) {
             $section->setTrottinette(null);
         }
         return $this;
     }
+
+        public function insertSectionAtOrder(TrottinetteDescriptionSection $newSection, int $order): self
+    {
+        // Décale toutes les sections existantes à partir de cet ordre
+        foreach ($this->descriptionSections as $section) {
+            if ($section->getSectionOrder() >= $order) {
+                $section->setSectionOrder($section->getSectionOrder() + 1);
+            }
+        }
+
+        // Définit l'ordre de la nouvelle section et l'ajoute
+        $newSection->setSectionOrder($order);
+        $this->addDescriptionSection($newSection);
+
+        return $this;
+    }
+    
 }

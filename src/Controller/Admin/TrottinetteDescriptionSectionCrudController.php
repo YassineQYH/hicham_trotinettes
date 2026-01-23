@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\TrottinetteDescriptionSection;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\{IdField, TextField, TextEditorField, AssociationField, IntegerField};
+use Doctrine\ORM\EntityManagerInterface;
 
 class TrottinetteDescriptionSectionCrudController extends AbstractCrudController
 {
@@ -25,4 +26,18 @@ class TrottinetteDescriptionSectionCrudController extends AbstractCrudController
                 ->setSortable(true),
         ];
     }
+
+    public function persistEntity(EntityManagerInterface $em, $entityInstance): void
+    {
+        if ($entityInstance instanceof TrottinetteDescriptionSection) {
+            $trottinette = $entityInstance->getTrottinette();
+            if ($trottinette) {
+                $order = $entityInstance->getSectionOrder() ?? count($trottinette->getDescriptionSections()) + 1;
+                $trottinette->insertSectionAtOrder($entityInstance, $order);
+            }
+        }
+
+        parent::persistEntity($em, $entityInstance);
+    }
+
 }

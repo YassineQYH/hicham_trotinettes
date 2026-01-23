@@ -14,14 +14,15 @@ use App\Entity\Illustration;
 use App\Entity\OrderDetails;
 use App\Entity\ProductHistory;
 use App\Entity\Caracteristique;
+use App\Entity\CategoryAccessory;
 use App\Entity\TrottinetteAccessory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\TrottinetteCaracteristique;
 use App\Entity\TrottinetteDescriptionSection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use Symfony\Component\HttpFoundation\RequestStack;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -92,7 +93,7 @@ class AdminDashboardController extends AbstractDashboardController
 
         //-- Users --//
         yield MenuItem::section('Utilisateurs');
-        yield MenuItem::linkToCrud('Users', 'fas fa-user', User::class);
+        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-user', User::class);
 
         // -- Commandes --//
         yield MenuItem::section('Commandes');
@@ -113,14 +114,15 @@ class AdminDashboardController extends AbstractDashboardController
         // --- CRUD Trottinettes ---
         yield MenuItem::section('Trottinettes');
         yield MenuItem::linkToCrud('Trottinettes', 'fas fa-folder', Trottinette::class);
-        yield MenuItem::linkToCrud('Sections Description', 'fas fa-align-left', TrottinetteDescriptionSection::class);
+        yield MenuItem::linkToCrud('Descriptions', 'fas fa-align-left', TrottinetteDescriptionSection::class);
         yield MenuItem::linkToCrud('Caractéristiques', 'fas fa-list', Caracteristique::class);
+        yield MenuItem::linkToCrud('Catégories des caractéristiques', 'fas fa-folder', \App\Entity\CategorieCaracteristique::class);
         yield MenuItem::linkToCrud('Trottinette ↔ Caractéristique', 'fas fa-list-alt', TrottinetteCaracteristique::class);
 
         // --- CRUD Accessoires ---
         yield MenuItem::section('Accessoires');
-        yield MenuItem::linkToCrud('Catégories', 'fas fa-folder', \App\Entity\CategorieCaracteristique::class);
         yield MenuItem::linkToCrud('Accessoires', 'fas fa-box', Accessory::class);
+        yield MenuItem::linkToCrud('Catégorie ↔ Accessoires', 'fas fa-link', CategoryAccessory::class);
         yield MenuItem::linkToCrud('Trottinette ↔ Accessoires', 'fas fa-tags', TrottinetteAccessory::class);
 
         //-- Illustrations --//

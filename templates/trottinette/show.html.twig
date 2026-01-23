@@ -132,7 +132,8 @@
         {% if caracteristiques is not empty %}
             {% set categories = {} %}
             {% for c in caracteristiques %}
-                {% set cat = c.categorie ? c.categorie.name : 'Autres' %}
+                {# Récupère la catégorie via la caractéristique #}
+                {% set cat = c.caracteristique.categorie ? c.caracteristique.categorie.name : 'Autres' %}
                 {% set categories = categories|merge({ (cat): (categories[cat]|default([]))|merge([c]) }) %}
             {% endfor %}
 
@@ -143,7 +144,7 @@
                         {% for item in items %}
                             <tr>
                                 <td class="carac-name">
-                                    {{ item.title ?? item.caracteristique.name }}
+                                    {{ item.caracteristique.name }}
                                 </td>
                                 <td class="carac-value">
                                     {{ item.value }}
