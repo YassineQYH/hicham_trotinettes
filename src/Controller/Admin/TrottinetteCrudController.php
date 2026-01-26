@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Trottinette;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\{Crud, Actions, Action};
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use EasyCorp\Bundle\EasyAdminBundle\Field\{
     IdField,
     TextField,
@@ -197,4 +199,75 @@ class TrottinetteCrudController extends AbstractCrudController
             DateTimeField::new('updatedAt')->onlyOnIndex(), */
         ];
     }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Trottinette) {
+            parent::persistEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        $this->handleIllustrationsUpload($entityInstance);
+
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Trottinette) {
+            parent::updateEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        $this->handleIllustrationsUpload($entityInstance);
+
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+    
+    private function handleIllustrationsUpload(Trottinette $trottinette): void
+    {
+        $request = $this->getContext()->getRequest();
+
+        if (!$request) {
+            return;
+        }
+
+        $files = $request->files->all();
+
+        // Nom du formulaire EasyAdmin (important)
+        if (!isset($files['Trottinette']['illustrations'])) {
+            return;
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $uploadDir = $projectDir . '/public/uploads/trottinettes/';
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        foreach ($trottinette->getIllustrations() as $index => $illustration) {
+
+            if (
+                !isset($files['Trottinette']['illustrations'][$index]['image']) ||
+                !$files['Trottinette']['illustrations'][$index]['image'] instanceof UploadedFile
+            ) {
+                continue;
+            }
+
+            /** @var UploadedFile $file */
+            $file = $files['Trottinette']['illustrations'][$index]['image'];
+
+            // Génération d’un nom propre
+            $filename = uniqid('trott_', true) . '.' . $file->guessExtension();
+
+            // Déplacement physique du fichier
+            $file->move($uploadDir, $filename);
+
+            // 🔥 LE POINT CLÉ : on remplit AVANT le flush
+            $illustration->setImage($filename);
+            $illustration->setProduct($trottinette);
+        }
+    }
+
 }

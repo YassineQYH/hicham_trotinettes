@@ -20,13 +20,13 @@ class IllustrationCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
 
-            AssociationField::new('product', 'Produit associé')
-                ->setFormTypeOption('placeholder', 'Sélectionner un produit'),
-
             ImageField::new('image', 'Illustration')
                 ->setUploadDir('public/uploads/tmp')   // dossier pour uploader la nouvelle image
                 ->setBasePath('')                        // EasyAdmin va utiliser getImagePath() pour l'affichage
                 ->formatValue(fn($value, $entity) => $entity ? $entity->getImagePath() : null),
+
+            AssociationField::new('product', 'Produit associé')
+                ->setFormTypeOption('placeholder', 'Sélectionner un produit'),
         ];
     }
 

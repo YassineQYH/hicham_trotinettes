@@ -6,6 +6,8 @@ use App\Entity\Accessory;
 use App\Entity\Illustrationaccess;
 use App\Entity\TrottinetteAccessory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\{Crud, Actions, Action};
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\{
     IdField, TextField, TextEditorField, BooleanField, ImageField,
@@ -105,4 +107,74 @@ class AccessoryCrudController extends AbstractCrudController
             DateTimeField::new('updatedAt')->onlyOnIndex(), */
         ];
     }
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Accessory) {
+            parent::persistEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        $this->handleIllustrationsUpload($entityInstance);
+
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Accessory) {
+            parent::updateEntity($entityManager, $entityInstance);
+            return;
+        }
+
+        $this->handleIllustrationsUpload($entityInstance);
+
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+    
+    private function handleIllustrationsUpload(Accessory $accessory): void
+    {
+        $request = $this->getContext()->getRequest();
+
+        if (!$request) {
+            return;
+        }
+
+        $files = $request->files->all();
+
+        // Nom du formulaire EasyAdmin (important)
+        if (!isset($files['Accessory']['illustrations'])) {
+            return;
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $uploadDir = $projectDir . '/public/uploads/accessoires/';
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        foreach ($accessory->getIllustrations() as $index => $illustration) {
+
+            if (
+                !isset($files['Accessory']['illustrations'][$index]['image']) ||
+                !$files['Accessory']['illustrations'][$index]['image'] instanceof UploadedFile
+            ) {
+                continue;
+            }
+
+            /** @var UploadedFile $file */
+            $file = $files['Accessory']['illustrations'][$index]['image'];
+
+            // Nom unique
+            $filename = uniqid('acc_', true) . '.' . $file->guessExtension();
+
+            // Déplacement physique
+            $file->move($uploadDir, $filename);
+
+            // 🔥 AVANT le flush Doctrine
+            $illustration->setImage($filename);
+            $illustration->setProduct($accessory);
+        }
+    }
+
 }
