@@ -13,10 +13,10 @@ class IllustrationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('uploadedFile', FileType::class, [
+            ->add('image', FileType::class, [
                 'label' => 'Image',
                 'required' => false,
-                'mapped' => true, // on lie au nouveau $uploadedFile
+                'mapped' => false, // 🔥 IMPORTANT
             ]);
     }
 
