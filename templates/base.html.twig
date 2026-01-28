@@ -43,7 +43,23 @@
     </head>
 
     <body>
-
+        {# Bannière maintenance pour les admins #}
+        {% if app.user and is_granted('ROLE_ADMIN') and site_config.isMaintenanceEnabled() %}
+            <div style="
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #c0392b;
+                color: white;
+                text-align: center;
+                padding: 8px;
+                z-index: 9999;
+                font-weight: bold;
+            ">
+                🚧 MODE MAINTENANCE ACTIF
+            </div>
+        {% endif %}
 
         {# 🔔 Messages flash au-dessus de la nav #}
         <style>
@@ -76,24 +92,22 @@
 
             {# ✅ Messages d’inscription (erreur et succès) #}
             {% for message in app.flashes('register_error') %}
-                <div class="info-alert register-error">{{ message }}</div>
+                <div class="info-alert register-error">{{ message }}
             {% endfor %}
             {% for message in app.flashes('register_success') %}
-                <div class="info-alert register-success">{{ message }}</div>
+                <div class="info-alert register-success">{{ message }}
             {% endfor %}
 
             {% block carrousel %}{% endblock %}
 
             <style>
                 .info-alert {
-                    padding: 12px 20px;
+                    padding: 4px 8px;
                     font-weight: bold;
                     text-align: center;
                     margin: 0;
                     font-size: 1rem;
-                    animation: fadeInDown 0.6s ease;
                     z-index: 9999;
-
                     background-color: #fff3cd; /* jaune clair */
                     color: #856404; /* orange foncé */
                     border: 1px solid #ffeeba;

@@ -15,6 +15,7 @@ use App\Entity\OrderDetails;
 use App\Entity\ProductHistory;
 use App\Entity\Caracteristique;
 use App\Entity\CategoryAccessory;
+use App\Entity\SiteConfig;
 use App\Entity\TrottinetteAccessory;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\TrottinetteCaracteristique;
@@ -90,6 +91,10 @@ class AdminDashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+
+        //-- Maintenance --//
+        yield MenuItem::section('Configuration');
+        yield MenuItem::linkToCrud('Maintenance', 'fa fa-tools', SiteConfig::class);
 
         //-- Users --//
         yield MenuItem::section('Utilisateurs');

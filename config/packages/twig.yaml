@@ -1,8 +1,18 @@
-twig:
-    file_name_pattern: '*.twig'
-    form_themes:
-    - 'bootstrap_5_layout.html.twig'
+# config/packages/twig.yaml
 
+twig:
+    # Nom des fichiers Twig
+    file_name_pattern: '*.twig'
+
+    # Thèmes pour les formulaires
+    form_themes:
+        - 'bootstrap_5_layout.html.twig'
+
+    # Variables globales disponibles dans tous les templates
+    globals:
+        site_config: '@App\Service\SiteConfigService'
+
+# Paramètres spécifiques pour l'environnement de test
 when@test:
     twig:
         strict_variables: true
