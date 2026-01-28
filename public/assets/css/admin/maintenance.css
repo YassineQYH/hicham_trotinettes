@@ -1,0 +1,19 @@
+/* 🔴 Maintenance ON */
+.menu-maintenance-on {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+.menu-maintenance-on a {
+    color: inherit !important;
+}
+
+/* 🟢 Maintenance OFF */
+.menu-maintenance-off {
+    color: #198754 !important;
+    font-weight: bold;
+}
+
+.menu-maintenance-off a {
+    color: inherit !important;
+}

@@ -43,24 +43,6 @@
     </head>
 
     <body>
-        {# Bannière maintenance pour les admins #}
-        {% if app.user and is_granted('ROLE_ADMIN') and site_config.isMaintenanceEnabled() %}
-            <div style="
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: #c0392b;
-                color: white;
-                text-align: center;
-                padding: 8px;
-                z-index: 9999;
-                font-weight: bold;
-            ">
-                🚧 MODE MAINTENANCE ACTIF
-            </div>
-        {% endif %}
-
         {# 🔔 Messages flash au-dessus de la nav #}
         <style>
             .flash.login_success {
@@ -87,6 +69,24 @@
 
         <header>
             {% block menu %}
+                {# Bannière maintenance pour les admins #}
+                {% if app.user and is_granted('ROLE_ADMIN') and site_config.isMaintenanceEnabled() %}
+                    <div style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        background: #c0392b;
+                        color: white;
+                        text-align: center;
+                        padding: 8px;
+                        z-index: 9999;
+                        font-weight: bold;
+                    ">
+                        🚧 MODE MAINTENANCE ACTIF
+                    </div>
+                {% endif %}
+
                 {{ include('partials/menu.html.twig') }}
             {% endblock %}
 
@@ -145,6 +145,23 @@
         <div class="copyrightText">
             <p>Copyright © 2026 Yassine QYH. All Rights Reserved.</p>
         </div>
+        {# Bannière maintenance pour les admins #}
+        {% if app.user and is_granted('ROLE_ADMIN') and site_config.isMaintenanceEnabled() %}
+            <div style="
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #c0392b;
+                color: white;
+                text-align: center;
+                padding: 8px;
+                z-index: 9999;
+                font-weight: bold;
+            ">
+                🚧 MODE MAINTENANCE ACTIF
+            </div>
+        {% endif %}
 
         {% block javascripts %}
             {# jQuery #}

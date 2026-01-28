@@ -29,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 
+
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class AdminDashboardController extends AbstractDashboardController
 {
@@ -45,6 +46,7 @@ class AdminDashboardController extends AbstractDashboardController
     {
         return Assets::new()
             ->addCssFile('assets/css/admin/illustrations.css')
+            ->addCssFile('assets/css/admin/maintenance.css')
             ->addJsFile('assets/js/admin/illustrations.js');
     }
 
@@ -94,7 +96,26 @@ class AdminDashboardController extends AbstractDashboardController
 
         //-- Maintenance --//
         yield MenuItem::section('Configuration');
-        yield MenuItem::linkToCrud('Maintenance', 'fa fa-tools', SiteConfig::class);
+
+        $maintenanceActive = $this->isMaintenanceActive();
+
+        $label = $maintenanceActive
+            ? 'Maintenance (ON)'
+            : 'Maintenance (OFF)';
+
+        $icon = $maintenanceActive
+            ? 'fa fa-exclamation-triangle'
+            : 'fa fa-check-circle';
+
+        yield MenuItem::linkToCrud(
+            $label,
+            $icon,
+            SiteConfig::class
+        )->setCssClass(
+            $maintenanceActive
+                ? 'menu-maintenance-on'
+                : 'menu-maintenance-off'
+        );
 
         //-- Users --//
         yield MenuItem::section('Utilisateurs');
@@ -339,6 +360,21 @@ class AdminDashboardController extends AbstractDashboardController
             'labels' => $labels,
             'values' => $values,
         ];
+    }
+
+    private function isMaintenanceActive(): bool
+    {
+        $config = $this->em->getRepository(SiteConfig::class)
+            ->findOneBy(['name' => 'maintenance_enabled']);
+
+        if (!$config) {
+            dump('Aucune config trouvée'); // debug si la config n'existe pas
+            die;
+            return false;
+        }
+
+        // conversion en int pour comparer correctement
+        return (int) $config->getValue() === 1;
     }
 
 }
